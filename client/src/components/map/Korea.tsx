@@ -239,7 +239,7 @@ export default function Korea({
   selrf: Function;
 }) {
   return (
-    <svg width={width} height={height} viewBox={`100 150 450  650`}>
+    <svg width={width} height={height} viewBox={`0 150 650  650`}>
       <Paths newData={newData} selrf={selrf}></Paths>
     </svg>
   );
