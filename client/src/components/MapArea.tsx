@@ -20,7 +20,7 @@ const InnerFrame = styled.div`
 `;
 
 const ButtonArea = styled.div`
-  height: 50px;
+  height: 80px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -29,23 +29,37 @@ const ButtonArea = styled.div`
 const ButtonBox = styled.div`
   display: flex;
 `;
-const Button = styled.div<{ direc: string }>`
-  height: 80%;
-  width: 70px;
+const Button = styled.div<{ direc: string; check: boolean }>`
+  height: 100%;
+  width: 200px;
   display: flex;
+  padding: 5px;
   justify-content: center;
   align-items: center;
-  border: solid 1px black;
+  border: solid 1px #7c7c7c;
+  font-weight: 700;
   ${({ direc }) => {
     if (direc === "L") {
       return `
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
       `;
     } else {
       return `
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      `;
+    }
+  }}
+  ${({ check }) => {
+    if (check) {
+      return `
+      color: white;
+      background-color: #C181DB;
+      `;
+    } else {
+      return `
+
       `;
     }
   }}
@@ -159,6 +173,7 @@ function MapArea() {
           <ButtonBox>
             <Button
               direc={"L"}
+              check={turn === true}
               onClick={() => {
                 turnf(true);
               }}
@@ -168,6 +183,7 @@ function MapArea() {
 
             <Button
               direc={"R"}
+              check={turn === false}
               onClick={() => {
                 turnf(false);
               }}
@@ -183,14 +199,14 @@ function MapArea() {
             {turn ? (
               <Korea
                 width={`calc(100% - 55px)`}
-                height={"480px"}
+                height={"60vh"}
                 newData={dbinit}
                 selrf={selrf}
               ></Korea>
             ) : (
               <Seoul
                 width={`calc(100% - 55px)`}
-                height={"500px"}
+                height={"60vh"}
                 newData={dbinit}
                 selrf={selrf}
               ></Seoul>
