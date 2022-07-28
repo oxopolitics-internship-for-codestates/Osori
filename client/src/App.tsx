@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import MapArea from "./components/MapArea";
+import Chart from '../src/components/chart'
 
 const Frame = styled.div`
   height: 100vh;
@@ -24,7 +25,7 @@ function App() {
   return (
     <Frame>
       <InnerFrame>
-        <Box></Box>
+        <Box><Chart /></Box>
         <Box>
           <MapArea></MapArea>
         </Box>
