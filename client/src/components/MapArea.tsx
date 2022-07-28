@@ -199,7 +199,7 @@ function MapArea() {
             {turn ? (
               <Korea
                 width={`calc(100% - 55px)`}
-                height={"60vh"}
+                height={"56vh"}
                 newData={dbinit}
                 selrf={selrf}
               ></Korea>
