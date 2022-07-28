@@ -228,22 +228,18 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
 export default function Korea({
   width,
   height,
-  ratio,
+
   newData,
   selrf,
 }: {
-  width: number;
-  height: number;
-  ratio: number;
+  width: string;
+  height: string;
+
   newData: newDataType;
   selrf: Function;
 }) {
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={`${100 * ratio} ${150 * ratio} ${450 * ratio} ${650 * ratio}`}
-    >
+    <svg width={width} height={height} viewBox={`100 150 450  650`}>
       <Paths newData={newData} selrf={selrf}></Paths>
     </svg>
   );

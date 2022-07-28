@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useScale } from "victory";
 import ColorBar from "./ColorBar";
@@ -147,11 +147,11 @@ for (let i in names) {
     dbinit[`${x}`] = { fill: colorSet[RdColor()] };
   });
 }
-let ratio = window.innerWidth / 1200,
-  k = ratio > 1 ? 1 : ratio;
+
 function MapArea() {
   let [turn, turnf] = useState(true);
   let [selr, selrf] = useState("");
+
   return (
     <Frame>
       <InnerFrame>
@@ -182,17 +182,15 @@ function MapArea() {
             {/* <SelRegionBox>{selr}</SelRegionBox> */}
             {turn ? (
               <Korea
-                width={545 * k}
-                height={500 * k}
-                ratio={k}
+                width={`calc(100% - 55px)`}
+                height={"480px"}
                 newData={dbinit}
                 selrf={selrf}
               ></Korea>
             ) : (
               <Seoul
-                width={545 * k}
-                height={600 * k}
-                ratio={k}
+                width={`calc(100% - 55px)`}
+                height={"500px"}
                 newData={dbinit}
                 selrf={selrf}
               ></Seoul>
