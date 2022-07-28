@@ -14,7 +14,8 @@ const Path = styled.path<{ check: boolean }>`
     if (check) {
       return `
       transform: translate(0px, -10px);
-      filter: drop-shadow(0px 5px 0px ${fill});
+      // filter: drop-shadow(0px 5px 0px ${fill});      
+      filter: drop-shadow(0px 5px 0px black);
       `;
     } else {
       //   return `filter: drop-shadow(0px 5px 0px ${fill})`;
@@ -234,7 +235,7 @@ let data: mapData[] = [
     d: "M 726 320 l 1 7 3 9 0 9 1 9 1 10 1 5 -1 -1 -5 -1 -3 0 -4 2 -11 0 -8 1 -5 6 -4 5 -4 6 -2 4 -1 8 -4 7 -3 2 1 1 -1 2 -6 7 -1 8 -5 -2 -5 -3 -3 -2 -8 -4 -5 -3 -8 -5 -5 -2 0 -7 1 -3 2 -5 0 -8 -4 -4 -4 -2 -6 -2 -7 0 2 -4 2 -5 2 -10 4 -10 1 -1 4 -6 7 -6 5 -3 6 -3 8 -3 4 -1 5 0 11 0 9 -4 7 -5 8 -6 11 -6 11 0 0 7 3 6 z ",
   },
 ];
-function Paths({ newData }: { newData: newDataType }) {
+function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
   let [check, checkf] = useState(-1);
 
   return (
@@ -250,16 +251,19 @@ function Paths({ newData }: { newData: newDataType }) {
               key={id}
               id={id}
               fill={fill}
-              stroke={stroke}
+              // stroke={stroke}
+              stroke={"black"}
               d={d}
               check={check === i}
               onClick={(e) => {}}
               onMouseOver={(e) => {
+                selrf(data[i].label);
                 checkf(i);
               }}
-              onMouseOut={(e) => {
-                checkf(-1);
-              }}
+              // onMouseOut={(e) => {
+              //   selrf("");
+              //   checkf(-1);
+              // }}
             />
           );
         } else {
@@ -270,22 +274,24 @@ function Paths({ newData }: { newData: newDataType }) {
         <Path
           key={data[check].id}
           id={data[check].id}
-          fill={"green"}
+          // fill={"green"}
+          fill={newData[data[check].id]["fill"]}
           //   stroke={data[check].stroke}
           stroke={"black"}
           //   strokeWidth={2}
           d={data[check].d}
           check={true}
           onClick={(e) => {}}
-          onMouseOver={(e) => {
-            checkf(check);
-          }}
+          // onMouseOver={(e) => {
+          //   checkf(check);
+          // }}
           onMouseOut={(e) => {
+            selrf("");
             checkf(-1);
           }}
         />
       ) : null}
-      {check >= 0 ? (
+      {/* {check >= 0 ? (
         <text
           key={"l" + data[check].id}
           id={"l" + data[check].id}
@@ -296,22 +302,30 @@ function Paths({ newData }: { newData: newDataType }) {
         >
           {data[check].label}
         </text>
-      ) : null}
+      ) : null} */}
     </>
   );
 }
 export default function Seoul({
   width,
   height,
+  ratio,
   newData,
+  selrf,
 }: {
   width: number;
   height: number;
+  ratio: number;
   newData: newDataType;
+  selrf: Function;
 }) {
   return (
-    <svg width={width} height={height} viewBox="0 0 800 656">
-      <Paths newData={newData}></Paths>
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${800 * ratio} ${656 * ratio}`}
+    >
+      <Paths newData={newData} selrf={selrf}></Paths>
     </svg>
   );
 }

@@ -14,7 +14,8 @@ const Path = styled.path<{ check: boolean }>`
     if (check) {
       return `
       transform: translate(0px, -10px);
-      filter: drop-shadow(0px 5px 0px ${fill});
+      // filter: drop-shadow(0px 5px 0px ${fill});
+      filter: drop-shadow(0px 5px 0px black);
       `;
     } else {
       //      return `filter: drop-shadow(0px 5px 0px ${fill})`;
@@ -150,7 +151,7 @@ let data: mapData[] = [
   },
 ];
 
-function Paths({ newData }: { newData: newDataType }) {
+function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
   let [check, checkf] = useState(-1);
 
   return (
@@ -166,17 +167,19 @@ function Paths({ newData }: { newData: newDataType }) {
               key={id}
               id={id}
               fill={fill}
-              stroke={stroke}
-              //   stroke={'black'}
+              // stroke={stroke}
+              stroke={"black"}
               d={d}
               check={check === i}
               onClick={(e) => {}}
               onMouseOver={(e) => {
+                selrf(data[i].title);
                 checkf(i);
               }}
-              onMouseOut={(e) => {
-                checkf(-1);
-              }}
+              // onMouseOut={(e) => {
+              //   selrf("");
+              //   checkf(-1);
+              // }}
             />
           );
         } else {
@@ -187,21 +190,23 @@ function Paths({ newData }: { newData: newDataType }) {
         <Path
           key={data[check].id}
           id={data[check].id}
-          fill={"green"}
+          // fill={"green"}
+          fill={newData[data[check].id]["fill"]}
           //   stroke={data[check].stroke}
           stroke={"black"}
           //   strokeWidth={2}
           d={data[check].d}
           check={true}
           onClick={(e) => {}}
-          onMouseOver={(e) => {
-            checkf(check);
-          }}
+          // onMouseOver={(e) => {
+          //   checkf(check);
+          // }}
           onMouseOut={(e) => {
+            selrf("");
             checkf(-1);
           }}
         >
-          <title>{data[check].title}</title>
+          {/* <title>{data[check].title}</title> */}
         </Path>
       ) : null}
       {/* {check >= 0 ? (
@@ -223,15 +228,23 @@ function Paths({ newData }: { newData: newDataType }) {
 export default function Korea({
   width,
   height,
+  ratio,
   newData,
+  selrf,
 }: {
   width: number;
   height: number;
+  ratio: number;
   newData: newDataType;
+  selrf: Function;
 }) {
   return (
-    <svg width={width} height={height} viewBox="100 160 400 640">
-      <Paths newData={newData}></Paths>
+    <svg
+      width={width}
+      height={height}
+      viewBox={`${100 * ratio} ${150 * ratio} ${450 * ratio} ${650 * ratio}`}
+    >
+      <Paths newData={newData} selrf={selrf}></Paths>
     </svg>
   );
 }

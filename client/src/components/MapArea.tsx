@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useScale } from "victory";
-import Korea from "./map/korea";
-import Seoul from "./map/seoul";
+import ColorBar from "./ColorBar";
+import Korea from "./map/Korea";
+import Seoul from "./map/Seoul";
 
 const Frame = styled.div`
   height: 100%;
@@ -27,17 +28,27 @@ const ButtonArea = styled.div`
 `;
 const ButtonBox = styled.div`
   display: flex;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-radius: 10px;
-  border: solid 1px black;
 `;
-const Button = styled.div`
+const Button = styled.div<{ direc: string }>`
   height: 80%;
-  width: 50px;
+  width: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: solid 1px black;
+  ${({ direc }) => {
+    if (direc === "L") {
+      return `
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      `;
+    } else {
+      return `
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      `;
+    }
+  }}
 `;
 
 const MainArea = styled.div`
@@ -47,6 +58,16 @@ const MainArea = styled.div`
 `;
 const MapBox = styled.div`
   height: 100%;
+  max-width: 545px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SelRegionBox = styled.div`
+  height: 50px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -108,28 +129,45 @@ let names: { [key: string]: string[] } = {
 };
 
 let dbinit: { [key: string]: { fill: string } } = {};
+let colorSet = [
+  "#9749B6",
+  "#C181DB",
+  "#C1ADD1",
+  "#EEA3BF",
+  "#FEDDD5",
+  "#EAEAEA",
+];
+function RdColor() {
+  let k = Math.floor(6 * Math.random());
+  return k > 5 ? 5 : k;
+}
 
 for (let i in names) {
   names[i].forEach((x) => {
-    dbinit[`${x}`] = { fill: "#B9B9B9" };
+    dbinit[`${x}`] = { fill: colorSet[RdColor()] };
   });
 }
-
+let ratio = window.innerWidth / 1200,
+  k = ratio > 1 ? 1 : ratio;
 function MapArea() {
   let [turn, turnf] = useState(true);
+  let [selr, selrf] = useState("");
   return (
     <Frame>
       <InnerFrame>
         <ButtonArea>
           <ButtonBox>
             <Button
+              direc={"L"}
               onClick={() => {
                 turnf(true);
               }}
             >
               전국
             </Button>
+
             <Button
+              direc={"R"}
               onClick={() => {
                 turnf(false);
               }}
@@ -140,13 +178,29 @@ function MapArea() {
         </ButtonArea>
         <MainArea>
           <MapBox>
+            {/* 마우스 오버 지역 이름 표시 및 색 통계에대한 데이터 전달 목적. 실제 구현할지는 모르겠음. */}
+            {/* <SelRegionBox>{selr}</SelRegionBox> */}
             {turn ? (
-              <Korea width={550} height={550} newData={dbinit}></Korea>
+              <Korea
+                width={545 * k}
+                height={500 * k}
+                ratio={k}
+                newData={dbinit}
+                selrf={selrf}
+              ></Korea>
             ) : (
-              <Seoul width={550} height={600} newData={dbinit}></Seoul>
+              <Seoul
+                width={545 * k}
+                height={600 * k}
+                ratio={k}
+                newData={dbinit}
+                selrf={selrf}
+              ></Seoul>
             )}
           </MapBox>
-          <ColorBarBox></ColorBarBox>
+          <ColorBarBox>
+            <ColorBar></ColorBar>
+          </ColorBarBox>
         </MainArea>
       </InnerFrame>
     </Frame>
