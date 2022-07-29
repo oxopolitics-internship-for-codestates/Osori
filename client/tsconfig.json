@@ -1,15 +1,7 @@
 {
   "compilerOptions": {
-<<<<<<< HEAD
-    "target": "es6",
-=======
     "target": "ES6",
->>>>>>> 18235f0c6198900dd61041befd3a975715b41dd5
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -24,12 +16,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-<<<<<<< HEAD
-  "include": [
-    "src"
-  ]
-}
-=======
   "include": ["src"]
 }
->>>>>>> 18235f0c6198900dd61041befd3a975715b41dd5
