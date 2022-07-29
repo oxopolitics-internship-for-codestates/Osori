@@ -43,7 +43,7 @@ export class users extends Document {
   })
   @IsNotEmpty()
   @IsString()
-  age: string;
+  age: number;
 
   @Prop({
     required: true,
@@ -53,7 +53,7 @@ export class users extends Document {
   address: string;
 
   @Prop()
-  City_name: string;
+  city_name: string;
 
   @Prop()
   region_name: string;
