@@ -13,8 +13,12 @@ const ChartWrapper = styled.div`
   text-align: center;
 `
 
-const StaticTitle = styled.h2`
+const StaticsTitle = styled.h2`
   margin-top: 65px;
+`
+
+const DetailedStaticsTitle = styled.h3`
+  margin-top: 70px;
 `
 
 //---- code ----
@@ -41,7 +45,8 @@ function Chart() {
 
   return (
       <ChartWrapper>
-        <StaticTitle>서울 전체 통계 요약</StaticTitle>
+        <StaticsTitle>서울 전체 통계 요약</StaticsTitle>
+          <DetailedStaticsTitle>전체 응답률</DetailedStaticsTitle>
           <VictoryChart 
             width={400} 
             height={400}
