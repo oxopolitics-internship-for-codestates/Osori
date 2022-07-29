@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryContainer } from 'victory';
+import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryContainer, VictoryLabel } from 'victory';
 
 //---- css ----
 const ChartWrapper = styled.div`
@@ -78,11 +78,9 @@ function Chart() {
               data={data}
             />
 
-            <text x={185} y={205} fill="black">496 명</text>
-
             <VictoryPie
-              animate={{easing: 'exp', duration: 500}}
               standalone={false}
+              animate={{easing: 'exp', duration: 500}}
               radius={50}
               colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
               padAngle={1}
@@ -93,6 +91,13 @@ function Chart() {
                 labels: { fontSize: 15, fill: 'black' }
               }}
               data={graphicData}
+            />
+            <VictoryLabel
+              textAnchor={'middle'}
+              style={{fontSize: 15}}
+              x={200}
+              y={200}
+              text='496 명'
             />
           </VictoryChart>
       </ChartWrapper>
