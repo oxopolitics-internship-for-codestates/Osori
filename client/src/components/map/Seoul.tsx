@@ -8,14 +8,25 @@ interface fillType {
 interface newDataType {
   [key: string]: fillType;
 }
+interface shadowType {
+  [key: string]: string;
+}
+let shadowSet: shadowType = {
+  "#9749B6": "#642F79",
+  "#C181DB": "#9462A8",
+  "#C1ADD1": "#83778D",
+  "#EEA3BF": "#9C6B7E",
+  "#FEDDD5": "#9B8883",
+  "#EAEAEA": "#A6A5A5",
+};
 
-const Path = styled.path<{ check: boolean }>`
+const Path = styled.path<{ check: boolean; fill: string }>`
   ${({ check, fill }) => {
     if (check) {
       return `
       transform: translate(0px, -10px);
-      // filter: drop-shadow(0px 5px 0px ${fill});      
-      filter: drop-shadow(0px 5px 0px black);
+      filter: drop-shadow(0px 5px 0px ${shadowSet[fill]});  
+      //filter: drop-shadow(0px 5px 0px black);
       `;
     } else {
       //   return `filter: drop-shadow(0px 5px 0px ${fill})`;
@@ -252,7 +263,8 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
               id={id}
               fill={fill}
               // stroke={stroke}
-              stroke={"black"}
+              stroke={shadowSet[fill]}
+              // stroke={"black"}
               d={d}
               check={check === i}
               onClick={(e) => {}}
@@ -277,7 +289,8 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
           // fill={"green"}
           fill={newData[data[check].id]["fill"]}
           //   stroke={data[check].stroke}
-          stroke={"black"}
+          stroke={shadowSet[newData[data[check].id]["fill"]]}
+          // stroke={"black"}
           //   strokeWidth={2}
           d={data[check].d}
           check={true}
@@ -306,6 +319,14 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
     </>
   );
 }
+
+const Frame = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 export default function Seoul({
   width,
   height,
@@ -319,9 +340,55 @@ export default function Seoul({
   newData: newDataType;
   selrf: Function;
 }) {
+  let [vr, vrf] = useState([700, 600]);
+  let [cmin, cminf] = useState([50, 50]);
+  let [cx, cy] = [
+    window.innerWidth * 0.5 +
+      (window.innerWidth * 0.5 > 600
+        ? 275.5
+        : 0.5 * (window.innerWidth * 0.5 - 55)),
+    window.innerHeight * 0.55,
+  ];
   return (
-    <svg width={width} height={height} viewBox={`0 0 800 656`}>
-      <Paths newData={newData} selrf={selrf}></Paths>
-    </svg>
+    <Frame
+      onWheel={(e) => {
+        let { clientX, clientY } = e.nativeEvent;
+
+        if (e.deltaY < 0) {
+          let [xmid, ymid] = [0.5 * vr[0], 0.5 * vr[1]];
+          let [x, y] = [vr[0] - 40, vr[1] - 40];
+          let [xx, yy] = cmin;
+          let r = ((cx - clientX) ** 2 + (cy - clientY) ** 2) ** 0.5 / 300;
+
+          if (clientX - cx < 0) {
+            xx -= 10 * (1 + r) - 20;
+          } else {
+            xx += 10 * (1 + r) + 20;
+          }
+          if (clientY - cy < 0) {
+            yy -= 10 * (1 + r) - 20;
+          } else {
+            yy += 10 * (1 + r) + 20;
+          }
+
+          cminf([xx, yy]);
+          vrf([x, y]);
+        } else {
+          let [x, y] = [vr[0] + 40, vr[1] + 40];
+          cminf([x < 700 ? cmin[0] - 20 : 50, y < 600 ? cmin[1] - 20 : 50]);
+
+          vrf([x > 700 ? 700 : x, y > 600 ? 600 : y]);
+        }
+      }}
+    >
+      <svg
+        width={width}
+        height={height}
+        viewBox={`${cmin[0]} ${cmin[1]} ${vr[0]} ${vr[1]} `}
+      >
+        {/* <svg width={width} height={height} viewBox={`50 50 700 600`}> */}
+        <Paths newData={newData} selrf={selrf}></Paths>
+      </svg>
+    </Frame>
   );
 }
