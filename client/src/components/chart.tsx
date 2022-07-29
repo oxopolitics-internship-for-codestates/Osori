@@ -1,15 +1,20 @@
 import React from 'react';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryContainer } from 'victory';
 
-// const ChartWrapper = styled.div`
-//   position: relative;
-//   display: grid;
-//   max-width: 500px;
-//   margin: 0 auto;
-//   padding: 0 20px;
-//   gap: 20px;
-// `
+const ChartWrapper = styled.div`
+  position: relative;
+  display: grid;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 20px;
+  gap: 20px;
+  text-align: center;
+`
+
+const StaticTitle = styled.h2`
+  margin-top: 65px;
+`
 
 
 function Chart() {
@@ -21,8 +26,8 @@ function Chart() {
 
   return (
     <div className="App">
-      <h1>Victory Chart</h1>
-      {/* <ChartWrapper> */}
+      <ChartWrapper>
+      <StaticTitle>서울 전체 통계 요약</StaticTitle>
         <VictoryChart 
           width={400} 
           height={400}
@@ -59,7 +64,7 @@ function Chart() {
           <VictoryPie
             standalone={false}
             radius={50}
-            // width={300}
+            // width={50}
             colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
             padAngle={1}
             innerRadius={100}
@@ -74,7 +79,7 @@ function Chart() {
             ]}
           />
         </VictoryChart>
-      {/* </ChartWrapper> */}
+      </ChartWrapper>
     </div>
   );
 }
