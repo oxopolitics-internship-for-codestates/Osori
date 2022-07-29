@@ -87,7 +87,9 @@ function Chart() {
               labelRadius={({innerRadius}) => 100 * 0.6}
               data={graphicData}
               // labels={() => null}
-              labels={({data}) => data[0].x}  // 데이터 type 체크해서 수정하기!
+              // labels={({data}) => data.map((rate: {x:string, y:number}) => {
+              //   return `y:${rate.x}`
+              // })}  // 데이터 type 체크해서 수정하기!
               labelComponent={<VictoryTooltip
                 x={200} y={245}
                 orientation="top"
