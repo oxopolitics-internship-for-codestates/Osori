@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryContainer, VictoryLabel } from 'victory';
+import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryContainer, VictoryLabel, VictoryTooltip } from 'victory';
 
 //---- css ----
 const ChartWrapper = styled.div`
@@ -30,7 +30,7 @@ const wantedGraphicData = [
 ];
 
 function Chart() {
-  const data = [
+  const legend = [
     { name: '네', symbol: { fill: '#9749B6' }},
     { name: '글쎄요', symbol: { fill: '#C1ADD1' } },
     { name: '아니오', symbol: { fill: '#EEA3BF' } }
@@ -38,7 +38,8 @@ function Chart() {
 
   // 그래프 애니메이션
   const [graphicData, setGraphicData] = useState(defaultGraphicData);
-
+  console.log(graphicData)
+  
   useEffect(() => {
     setGraphicData(wantedGraphicData);
   }, [])
@@ -46,11 +47,11 @@ function Chart() {
   return (
       <ChartWrapper>
         <StaticsTitle>서울 전체 통계 요약</StaticsTitle>
-          <DetailedStaticsTitle>전체 응답률</DetailedStaticsTitle>
+        <DetailedStaticsTitle>전체 응답률</DetailedStaticsTitle>
           <VictoryChart 
             width={400} 
             height={400}
-            containerComponent={<VictoryContainer responsive={false} />}
+            // containerComponent={<VictoryContainer responsive={false} />}
           >
             
             <VictoryAxis
@@ -63,38 +64,51 @@ function Chart() {
             
             <VictoryLegend
               x={300}
-              y={150}
+              y={10}
               title='범례'
               centerTitle
               orientation='vertical'
               gutter={{left: 5, right: 50}}
-              borderPadding={{top: 10, bottom: 10}}
+              borderPadding={{top: 5, bottom: 5}}
               style={{
                 border: { stroke: '#878787' },
-                title: { fontSize: 20 },
-                labels: { fontSize: 12 }
+                title: { fontSize: 13 },
+                labels: { fontSize: 10 }
               }}
-              
-              data={data}
+              data={legend}
             />
 
             <VictoryPie
               standalone={false}
               animate={{easing: 'exp', duration: 500}}
-              radius={50}
+              radius={45}
               colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
               padAngle={1}
-              innerRadius={100}
+              innerRadius={70}
               labelRadius={({innerRadius}) => 100 * 0.6}
-              labels={() => null}
-              style={{
-                labels: { fontSize: 15, fill: 'black' }
-              }}
               data={graphicData}
+              // labels={() => null}
+              labels={({data}) => data[0].x}
+              labelComponent={<VictoryTooltip
+                x={200} y={245}
+                orientation="top"
+                pointerLength={0}
+                cornerRadius={45}
+                flyoutWidth={90}
+                flyoutHeight={90}
+                flyoutStyle={{ fill: 'white', stroke: 'none' }}
+                style={{
+                  fontSize: 20
+                }}
+                />}
+              
+              // style={{
+              //   labels: { fontSize: 15, fill: '#7C7C7C' }
+              // }}
             />
             <VictoryLabel
               textAnchor={'middle'}
-              style={{fontSize: 15}}
+              style={{fontSize: 20}}
               x={200}
               y={200}
               text='496 명'
