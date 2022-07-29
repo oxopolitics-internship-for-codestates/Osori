@@ -8,14 +8,25 @@ interface fillType {
 interface newDataType {
   [key: string]: fillType;
 }
+interface shadowType {
+  [key: string]: string;
+}
+let shadowSet: shadowType = {
+  "#9749B6": "#642F79",
+  "#C181DB": "#9462A8",
+  "#C1ADD1": "#83778D",
+  "#EEA3BF": "#9C6B7E",
+  "#FEDDD5": "#9B8883",
+  "#EAEAEA": "#A6A5A5",
+};
 
-const Path = styled.path<{ check: boolean }>`
+const Path = styled.path<{ check: boolean; fill: string }>`
   ${({ check, fill }) => {
     if (check) {
       return `
       transform: translate(0px, -10px);
-      // filter: drop-shadow(0px 5px 0px ${fill});
-      filter: drop-shadow(0px 5px 0px black);
+      filter: drop-shadow(0px 5px 0px ${shadowSet[fill]});
+      // filter: drop-shadow(0px 5px 0px black);
       `;
     } else {
       //      return `filter: drop-shadow(0px 5px 0px ${fill})`;
@@ -167,8 +178,8 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
               key={id}
               id={id}
               fill={fill}
-              // stroke={stroke}
-              stroke={"black"}
+              stroke={shadowSet[fill]}
+              // stroke={"black"}
               d={d}
               check={check === i}
               onClick={(e) => {}}
@@ -192,8 +203,9 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
           id={data[check].id}
           // fill={"green"}
           fill={newData[data[check].id]["fill"]}
+          stroke={shadowSet[newData[data[check].id]["fill"]]}
           //   stroke={data[check].stroke}
-          stroke={"black"}
+          // stroke={"black"}
           //   strokeWidth={2}
           d={data[check].d}
           check={true}
@@ -225,6 +237,28 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
   );
 }
 
+const Frame = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const Cc = styled.div<{ top: number; left: number }>`
+  position: absolute;
+  ${({ top, left }) => {
+    return `
+      top:${top}px;
+      left:${left}px;
+    `;
+  }}
+  border-radius:10px;
+  width: 10px;
+  height: 10px;
+  z-index: 10;
+  background-color: red;
+`;
+
 export default function Korea({
   width,
   height,
@@ -238,9 +272,76 @@ export default function Korea({
   newData: newDataType;
   selrf: Function;
 }) {
+  let [vr, vrf] = useState([650, 650]);
+  let [cmin, cminf] = useState([0, 150]);
+  let [drag, dragf] = useState([0, 0]);
+  let [cx, cy] = [
+    window.innerWidth * 0.5 +
+      (window.innerWidth * 0.5 > 600
+        ? 275.5
+        : 0.5 * (window.innerWidth * 0.5 - 55)),
+    window.innerHeight * 0.55,
+  ];
+
   return (
-    <svg width={width} height={height} viewBox={`0 150 650  650`}>
-      <Paths newData={newData} selrf={selrf}></Paths>
-    </svg>
+    <Frame
+      onWheel={(e) => {
+        let { clientX, clientY } = e.nativeEvent;
+
+        if (e.deltaY < 0) {
+          let [xmid, ymid] = [0.5 * vr[0], 0.5 * vr[1]];
+          let [x, y] = [vr[0] - 40, vr[1] - 40];
+          let [xx, yy] = cmin;
+          let r = ((cx - clientX) ** 2 + (cy - clientY) ** 2) ** 0.5 / 300;
+
+          if (clientX - cx < 0) {
+            xx -= 10 * (1 + r) - 20;
+          } else {
+            xx += 10 * (1 + r) + 20;
+          }
+          if (clientY - cy < 0) {
+            yy -= 10 * (1 + r) - 20;
+          } else {
+            yy += 10 * (1 + r) + 20;
+          }
+
+          cminf([xx, yy]);
+          vrf([x, y]);
+        } else {
+          let [x, y] = [vr[0] + 40, vr[1] + 40];
+          cminf([x < 650 ? cmin[0] - 20 : 0, y < 650 ? cmin[1] - 20 : 150]);
+
+          vrf([x > 650 ? 650 : x, y > 650 ? 650 : y]);
+        }
+      }}
+      // onMouseDown={(e) => {
+      //   let { offsetX, offsetY } = e.nativeEvent;
+
+      //   dragf([offsetX, offsetY]);
+      // }}
+      // onMouseUp={(e) => {
+      //   let { offsetX, offsetY } = e.nativeEvent;
+      //   let [xmin, ymin] = cmin;
+
+      //   if (Math.abs(xmin - offsetX) + Math.abs(ymin - offsetY) !== 0) {
+      //     xmin += drag[0] - offsetX;
+      //     ymin += drag[1] - offsetY;
+      //     // xmid = xmid < 0 ? 0 : xmid + vr[0] > 650 ? 650 - vr[0] : xmid;
+      //     // ymid = ymid < 0 ? 0 : ymid + vr[1] > 650 ? 650 - vr[1] : ymid;
+
+      //     cminf([xmin, ymin]);
+      //   }
+      // }}
+    >
+      {/* <Cc top={cy} left={cx}></Cc> */}
+      <svg
+        width={width}
+        height={height}
+        viewBox={`${cmin[0]} ${cmin[1]} ${vr[0]} ${vr[1]} `}
+      >
+        {/* <svg width={width} height={height} viewBox={`0 150 650  650`}> */}
+        <Paths newData={newData} selrf={selrf}></Paths>
+      </svg>
+    </Frame>
   );
 }
