@@ -13,12 +13,17 @@ const ChartWrapper = styled.div`
   text-align: center;
 `
 
+const Svg = styled.svg`
+  position: absolute;
+  z-index: -1;
+`
+
 const StaticsTitle = styled.h2`
   margin-top: 65px;
 `
 
 const DetailedStaticsTitle = styled.h3`
-  margin-top: 70px;
+  margin-top: 50px;
 `
 
 //---- code ----
@@ -46,13 +51,11 @@ function Chart() {
   return (
       <ChartWrapper>
         <StaticsTitle>서울 전체 통계 요약</StaticsTitle>
-        <DetailedStaticsTitle>전체 응답률</DetailedStaticsTitle>
+          <DetailedStaticsTitle>전체 응답률</DetailedStaticsTitle>
           <VictoryChart 
             width={400} 
-            height={400}
-            // containerComponent={<VictoryContainer responsive={false} />}
+            height={150}
           >
-            
             <VictoryAxis
               style={{
                 axis: {stroke: 'transparent'}, // x축
@@ -60,10 +63,38 @@ function Chart() {
                 tickLabels: {fill: 'transparent'}  // x축 라벨 안 보이게하기
               }}
             />
-            
+            <Svg viewBox='0 0 400 200'>
+              <VictoryPie
+                height={200}
+                standalone={false}
+                animate={{easing: 'exp', duration: 500}}
+                radius={65}
+                colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
+                padAngle={1}
+                innerRadius={100}
+                data={graphicData}
+                labelComponent={<VictoryTooltip
+                  x={200} y={120}
+                  orientation="top"
+                  pointerLength={0}
+                  cornerRadius={45}
+                  flyoutWidth={90}
+                  flyoutHeight={90}
+                  flyoutStyle={{ fill: 'white', stroke: 'none' }}
+                  style={{ fontSize: 20 }}
+                  />}
+              />
+              <VictoryLabel
+                textAnchor={'middle'}
+                style={{fontSize: 25}}
+                x={200}
+                y={100}
+                text='496 명'
+              />
+            </Svg>
             <VictoryLegend
               x={300}
-              y={10}
+              y={30}
               title='범례'
               centerTitle
               orientation='vertical'
@@ -75,42 +106,6 @@ function Chart() {
                 labels: { fontSize: 10 }
               }}
               data={legend}
-            />
-
-            <VictoryPie
-              standalone={false}
-              animate={{easing: 'exp', duration: 500}}
-              radius={45}
-              colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
-              padAngle={1}
-              innerRadius={70}
-              labelRadius={({innerRadius}) => 100 * 0.6}
-              data={graphicData}
-              // labels={() => null}
-              // labels={({data}) => data.map((rate: {x:string, y:number}) => {
-              //   return `y:${rate.x}`
-              // })}  // 데이터 type 체크해서 수정하기!
-              labelComponent={<VictoryTooltip
-                x={200} y={245}
-                orientation="top"
-                pointerLength={0}
-                cornerRadius={45}
-                flyoutWidth={90}
-                flyoutHeight={90}
-                flyoutStyle={{ fill: 'white', stroke: 'none' }}
-                style={{ fontSize: 20 }}
-                />}
-              
-              // style={{
-              //   labels: { fontSize: 15, fill: '#7C7C7C' }
-              // }}
-            />
-            <VictoryLabel
-              textAnchor={'middle'}
-              style={{fontSize: 20}}
-              x={200}
-              y={200}
-              text='496 명'
             />
           </VictoryChart>
       </ChartWrapper>
