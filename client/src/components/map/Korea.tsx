@@ -248,7 +248,7 @@ const Frame = styled.div<{ grab: boolean }>`
   align-items: center;
   ${({ grab }) => {
     return `
-    ${grab ? `cursor:grab;` : null}
+    ${grab ? `cursor:grab;` : ""}
     `;
   }}
 `;
@@ -270,7 +270,6 @@ const Cc = styled.div<{ top: number; left: number }>`
 export default function Korea({
   width,
   height,
-
   newData,
   selrf,
 }: {

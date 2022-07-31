@@ -347,6 +347,7 @@ const Frame = styled.div<{ grab: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+
   ${({ grab }) => {
     return `
     ${grab ? `cursor:grab;` : null}
@@ -384,7 +385,7 @@ export default function Seoul({
         let { clientX, clientY } = e.nativeEvent;
 
         if (e.deltaY < 0) {
-          let [x, y] = [vr[0] - 40, vr[1] - 40];
+          let [x, y] = [vr[0], vr[1]];
           let [xx, yy] = cmin;
           let r = ((cx - clientX) ** 2 + (cy - clientY) ** 2) ** 0.5 / 300;
           if (x > 100) {
@@ -422,7 +423,7 @@ export default function Seoul({
             yy = yy < -20 ? yy + 20 : 50;
           }
 
-          cminf([x < 750 ? xx : 50, y < 600 ? yy : 50]);
+          cminf([x < 700 ? xx : 50, y < 600 ? yy : 50]);
           vrf([x > 700 ? 700 : x, y > 600 ? 600 : y]);
         }
       }}
@@ -457,6 +458,7 @@ export default function Seoul({
         width={width}
         height={height}
         viewBox={`${cmin[0]} ${cmin[1]} ${vr[0]} ${vr[1]} `}
+        preserveAspectRatio="xMidYMid meet"
         onMouseLeave={(e) => {
           if (isDrag && dpath > 10) {
             isDragf(false);
