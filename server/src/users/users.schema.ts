@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Document } from 'mongoose';
 
 const options: SchemaOptions = {
@@ -8,28 +8,16 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class users extends Document {
-  @Prop({
-    required: true,
-    unique: true,
-    default: 0,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  _id: number;
-
-  @Prop({
-    required: true,
-  })
+  @Prop()
   @IsString()
-  @IsNotEmpty()
   name: string;
 
   @Prop({
     required: true,
   })
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
-  password: string;
+  email: string;
 
   @Prop({
     required: true,
@@ -50,16 +38,11 @@ export class users extends Document {
   })
   @IsNotEmpty()
   @IsString()
-  address: string;
+  address: [string];
 
   @Prop()
-  City_name: string;
-
-  @Prop()
-  region_name: string;
-
-  @Prop()
-  seq: number;
+  @IsNumber()
+  card_answer_id: [number];
 }
 
 export const userSchema = SchemaFactory.createForClass(users);
