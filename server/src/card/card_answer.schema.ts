@@ -7,16 +7,19 @@ const options: SchemaOptions = {
 };
 
 @Schema(options)
-export class users extends Document {
-  @Prop()
-  @IsString()
-  name: string;
+export class cardanswer extends Document {
+  @Prop({
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  _id: number;
 
   @Prop({
     required: true,
   })
-  @IsEmail()
   @IsNotEmpty()
+  @IsEmail()
   email: string;
 
   @Prop({
@@ -24,25 +27,7 @@ export class users extends Document {
   })
   @IsNotEmpty()
   @IsString()
-  gender: string;
-
-  @Prop({
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  age: string;
-
-  @Prop({
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  address: [string];
-
-  @Prop()
-  @IsNumber()
-  card_answer_id: [number];
+  answer: string;
 }
 
-export const userSchema = SchemaFactory.createForClass(users);
+export const card_answer_Schema = SchemaFactory.createForClass(cardanswer);
