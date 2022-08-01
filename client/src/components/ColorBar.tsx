@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const Frame = styled.div`
+  user-select: none;
   height: 100%;
   width: 55px;
   display: flex;
