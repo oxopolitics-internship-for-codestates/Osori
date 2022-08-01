@@ -7,9 +7,9 @@ const ChartWrapper = styled.div`
   position: relative;
   display: grid;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 0;
   padding: 0 20px;
-  gap: 20px;
+  gap: 10px;
   text-align: center;
   justify-content: center;
 `
