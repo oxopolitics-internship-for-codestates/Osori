@@ -246,7 +246,15 @@ let data: mapData[] = [
     d: "M 726 320 l 1 7 3 9 0 9 1 9 1 10 1 5 -1 -1 -5 -1 -3 0 -4 2 -11 0 -8 1 -5 6 -4 5 -4 6 -2 4 -1 8 -4 7 -3 2 1 1 -1 2 -6 7 -1 8 -5 -2 -5 -3 -3 -2 -8 -4 -5 -3 -8 -5 -5 -2 0 -7 1 -3 2 -5 0 -8 -4 -4 -4 -2 -6 -2 -7 0 2 -4 2 -5 2 -10 4 -10 1 -1 4 -6 7 -6 5 -3 6 -3 8 -3 4 -1 5 0 11 0 9 -4 7 -5 8 -6 11 -6 11 0 0 7 3 6 z ",
   },
 ];
-function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
+function Paths({
+  newData,
+  selrf,
+  isDrag,
+}: {
+  newData: newDataType;
+  selrf: Function;
+  isDrag: boolean;
+}) {
   let [check, checkf] = useState(-1);
 
   return (
@@ -267,10 +275,14 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
               // stroke={"black"}
               d={d}
               check={check === i}
-              onClick={(e) => {}}
               onMouseOver={(e) => {
-                selrf(data[i].name);
-                checkf(i);
+                if (!isDrag) {
+                  selrf(data[i].name);
+                  checkf(i);
+                } else {
+                  selrf("");
+                  checkf(-1);
+                }
               }}
               // onMouseOut={(e) => {
               //   selrf("");
@@ -294,7 +306,16 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
           //   strokeWidth={2}
           d={data[check].d}
           check={true}
-          onClick={(e) => {}}
+          onClick={(e) => {
+            // if (mpath < 10) {
+            //   if (e.target.style.fill === "red") {
+            //     e.target.style.fill = "";
+            //   } else {
+            //     e.target.style.fill = "red";
+            //   }
+            //   mpathf(0);
+            // }
+          }}
           // onMouseOver={(e) => {
           //   checkf(check);
           // }}
@@ -320,12 +341,18 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
   );
 }
 
-const Frame = styled.div`
+const Frame = styled.div<{ grab: boolean }>`
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  ${({ grab }) => {
+    return `
+    ${grab ? `cursor:grab;` : null}
+    `;
+  }}
 `;
 export default function Seoul({
   width,
@@ -340,8 +367,11 @@ export default function Seoul({
   newData: newDataType;
   selrf: Function;
 }) {
-  let [vr, vrf] = useState([700, 600]);
-  let [cmin, cminf] = useState([50, 50]);
+  let [vr, vrf] = useState([700, 600]); // view box 크기
+  let [cmin, cminf] = useState([50, 50]); // view box min값
+  let [dcoor, dcoorf] = useState([0, 0]); // 드래그시 위치 저장(이동거리 계산시 현재 위치반영)
+  let [dpath, dpathf] = useState(0); // 이동한 거리 (단순 좌표 차이를 누적 계산함.)
+  let [isDrag, isDragf] = useState(false); // 드래깅 여부
   let [cx, cy] = [
     window.innerWidth * 0.5 +
       (window.innerWidth * 0.5 > 600
@@ -355,39 +385,104 @@ export default function Seoul({
         let { clientX, clientY } = e.nativeEvent;
 
         if (e.deltaY < 0) {
-          let [xmid, ymid] = [0.5 * vr[0], 0.5 * vr[1]];
-          let [x, y] = [vr[0] - 40, vr[1] - 40];
+          let [x, y] = [vr[0], vr[1]];
           let [xx, yy] = cmin;
           let r = ((cx - clientX) ** 2 + (cy - clientY) ** 2) ** 0.5 / 300;
-
-          if (clientX - cx < 0) {
-            xx -= 10 * (1 + r) - 20;
-          } else {
-            xx += 10 * (1 + r) + 20;
+          if (x > 100) {
+            x -= 40;
+            if (clientX - cx < 0) {
+              xx -= 10 * (1 + r) - 20;
+            } else {
+              xx += 10 * (1 + r) + 20;
+            }
           }
-          if (clientY - cy < 0) {
-            yy -= 10 * (1 + r) - 20;
-          } else {
-            yy += 10 * (1 + r) + 20;
+
+          if (y > 100) {
+            y -= 40;
+            if (clientY - cy < 0) {
+              yy -= 10 * (1 + r) - 20;
+            } else {
+              yy += 10 * (1 + r) + 20;
+            }
           }
 
           cminf([xx, yy]);
           vrf([x, y]);
         } else {
           let [x, y] = [vr[0] + 40, vr[1] + 40];
-          cminf([x < 700 ? cmin[0] - 20 : 50, y < 600 ? cmin[1] - 20 : 50]);
 
+          let [xx, yy] = cmin;
+          if (xx >= 50) {
+            xx = xx > 20 ? xx - 20 : 50;
+          } else {
+            xx = xx < -20 ? xx + 20 : 50;
+          }
+          if (yy >= 50) {
+            yy = yy > 20 ? yy - 20 : 50;
+          } else {
+            yy = yy < -20 ? yy + 20 : 50;
+          }
+
+          cminf([x < 700 ? xx : 50, y < 600 ? yy : 50]);
           vrf([x > 700 ? 700 : x, y > 600 ? 600 : y]);
         }
+      }}
+      grab={isDrag && dpath > 10}
+      onMouseDown={(e) => {
+        let { offsetX, offsetY } = e.nativeEvent;
+        if (vr[0] < 700 && vr[1] < 600) {
+          dcoorf([offsetX, offsetY]);
+          isDragf(true);
+        }
+        dpathf(0);
+      }}
+      onMouseMove={(e) => {
+        let { offsetX, offsetY } = e.nativeEvent;
+
+        let [xmin, ymin] = cmin;
+        if (isDrag) {
+          dpathf(
+            dpath + Math.abs(dcoor[0] - offsetX) + Math.abs(dcoor[1] - offsetY)
+          );
+          xmin += ((dcoor[0] - offsetX) * vr[0]) / 700;
+          ymin += ((dcoor[1] - offsetY) * vr[1]) / 600;
+          dcoorf([offsetX, offsetY]);
+          cminf([xmin, ymin]);
+        }
+      }}
+      onMouseUp={(e) => {
+        isDragf(false);
       }}
     >
       <svg
         width={width}
         height={height}
         viewBox={`${cmin[0]} ${cmin[1]} ${vr[0]} ${vr[1]} `}
+        preserveAspectRatio="xMidYMid meet"
+        onMouseLeave={(e) => {
+          if (isDrag && dpath > 10) {
+            isDragf(false);
+          }
+        }}
+        onClick={(e) => {
+          let { localName } = e.currentTarget;
+          (e.target as SVGElement).style.fill = "red";
+          console.log(((e.target as SVGElement).style.fill = "red"));
+          if (isDrag) {
+            // if (e.target.style.fill === "red") {
+            //   e.target.style.fill = "";
+            // } else {
+            //   e.target.style.fill = "red";
+            // }
+          }
+        }}
       >
         {/* <svg width={width} height={height} viewBox={`50 50 700 600`}> */}
-        <Paths newData={newData} selrf={selrf}></Paths>
+        <Paths
+          newData={newData}
+          selrf={selrf}
+          isDrag={isDrag && dpath > 10}
+        ></Paths>
       </svg>
     </Frame>
   );
