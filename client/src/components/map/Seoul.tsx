@@ -1,13 +1,19 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-interface fillType {
-  fill: string;
+interface regionData {
+  name: string;
+  count: number;
+  rate: string;
+  color: string;
 }
 
-interface newDataType {
-  [key: string]: fillType;
+interface mapData {
+  name: string;
+  count: number;
+  data: { [regionName: string]: regionData };
 }
+
 interface shadowType {
   [key: string]: string;
 }
@@ -25,16 +31,15 @@ const Path = styled.path<{ check: boolean; fill: string }>`
     if (check) {
       return `
       transform: translate(0px, -10px);
-      filter: drop-shadow(0px 5px 0px ${shadowSet[fill]});  
+      filter: drop-shadow(0px 5px 0px ${shadowSet[fill] || fill});  
       //filter: drop-shadow(0px 5px 0px black);
       `;
     } else {
-      //   return `filter: drop-shadow(0px 5px 0px ${fill})`;
       return ``;
     }
   }}
 `;
-interface mapData {
+interface mapData2 {
   id: string;
   stroke: string;
   d: string;
@@ -43,7 +48,7 @@ interface mapData {
   name: string;
 }
 
-let data: mapData[] = [
+let data: mapData2[] = [
   {
     id: "CD11110",
     x: "399",
@@ -246,97 +251,122 @@ let data: mapData[] = [
     d: "M 726 320 l 1 7 3 9 0 9 1 9 1 10 1 5 -1 -1 -5 -1 -3 0 -4 2 -11 0 -8 1 -5 6 -4 5 -4 6 -2 4 -1 8 -4 7 -3 2 1 1 -1 2 -6 7 -1 8 -5 -2 -5 -3 -3 -2 -8 -4 -5 -3 -8 -5 -5 -2 0 -7 1 -3 2 -5 0 -8 -4 -4 -4 -2 -6 -2 -7 0 2 -4 2 -5 2 -10 4 -10 1 -1 4 -6 7 -6 5 -3 6 -3 8 -3 4 -1 5 0 11 0 9 -4 7 -5 8 -6 11 -6 11 0 0 7 3 6 z ",
   },
 ];
+
 function Paths({
   newData,
   selrf,
   isDrag,
 }: {
-  newData: newDataType;
+  newData: mapData;
   selrf: Function;
   isDrag: boolean;
 }) {
   let [check, checkf] = useState(-1);
-
+  let [isClick, isClickf] = useState(-1);
   return (
     <>
       {data.map((xx, i) => {
-        let { id, stroke, d } = xx;
+        let { id, name, d } = xx;
 
-        let fill = newData[id]["fill"];
+        let fill = newData.data[name]["color"];
 
-        if (i !== check) {
+        if (i !== isClick || i !== check) {
           return (
             <Path
               key={id}
               id={id}
               fill={fill}
-              // stroke={stroke}
               stroke={shadowSet[fill]}
-              // stroke={"black"}
               d={d}
-              check={check === i}
+              check={isClick === i || check === i}
               onMouseOver={(e) => {
-                if (!isDrag) {
+                if (!isDrag && isClick < 0) {
                   selrf(data[i].name);
                   checkf(i);
-                } else {
+                } else if (isClick < 0) {
                   selrf("");
+                  checkf(-1);
+                } else {
                   checkf(-1);
                 }
               }}
-              // onMouseOut={(e) => {
-              //   selrf("");
-              //   checkf(-1);
-              // }}
+              onClick={(e) => {
+                if (!isDrag) {
+                  if (isClick === i) {
+                    isClickf(-1);
+                  } else {
+                    isClickf(i);
+                  }
+                }
+              }}
             />
           );
         } else {
           return null;
         }
       })}
-      {check >= 0 ? (
+      {check >= 0 && isClick !== check ? (
         <Path
           key={data[check].id}
           id={data[check].id}
-          // fill={"green"}
-          fill={newData[data[check].id]["fill"]}
-          //   stroke={data[check].stroke}
-          stroke={shadowSet[newData[data[check].id]["fill"]]}
-          // stroke={"black"}
-          //   strokeWidth={2}
+          fill={newData.data[data[check].name]["color"]}
+          stroke={shadowSet[newData.data[data[check].name]["color"]]}
           d={data[check].d}
           check={true}
-          onClick={(e) => {
-            // if (mpath < 10) {
-            //   if (e.target.style.fill === "red") {
-            //     e.target.style.fill = "";
-            //   } else {
-            //     e.target.style.fill = "red";
-            //   }
-            //   mpathf(0);
-            // }
+          onMouseOver={(e) => {
+            if (isDrag) {
+              selrf("");
+              checkf(-1);
+            }
           }}
-          // onMouseOver={(e) => {
-          //   checkf(check);
-          // }}
+          onClick={(e) => {
+            if (!isDrag) {
+              if (isClick === check) {
+                isClickf(-1);
+              } else {
+                isClickf(check);
+              }
+            }
+          }}
           onMouseOut={(e) => {
-            selrf("");
+            if (isClick < 0) {
+              selrf("");
+            }
             checkf(-1);
           }}
         />
       ) : null}
-      {/* {check >= 0 ? (
-        <text
-          key={"l" + data[check].id}
-          id={"l" + data[check].id}
-          x={data[check].x}
-          y={data[check].y}
-          color={"black"}
-          pointerEvents="none"
-        >
-          {data[check].label}
-        </text>
-      ) : null} */}
+      {isClick >= 0 ? (
+        <Path
+          key={data[isClick].id}
+          id={data[isClick].id}
+          fill={newData.data[data[isClick].name]["color"]}
+          stroke={shadowSet[newData.data[data[isClick].name]["color"]]}
+          d={data[isClick].d}
+          check={true}
+          onMouseOver={(e) => {
+            if (isDrag) {
+              selrf("");
+              checkf(-1);
+            }
+          }}
+          onClick={(e) => {
+            if (!isDrag) {
+              if (isClick === check) {
+                isClickf(-1);
+              } else {
+                isClickf(check);
+              }
+            }
+          }}
+          onMouseOut={(e) => {
+            if (isClick < 0) {
+              selrf("");
+            }
+            checkf(-1);
+          }}
+        />
+      ) : null}
     </>
   );
 }
@@ -364,7 +394,7 @@ export default function Seoul({
   width: string;
   height: string;
 
-  newData: newDataType;
+  newData: mapData;
   selrf: Function;
 }) {
   let [vr, vrf] = useState([700, 600]); // view box 크기
@@ -464,20 +494,16 @@ export default function Seoul({
             isDragf(false);
           }
         }}
-        onClick={(e) => {
-          let { localName } = e.currentTarget;
-          (e.target as SVGElement).style.fill = "red";
-          console.log(((e.target as SVGElement).style.fill = "red"));
-          if (isDrag) {
-            // if (e.target.style.fill === "red") {
-            //   e.target.style.fill = "";
-            // } else {
-            //   e.target.style.fill = "red";
-            // }
-          }
-        }}
+        // onClick={(e) => {
+        //   let { localName } = e.target as SVGElement;
+        //   console.dir(localName);
+        //   (e.target as SVGElement).style.fill = "red";
+
+        //   if (isDrag&& dpath<10 && localName==='path') {
+
+        //   }
+        // }}
       >
-        {/* <svg width={width} height={height} viewBox={`50 50 700 600`}> */}
         <Paths
           newData={newData}
           selrf={selrf}
