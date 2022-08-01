@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryContainer, VictoryLabel, VictoryTooltip } from 'victory';
+import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryLabel, VictoryTooltip } from 'victory';
 
 //---- css ----
 const ChartWrapper = styled.div`
@@ -11,6 +11,14 @@ const ChartWrapper = styled.div`
   padding: 0 20px;
   gap: 20px;
   text-align: center;
+  justify-content: center;
+`
+
+const Box =  styled.div`
+  width: 100%;
+  height: 100px;
+  margin: 0 auto;
+  border: solid 1px grey;
 `
 
 const Svg = styled.svg`
@@ -23,7 +31,7 @@ const StaticsTitle = styled.h2`
 `
 
 const DetailedStaticsTitle = styled.h3`
-  margin-top: 50px;
+  margin-top: 40px;
 `
 
 //---- code ----
@@ -51,6 +59,7 @@ function Chart() {
   return (
       <ChartWrapper>
         <StaticsTitle>서울 전체 통계 요약</StaticsTitle>
+          <Box></Box>
           <DetailedStaticsTitle>전체 응답률</DetailedStaticsTitle>
           <VictoryChart 
             width={400} 
@@ -89,8 +98,9 @@ function Chart() {
                 style={{fontSize: 25}}
                 x={200}
                 y={100}
-                text='496 명'
+                text={'496 명'}
               />
+
             </Svg>
 
             <VictoryLegend
