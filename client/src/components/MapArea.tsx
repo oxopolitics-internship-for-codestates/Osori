@@ -76,16 +76,23 @@ const MapBox = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-end;
 `;
 
 const SelRegionBox = styled.div`
-  height: 50px;
-  width: 100%;
+  position: absolute;
+  height: 100px;
+  width: 150px;
   display: flex;
+  margin: 5px;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  border-radius: 20px;
+  border: solid 2px #7c7c7c;
+  box-shadow: 0px 0px 5px #7c7c7c;
+  background-color: white;
 `;
 
 const ColorBarBox = styled.div`
@@ -195,18 +202,31 @@ function MapArea() {
         <MainArea>
           <MapBox>
             {/* 마우스 오버 지역 이름 표시 및 색 통계에대한 데이터 전달 목적. 실제 구현할지는 모르겠음. */}
-            {/* <SelRegionBox>{selr}</SelRegionBox> */}
+            {selr.length > 0 ? (
+              <SelRegionBox>
+                {/* 내용물을 채울 컴포넌트를 고민해볼것 아니면 현재 위치에라도 지명과 데이터의 글자 크기는 다르게 하는게 좋을것 같다.
+                박스의 외형을 어떠헥 터리하는게 좋을까
+                글을 가운데 정렬이 보기는 좋을 것 같은데... 아닌가 우측으로 정렬 할까...
+              */}
+
+                {selr}
+                <br />
+                {"100명"}
+                <br />
+                {"5%"}
+              </SelRegionBox>
+            ) : null}
             {turn ? (
               <Korea
-                width={`calc(100% - 55px)`}
-                height={"56vh"}
+                width={`100%`}
+                height={"100%"}
                 newData={dbinit}
                 selrf={selrf}
               ></Korea>
             ) : (
               <Seoul
-                width={`calc(100% - 55px)`}
-                height={"60vh"}
+                width={`100%`}
+                height={"100%"}
                 newData={dbinit}
                 selrf={selrf}
               ></Seoul>
