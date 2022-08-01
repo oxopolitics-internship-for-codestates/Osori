@@ -31,7 +31,7 @@ function GenderResponseRate() {
 
   return(
     <>
-      <Svg viewBox='0 0 300 250'>
+      <Svg viewBox='0 0 300 300'>
         <VictoryLabel
             textAnchor={'middle'}
             style={{fontSize: 16}}
@@ -40,17 +40,16 @@ function GenderResponseRate() {
             text={'496 명'}
           />
           <VictoryPie
-            // height={200}
             standalone={false}
             animate={{easing: 'exp', duration: 500}}
             radius={40}
             innerRadius={60}
-            origin={{x: 150, y: 160}}
+            origin={{x: 150, y: 165}}
             colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
             padAngle={1}
             data={graphicData}
             labelComponent={<VictoryTooltip
-              center={{ x:150, y: 160 }}
+              center={{ x:150, y: 165 }}
               orientation="top"
               pointerLength={0}
               cornerRadius={40}
@@ -65,13 +64,13 @@ function GenderResponseRate() {
             data={graphicData}
             radius={70}
             innerRadius={90}
-            origin={{x: 150, y: 160}}
+            origin={{x: 150, y: 165}}
             padAngle={1}
             colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
             startAngle={20}
             endAngle={380}
             labelComponent={<VictoryTooltip
-              center={{ x:150, y: 160 }}
+              center={{ x:150, y: 165 }}
               orientation="top"
               pointerLength={0}
               cornerRadius={40}
