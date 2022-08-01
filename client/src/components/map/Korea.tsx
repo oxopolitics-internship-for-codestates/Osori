@@ -26,10 +26,8 @@ const Path = styled.path<{ check: boolean; fill: string }>`
       return `
       transform: translate(0px, -10px);
       filter: drop-shadow(0px 5px 0px ${shadowSet[fill]});
-      // filter: drop-shadow(0px 5px 0px black);
       `;
     } else {
-      //      return `filter: drop-shadow(0px 5px 0px ${fill})`;
       return ``;
     }
   }}
@@ -162,13 +160,21 @@ let data: mapData[] = [
   },
 ];
 
-function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
+function Paths({
+  newData,
+  selrf,
+  isDrag,
+}: {
+  newData: newDataType;
+  selrf: Function;
+  isDrag: boolean;
+}) {
   let [check, checkf] = useState(-1);
 
   return (
     <>
       {data.map((xx, i) => {
-        let { id, stroke, d } = xx;
+        let { id, d } = xx;
 
         let fill = newData[id]["fill"];
 
@@ -179,18 +185,18 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
               id={id}
               fill={fill}
               stroke={shadowSet[fill]}
-              // stroke={"black"}
               d={d}
               check={check === i}
               onClick={(e) => {}}
               onMouseOver={(e) => {
-                selrf(data[i].name);
-                checkf(i);
+                if (!isDrag) {
+                  selrf(data[i].name);
+                  checkf(i);
+                } else {
+                  selrf("");
+                  checkf(-1);
+                }
               }}
-              // onMouseOut={(e) => {
-              //   selrf("");
-              //   checkf(-1);
-              // }}
             />
           );
         } else {
@@ -201,25 +207,22 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
         <Path
           key={data[check].id}
           id={data[check].id}
-          // fill={"green"}
           fill={newData[data[check].id]["fill"]}
           stroke={shadowSet[newData[data[check].id]["fill"]]}
-          //   stroke={data[check].stroke}
-          // stroke={"black"}
-          //   strokeWidth={2}
           d={data[check].d}
           check={true}
           onClick={(e) => {}}
-          // onMouseOver={(e) => {
-          //   checkf(check);
-          // }}
+          onMouseOver={(e) => {
+            if (isDrag) {
+              selrf("");
+              checkf(-1);
+            }
+          }}
           onMouseOut={(e) => {
             selrf("");
             checkf(-1);
           }}
-        >
-          {/* <title>{data[check].title}</title> */}
-        </Path>
+        ></Path>
       ) : null}
       {/* {check >= 0 ? (
         <text
@@ -237,12 +240,17 @@ function Paths({ newData, selrf }: { newData: newDataType; selrf: Function }) {
   );
 }
 
-const Frame = styled.div`
+const Frame = styled.div<{ grab: boolean }>`
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  ${({ grab }) => {
+    return `
+    ${grab ? `cursor:grab;` : ""}
+    `;
+  }}
 `;
 const Cc = styled.div<{ top: number; left: number }>`
   position: absolute;
@@ -262,7 +270,6 @@ const Cc = styled.div<{ top: number; left: number }>`
 export default function Korea({
   width,
   height,
-
   newData,
   selrf,
 }: {
@@ -272,9 +279,12 @@ export default function Korea({
   newData: newDataType;
   selrf: Function;
 }) {
-  let [vr, vrf] = useState([650, 650]);
-  let [cmin, cminf] = useState([0, 150]);
-  let [drag, dragf] = useState([0, 0]);
+  let [vr, vrf] = useState([650, 650]); // view box 크기
+  let [cmin, cminf] = useState([0, 150]); // view box min값
+  let [dcoor, dcoorf] = useState([0, 0]); // 드래그시 위치 저장(이동거리 계산시 현재 위치반영)
+  let [dpath, dpathf] = useState(0); // 이동한 거리 (단순 좌표 차이를 누적 계산함.)
+  let [isDrag, isDragf] = useState(false); // 드래깅 여부
+
   let [cx, cy] = [
     window.innerWidth * 0.5 +
       (window.innerWidth * 0.5 > 600
@@ -289,58 +299,92 @@ export default function Korea({
         let { clientX, clientY } = e.nativeEvent;
 
         if (e.deltaY < 0) {
-          let [xmid, ymid] = [0.5 * vr[0], 0.5 * vr[1]];
-          let [x, y] = [vr[0] - 40, vr[1] - 40];
+          let [x, y] = [vr[0], vr[1]];
           let [xx, yy] = cmin;
           let r = ((cx - clientX) ** 2 + (cy - clientY) ** 2) ** 0.5 / 300;
 
-          if (clientX - cx < 0) {
-            xx -= 10 * (1 + r) - 20;
-          } else {
-            xx += 10 * (1 + r) + 20;
+          if (x > 100) {
+            x -= 40;
+            if (clientX - cx < 0) {
+              xx -= 10 * (1 + r) - 20;
+            } else {
+              xx += 10 * (1 + r) + 20;
+            }
           }
-          if (clientY - cy < 0) {
-            yy -= 10 * (1 + r) - 20;
-          } else {
-            yy += 10 * (1 + r) + 20;
+
+          if (y > 100) {
+            y -= 40;
+            if (clientY - cy < 0) {
+              yy -= 10 * (1 + r) - 20;
+            } else {
+              yy += 10 * (1 + r) + 20;
+            }
           }
 
           cminf([xx, yy]);
           vrf([x, y]);
         } else {
           let [x, y] = [vr[0] + 40, vr[1] + 40];
-          cminf([x < 650 ? cmin[0] - 20 : 0, y < 650 ? cmin[1] - 20 : 150]);
+          let [xx, yy] = cmin;
+          if (xx >= 0) {
+            xx = xx > 20 ? xx - 20 : 0;
+          } else {
+            xx = xx < -20 ? xx + 20 : 0;
+          }
+          if (yy >= 150) {
+            yy = yy > 20 ? yy - 20 : 150;
+          } else {
+            yy = yy < -20 ? yy + 20 : 150;
+          }
+
+          cminf([x < 650 ? xx : 0, y < 650 ? yy : 150]);
 
           vrf([x > 650 ? 650 : x, y > 650 ? 650 : y]);
         }
       }}
-      // onMouseDown={(e) => {
-      //   let { offsetX, offsetY } = e.nativeEvent;
+      grab={isDrag && dpath > 10}
+      onMouseDown={(e) => {
+        let { offsetX, offsetY } = e.nativeEvent;
+        if (vr[0] < 650 && vr[1] < 650) {
+          dcoorf([offsetX, offsetY]);
+          isDragf(true);
+        }
+        dpathf(0);
+      }}
+      onMouseMove={(e) => {
+        let { offsetX, offsetY } = e.nativeEvent;
 
-      //   dragf([offsetX, offsetY]);
-      // }}
-      // onMouseUp={(e) => {
-      //   let { offsetX, offsetY } = e.nativeEvent;
-      //   let [xmin, ymin] = cmin;
-
-      //   if (Math.abs(xmin - offsetX) + Math.abs(ymin - offsetY) !== 0) {
-      //     xmin += drag[0] - offsetX;
-      //     ymin += drag[1] - offsetY;
-      //     // xmid = xmid < 0 ? 0 : xmid + vr[0] > 650 ? 650 - vr[0] : xmid;
-      //     // ymid = ymid < 0 ? 0 : ymid + vr[1] > 650 ? 650 - vr[1] : ymid;
-
-      //     cminf([xmin, ymin]);
-      //   }
-      // }}
+        let [xmin, ymin] = cmin;
+        if (isDrag) {
+          dpathf(
+            dpath + Math.abs(dcoor[0] - offsetX) + Math.abs(dcoor[1] - offsetY)
+          );
+          xmin += ((dcoor[0] - offsetX) * vr[0]) / 650;
+          ymin += ((dcoor[1] - offsetY) * vr[1]) / 650;
+          dcoorf([offsetX, offsetY]);
+          cminf([xmin, ymin]);
+        }
+      }}
+      onMouseUp={(e) => {
+        isDragf(false);
+      }}
     >
       {/* <Cc top={cy} left={cx}></Cc> */}
       <svg
         width={width}
         height={height}
         viewBox={`${cmin[0]} ${cmin[1]} ${vr[0]} ${vr[1]} `}
+        onMouseLeave={(e) => {
+          if (isDrag && dpath > 10) {
+            isDragf(false);
+          }
+        }}
       >
-        {/* <svg width={width} height={height} viewBox={`0 150 650  650`}> */}
-        <Paths newData={newData} selrf={selrf}></Paths>
+        <Paths
+          newData={newData}
+          selrf={selrf}
+          isDrag={isDrag && dpath > 10}
+        ></Paths>
       </svg>
     </Frame>
   );
