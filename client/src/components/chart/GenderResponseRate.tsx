@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryLabel, VictoryTooltip } from 'victory';
+import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip } from 'victory';
 
 
 const Svg = styled.svg`
@@ -9,10 +9,15 @@ const Svg = styled.svg`
 
 //---- code ----
 const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
-const wantedGraphicData = [
+const MaleResponseData = [
   {x: '46%', y: 46},
   {x: '22%', y: 22},
   {x: '32%', y: 32}
+];
+const FemaleResponseData = [
+  {x: '50%', y: 50},
+  {x: '15%', y: 15},
+  {x: '35%', y: 35}
 ];
 
 function GenderResponseRate() {
@@ -23,10 +28,12 @@ function GenderResponseRate() {
   ];
 
   // 그래프 애니메이션
-  const [graphicData, setGraphicData] = useState(defaultGraphicData);
+  const [maleResponse, setMaleResponse] = useState(defaultGraphicData);
+  const [femaleResponse, setFemaleResponse] = useState(defaultGraphicData);
   
   useEffect(() => {
-    setGraphicData(wantedGraphicData);
+    setMaleResponse(MaleResponseData);
+    setFemaleResponse(FemaleResponseData);
   }, [])
 
   return(
@@ -36,18 +43,19 @@ function GenderResponseRate() {
             textAnchor={'middle'}
             style={{fontSize: 16}}
             x={150}
-            y={160}
+            y={165}
             text={'496 명'}
           />
           <VictoryPie
+            name='여성'
             standalone={false}
-            animate={{easing: 'exp', duration: 500}}
+            animate={{easing: 'exp', duration: 700}}
             radius={40}
             innerRadius={60}
             origin={{x: 150, y: 165}}
             colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
             padAngle={1}
-            data={graphicData}
+            data={femaleResponse}
             labelComponent={<VictoryTooltip
               center={{ x:150, y: 165 }}
               orientation="top"
@@ -60,8 +68,10 @@ function GenderResponseRate() {
             />}
           />
           <VictoryPie
+            name='남성'
             standalone={false}
-            data={graphicData}
+            animate={{easing: 'exp', duration: 500}}
+            data={maleResponse}
             radius={70}
             innerRadius={90}
             origin={{x: 150, y: 165}}
