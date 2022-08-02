@@ -26,7 +26,7 @@ const StaticalName = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 90px;
+  width: 100px;
   height: 50px;
   border: solid 2px orange;
   border-radius: 10px;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryPie, VictoryLegend, VictoryChart, VictoryAxis, VictoryLabel, VictoryTooltip } from 'victory';
+import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip } from 'victory';
 
 
 const Svg = styled.svg`
@@ -28,7 +28,7 @@ const overallResponseData = [
     useEffect(() => {
       setOverallResponse(overallResponseData);
     }, [])
-  
+
     return (
       <>
       <Svg viewBox='0 0 300 250'>
