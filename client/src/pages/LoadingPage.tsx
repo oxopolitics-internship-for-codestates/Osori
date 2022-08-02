@@ -25,7 +25,7 @@ from {
   }
 `
 
-const smoky = keyframes`{
+const lightSpeedInRight = keyframes`{
    from {
     -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
     transform: translate3d(100%, 0, 0) skewX(-30deg);
@@ -59,7 +59,7 @@ const Osori = styled.img`
 const Text = styled.span`
 font-size: 25px;
 font-weight : 900;
-animation: ${smoky} 2s 1s both;
+animation: ${lightSpeedInRight} 2s 1s both;
 `
 
 function LoadingPage() {
