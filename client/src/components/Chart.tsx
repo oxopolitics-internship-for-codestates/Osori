@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -29,23 +29,42 @@ const StatsArea = styled.div`
   height: 70%;
 `
 
+interface ResProps {
+  all_count?: number;
+  all_response_rate_po?: string;
+  all_response_rate_na?: string;
+  all_response_rate_nu?: string;
+  male_count_all?: number;
+  male_count_po?: number;
+  male_count_na?: number;
+  male_count_nu?: number;
+  female_count_all?: number;
+  female_count_po?: number;
+  female_count_na?: number;
+  female_count_nu?: number;
+}
+
 function Chart() {
+  const [responseData, setResponseData] = useState<ResProps>({})
+
   axios.get('http://localhost:4000/card/map',
     {
       headers: {'Content-Type': 'application.json' }
     })
-    .then((res) => console.log(res.data))
+    .then((res) => {
+      setResponseData(res.data);
+    })
 
   return (
     <ChartWrapper>
       <StaticsTitle>서울 전체 통계 요약</StaticsTitle>
-        <StaticsBox />
+        <StaticsBox resData={responseData} />
         <StatsArea>
           <OverallResponseRate />
           <GenderResponseRate />
         </StatsArea>
     </ChartWrapper>
-  );
+  ); 
 }
 
 export default Chart;

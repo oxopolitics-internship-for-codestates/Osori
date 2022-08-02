@@ -47,9 +47,22 @@ const StaticalFigureWrapper = styled.div`
 const StaticalFigure = styled.div`
 
 `
+interface ResProps {
+  all_count?: number;
+  all_response_rate_po?: string;
+  all_response_rate_na?: string;
+  all_response_rate_nu?: string;
+  male_count_all?: number;
+  male_count_po?: number;
+  male_count_na?: number;
+  male_count_nu?: number;
+  female_count_all?: number;
+  female_count_po?: number;
+  female_count_na?: number;
+  female_count_nu?: number;
+}
 
-
-function StaticsBox() {
+function StaticsBox({ resData }: { resData: ResProps }) {
   const [maleResponse, setMaleResponse] = useState(0);
   const [femaleResponse, setFemaleResponse] = useState(0);
   const [highestMaleResponseAge, setHighestMaleResponseAge] = useState('');
@@ -65,7 +78,7 @@ function StaticsBox() {
         <StaticalName>여성 최다<br />응답 연령대</StaticalName>
       </StaticalNameWrapper>
       <StaticalFigureWrapper>
-        <StaticalFigure>298 명</StaticalFigure>
+        <StaticalFigure>{`${resData.male_count_all} 명`}</StaticalFigure>
         <StaticalFigure>195 명</StaticalFigure>
         <StaticalFigure>50 대</StaticalFigure>
         <StaticalFigure>30 대</StaticalFigure>
