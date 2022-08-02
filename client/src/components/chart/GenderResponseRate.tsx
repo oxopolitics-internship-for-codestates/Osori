@@ -25,17 +25,15 @@ function GenderResponseRate() {
     { name: '네', symbol: { fill: '#9749B6' }},
     { name: '글쎄요', symbol: { fill: '#C1ADD1' } },
     { name: '아니오', symbol: { fill: '#EEA3BF' } },
-    // { name: '남성', symbol: { fill: '#EEA3BF' } },
-    // { name: '여성', symbol: { fill: '#EEA3BF' } }
   ];
 
   // 그래프 애니메이션
-  const [maleResponse, setMaleResponse] = useState(defaultGraphicData);
-  const [femaleResponse, setFemaleResponse] = useState(defaultGraphicData);
+  const [maleResponseRate, setMaleResponseRate] = useState(defaultGraphicData);
+  const [femaleResponseRate, setFemaleResponseRate] = useState(defaultGraphicData);
   
   useEffect(() => {
-    setMaleResponse(MaleResponseData);
-    setFemaleResponse(FemaleResponseData);
+    setMaleResponseRate(MaleResponseData);
+    setFemaleResponseRate(FemaleResponseData);
   }, [])
 
   return(
@@ -57,7 +55,7 @@ function GenderResponseRate() {
             origin={{x: 150, y: 165}}
             colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
             padAngle={1}
-            data={femaleResponse}
+            data={femaleResponseRate}
             labelComponent={<VictoryTooltip
               center={{ x:150, y: 165 }}
               orientation="top"
@@ -73,7 +71,7 @@ function GenderResponseRate() {
             name='남성'
             standalone={false}
             animate={{easing: 'exp', duration: 500}}
-            data={maleResponse}
+            data={maleResponseRate}
             radius={70}
             innerRadius={90}
             origin={{x: 150, y: 165}}
