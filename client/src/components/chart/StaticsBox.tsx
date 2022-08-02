@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const BoxWrapper = styled.div`
@@ -20,7 +20,6 @@ const StaticalNameWrapper = styled.div`
   align-items: center;
   width: 100%;
   margin-top: 7px;
-  /* border: solid 1px blue; */
 `
 
 const StaticalName = styled.div`
@@ -43,14 +42,19 @@ const StaticalFigureWrapper = styled.div`
   width: 100%;
   height: 50%;
   margin: 5px 0;
-  /* border: solid 1px green; */
 `
 
 const StaticalFigure = styled.div`
 
 `
 
+
 function StaticsBox() {
+  const [maleResponse, setMaleResponse] = useState(0);
+  const [femaleResponse, setFemaleResponse] = useState(0);
+  const [highestMaleResponseAge, setHighestMaleResponseAge] = useState('');
+  const [highestFemaleResponseAge, setHighestFemaleResponseAge] = useState('');
+
 
   return (
     <BoxWrapper>
