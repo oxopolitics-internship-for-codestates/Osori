@@ -9,7 +9,7 @@ interface dataForm {
 
 function answerF() {
   let data = ["네", "아니요", "글세요"];
-  let k = Math.random() * 3;
+  let k = Math.floor(Math.random() * 3);
   k = k > 2 ? 2 : k;
   return data[k];
 }
@@ -24,6 +24,7 @@ function addressF() {
       "광주광역시",
       "대전광역시",
       "울산광역시",
+      "세종특별자치시",
       "경기도",
       "강원도",
       "충청북도",
@@ -33,7 +34,6 @@ function addressF() {
       "경상북도",
       "경상남도",
       "제주특별자치도",
-      "세종특별자치시",
     ],
     b = [
       "종로구",
@@ -62,15 +62,33 @@ function addressF() {
       "송파구",
       "강동구",
     ];
-  let ac = 17 * Math.random();
-  ac = ac > 16 ? 16 : ac;
-  ans += a[ac];
-  if (ac === 0) {
-    let bc = 25 * Math.random();
-    bc = bc > 24 ? 24 : bc;
-    ans += " " + b[bc];
-  }
 
+  let ac = Math.random();
+
+  let k = [
+    0.184, 0.249, 0.295, 0.352, 0.38, 0.408, 0.43, 0.437, 0.7, 0.73, 0.761,
+    0.802, 0.837, 0.872, 0.923, 0.987, 1,
+  ];
+  let k2 = [
+    0.015, 0.028, 0.051, 0.081, 0.117, 0.153, 0.194, 0.239, 0.27, 0.304, 0.357,
+    0.407, 0.439, 0.478, 0.525, 0.585, 0.627, 0.651, 0.691, 0.731, 0.783, 0.826,
+    0.882, 0.951, 1,
+  ];
+  for (let i = 0; i < 17; i++) {
+    if (ac <= k[i]) {
+      ans += a[i];
+      break;
+    }
+  }
+  if (ac <= k[0]) {
+    let bc = Math.random();
+    for (let i = 0; i < 25; i++) {
+      if (bc <= k2[i]) {
+        ans += " " + b[i];
+        break;
+      }
+    }
+  }
   return ans;
 }
 
@@ -83,12 +101,48 @@ function ageF() {
   return `${Math.floor(k / 10) * 10}대`;
 }
 
+interface answer {
+  yes: number;
+  no: number;
+  so: number;
+}
+
+interface gender {
+  count: number;
+  answer: answer;
+}
+
+interface subData {
+  name: string;
+  count: number;
+  male: gender;
+  female: gender;
+}
+interface data {
+  [key: string]: subData;
+}
+
+interface MapData {
+  name: string;
+  count: number;
+  data: data;
+}
+
+interface Sdata {
+  [key: string]: MapData;
+}
+
 export default function randomPick(n: number) {
   let data: dataForm[] = [],
-    l = `${n}`.length;
-
+    l = `${n}`.length,
+    sdata: Sdata = {
+      전국: { name: "전국", count: 0, data: {} },
+      서울: { name: "서울", count: 0, data: {} },
+    };
+  let s1 = sdata["전국"],
+    s2 = sdata["서울"];
   for (let i = 0; i < n; i++) {
-    let p = `${i}`.padStart(l + 1, "0");
+    let p = String(i).padStart(l + 1, "0");
     data[i] = {
       userName: "name" + p,
       gender: genderF(),
@@ -97,7 +151,71 @@ export default function randomPick(n: number) {
       address: addressF(),
       answer: answerF(),
     };
+    let { gender, address, answer } = data[i];
+    let adr = address.split(" ")[0];
+    s1.count++;
+    if (s1.data[adr] === undefined) {
+      s1.data[adr] = {
+        name: adr,
+        count: 0,
+        male: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
+        female: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
+      };
+    }
+    s1.data[adr].count++;
+    if (gender === "남자") {
+      s1.data[adr].male.count++;
+      if (answer === "네") {
+        s1.data[adr].male.answer.yes++;
+      } else if (answer === "아니오") {
+        s1.data[adr].male.answer.no++;
+      } else {
+        s1.data[adr].male.answer.so++;
+      }
+    } else {
+      s1.data[adr].female.count++;
+      if (answer === "네") {
+        s1.data[adr].female.answer.yes++;
+      } else if (answer === "아니오") {
+        s1.data[adr].female.answer.no++;
+      } else {
+        s1.data[adr].female.answer.so++;
+      }
+    }
+
+    if (adr === "서울특별시") {
+      let adr2 = address.split(" ")[1];
+      s2.count++;
+      if (s2.data[adr2] === undefined) {
+        s2.data[adr2] = {
+          name: adr2,
+          count: 0,
+          male: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
+          female: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
+        };
+      }
+      s2.data[adr2].count++;
+      if (gender === "남자") {
+        s2.data[adr2].male.count++;
+        if (answer === "네") {
+          s2.data[adr2].male.answer.yes++;
+        } else if (answer === "아니오") {
+          s2.data[adr2].male.answer.no++;
+        } else {
+          s2.data[adr2].male.answer.so++;
+        }
+      } else {
+        s2.data[adr2].female.count++;
+        if (answer === "네") {
+          s2.data[adr2].female.answer.yes++;
+        } else if (answer === "아니오") {
+          s2.data[adr2].female.answer.no++;
+        } else {
+          s2.data[adr2].female.answer.so++;
+        }
+      }
+    }
   }
 
-  return data;
+  return { sdata: sdata, data: data };
 }
