@@ -24,7 +24,9 @@ function GenderResponseRate() {
   const legend = [
     { name: '네', symbol: { fill: '#9749B6' }},
     { name: '글쎄요', symbol: { fill: '#C1ADD1' } },
-    { name: '아니오', symbol: { fill: '#EEA3BF' } }
+    { name: '아니오', symbol: { fill: '#EEA3BF' } },
+    // { name: '남성', symbol: { fill: '#EEA3BF' } },
+    // { name: '여성', symbol: { fill: '#EEA3BF' } }
   ];
 
   // 그래프 애니메이션
@@ -75,7 +77,7 @@ function GenderResponseRate() {
             radius={70}
             innerRadius={90}
             origin={{x: 150, y: 165}}
-            padAngle={1}
+            // padAngle={1}
             colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
             startAngle={20}
             endAngle={380}
