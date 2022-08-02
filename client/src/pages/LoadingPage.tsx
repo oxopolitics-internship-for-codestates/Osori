@@ -25,7 +25,7 @@ from {
   }
 `
 
-const lightSpeedInRight = keyframes`{
+const lightSpeedInRight = keyframes`
    from {
     -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
     transform: translate3d(100%, 0, 0) skewX(-30deg);
