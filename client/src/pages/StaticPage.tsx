@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import MapArea from "../components/MapArea";
 import Chart from "../components/Chart";
+import Waiting from "./StatisticsWaiting";
 
 
 const InnerFrame = styled.div`
@@ -21,7 +22,7 @@ function StaticPage() {
   return (
     <InnerFrame>
       <Box>
-        <Chart />
+        {false ? <Waiting /> : <Chart />}
       </Box>
       <Box>
         <MapArea></MapArea>
