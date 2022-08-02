@@ -17,7 +17,7 @@ function App() {
     <Frame>
 
       {false ? <LoadingPage /> : <StaticPage />}
-      
+
     </Frame>
   );
 }
