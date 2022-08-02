@@ -4,7 +4,7 @@ import styled from "styled-components";
 interface regionData {
   name: string;
   count: number;
-  rate: string;
+  rate: number;
   color: string;
 }
 

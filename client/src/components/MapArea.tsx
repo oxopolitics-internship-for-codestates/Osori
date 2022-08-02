@@ -1,5 +1,7 @@
+import axios from "axios";
 import { useState } from "react";
 import styled from "styled-components";
+import randomPick from "../etc/randomPick";
 
 import ColorBar from "./ColorBar";
 import Korea from "./map/Korea";
@@ -167,34 +169,55 @@ function RdColor() {
 interface regionData {
   name: string;
   count: number;
-  rate: string;
+  rate: number;
   color: string;
 }
 
 interface mapData {
   name: string;
   count: number;
+  min: number;
+  max: number;
   data: { [regionName: string]: regionData };
 }
 
 let dbinit: mapData[] = [
-  { name: "", count: 0, data: {} },
-  { name: "", count: 0, data: {} },
+  { name: "", count: 0, data: {}, min: 100, max: 0 },
+  { name: "", count: 0, data: {}, min: 100, max: 0 },
 ];
 
+let { sdata } = randomPick(10000);
 for (let name of ["전국", "서울"]) {
   let sub = name === "전국" ? dbinit[0] : dbinit[1];
 
   sub.name = name;
-  sub.count = name === "전국" ? 10000 : 1000;
+  sub.count = sdata[name].count;
   for (let i of names[name]) {
-    let c = Math.floor(0.01 * sub.count + Math.random() * sub.count);
+    let [count, rate] = [
+      sdata[name].data[i].count,
+      Number(((100 * sdata[name].data[i].count) / sub.count).toFixed(2)),
+    ];
+    if (rate > sub.max) {
+      sub.max = rate;
+    }
+    if (rate < sub.min) {
+      sub.min = rate;
+    }
+
     sub.data[`${i}`] = {
       name: i,
-      count: c,
-      rate: `${Math.floor((100 * c) / sub.count)}%`,
-      color: colorSet[RdColor()],
+      count: count,
+      rate: rate,
+      color: "",
     };
+  }
+  let dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
+  for (let i of names[name]) {
+    let rate = sub.data[`${i}`].rate;
+    let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
+
+    k = k < 0 ? 0 : k;
+    sub.data[`${i}`].color = colorSet[k];
   }
 }
 
@@ -223,8 +246,8 @@ function MapArea() {
               direc={"R"}
               check={turn === false}
               onClick={() => {
-                turnf(false);
                 dataf(dbinit[1]);
+                turnf(false);
               }}
             >
               서울
@@ -233,14 +256,13 @@ function MapArea() {
         </ButtonArea>
         <MainArea>
           <MapBox>
-            {/* 마우스 오버 지역 이름 표시 및 색 통계에대한 데이터 전달 목적. 실제 구현할지는 모르겠음. */}
             {selr.length > 0 ? (
               <SelRegionBox>
                 {selr}
                 <br />
                 {`${data.data[selr].count} 명`}
                 <br />
-                {data.data[selr].rate}
+                {`${data.data[selr].rate}%`}
               </SelRegionBox>
             ) : (
               <SelRegionBox>
@@ -255,14 +277,14 @@ function MapArea() {
               <Korea
                 width={"100%"}
                 height={"100%"}
-                newData={dbinit[0]}
+                newData={data}
                 selrf={selrf}
               ></Korea>
             ) : (
               <Seoul
                 width={"100%"}
                 height={"100%"}
-                newData={dbinit[1]}
+                newData={data}
                 selrf={selrf}
               ></Seoul>
             )}
