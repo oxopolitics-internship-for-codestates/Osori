@@ -34,7 +34,7 @@ function GenderResponseRate() {
   useEffect(() => {
     setMaleResponseRate(MaleResponseData);
     setFemaleResponseRate(FemaleResponseData);
-  }, [])
+  }, [maleResponseRate, femaleResponseRate])
 
   return(
     <>
@@ -44,7 +44,7 @@ function GenderResponseRate() {
             style={{fontSize: 16}}
             x={150}
             y={165}
-            text={'496 명'}
+            text={`남 298 명\n여 195 명 `}
           />
           <VictoryPie
             name='여성'
