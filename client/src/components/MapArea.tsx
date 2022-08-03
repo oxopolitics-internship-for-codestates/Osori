@@ -81,6 +81,7 @@ const MapBox = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-end;
+  padding: 5px;
 `;
 
 const SelRegionBox = styled.div`
@@ -181,50 +182,24 @@ interface mapData {
   data: { [regionName: string]: regionData };
 }
 
-let dbinit: mapData[] = [
-  { name: "", count: 0, data: {}, min: 100, max: 0 },
-  { name: "", count: 0, data: {}, min: 100, max: 0 },
-];
-
-let { sdata } = randomPick(10000);
-for (let name of ["전국", "서울"]) {
-  let sub = name === "전국" ? dbinit[0] : dbinit[1];
-
-  sub.name = name;
-  sub.count = sdata[name].count;
-  for (let i of names[name]) {
-    let [count, rate] = [
-      sdata[name].data[i].count,
-      Number(((100 * sdata[name].data[i].count) / sub.count).toFixed(2)),
-    ];
-    if (rate > sub.max) {
-      sub.max = rate;
-    }
-    if (rate < sub.min) {
-      sub.min = rate;
-    }
-
-    sub.data[`${i}`] = {
-      name: i,
-      count: count,
-      rate: rate,
-      color: "",
-    };
-  }
-  let dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
-  for (let i of names[name]) {
-    let rate = sub.data[`${i}`].rate;
-    let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
-
-    k = k < 0 ? 0 : k;
-    sub.data[`${i}`].color = colorSet[k];
-  }
-}
-
-function MapArea() {
-  let [turn, turnf] = useState(true);
-  let [selr, selrf] = useState("");
-  let [data, dataf] = useState(dbinit[0]);
+function MapArea({
+  map,
+  mapSel,
+  region,
+  regionSel,
+  mdata,
+  isClick,
+  isClickF,
+}: {
+  map: string;
+  mapSel: Function;
+  region: string;
+  regionSel: Function;
+  mdata: mapData;
+  isClick: number;
+  isClickF: Function;
+}) {
+  let [check, checkF] = useState(-1);
 
   return (
     <Frame>
@@ -233,10 +208,15 @@ function MapArea() {
           <ButtonBox>
             <Button
               direc={"L"}
-              check={turn === true}
+              check={map === "전국"}
               onClick={() => {
-                turnf(true);
-                dataf(dbinit[0]);
+                if (isClick >= 0 && map !== "전국") {
+                  mapSel("전국");
+                  regionSel("");
+                  isClickF(-1);
+                } else if (isClick < 0) {
+                  mapSel("전국");
+                }
               }}
             >
               전국
@@ -244,10 +224,15 @@ function MapArea() {
 
             <Button
               direc={"R"}
-              check={turn === false}
+              check={map === "서울"}
               onClick={() => {
-                dataf(dbinit[1]);
-                turnf(false);
+                if (isClick >= 0 && map !== "서울") {
+                  mapSel("서울");
+                  regionSel("");
+                  isClickF(-1);
+                } else if (isClick < 0) {
+                  mapSel("서울");
+                }
               }}
             >
               서울
@@ -256,36 +241,44 @@ function MapArea() {
         </ButtonArea>
         <MainArea>
           <MapBox>
-            {selr.length > 0 ? (
+            {region.length > 0 ? (
               <SelRegionBox>
-                {selr}
+                {region}
                 <br />
-                {`${data.data[selr].count} 명`}
+                {`${mdata.data[region].count} 명`}
                 <br />
-                {`${data.data[selr].rate}%`}
+                {`${mdata.data[region].rate}%`}
               </SelRegionBox>
             ) : (
               <SelRegionBox>
-                {data.name}
+                {mdata.name}
                 <br />
-                {`${data.count} 명`}
+                {`${mdata.count} 명`}
                 <br />
                 {"100%"}
               </SelRegionBox>
             )}
-            {turn ? (
+            {map === "전국" ? (
               <Korea
                 width={"100%"}
                 height={"100%"}
-                newData={data}
-                selrf={selrf}
+                newData={mdata}
+                selrf={regionSel}
+                isClick={isClick}
+                isClickF={isClickF}
+                check={check}
+                checkF={checkF}
               ></Korea>
             ) : (
               <Seoul
                 width={"100%"}
                 height={"100%"}
-                newData={data}
-                selrf={selrf}
+                newData={mdata}
+                selrf={regionSel}
+                isClick={isClick}
+                isClickF={isClickF}
+                check={check}
+                checkF={checkF}
               ></Seoul>
             )}
           </MapBox>

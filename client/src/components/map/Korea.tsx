@@ -169,13 +169,19 @@ function Paths({
   newData,
   selrf,
   isDrag,
+  check,
+  checkF,
+  isClick,
+  isClickF,
 }: {
   newData: mapData;
   selrf: Function;
   isDrag: boolean;
+  check: number;
+  checkF: Function;
+  isClick: number;
+  isClickF: Function;
 }) {
-  let [check, checkf] = useState(-1);
-  let [isClick, isClickf] = useState(-1);
   return (
     <>
       {data.map((xx, i) => {
@@ -195,21 +201,21 @@ function Paths({
               onMouseOver={(e) => {
                 if (!isDrag && isClick < 0) {
                   selrf(data[i].name);
-                  checkf(i);
+                  checkF(i);
                 } else if (isClick < 0) {
                   selrf("");
-                  checkf(-1);
+                  checkF(-1);
                 } else {
-                  checkf(-1);
+                  checkF(-1);
                 }
               }}
               onClick={(e) => {
                 if (!isDrag) {
                   if (isClick === i) {
                     selrf(data[i].name);
-                    isClickf(-1);
+                    isClickF(-1);
                   } else {
-                    isClickf(i);
+                    isClickF(i);
                   }
                 }
               }}
@@ -232,15 +238,15 @@ function Paths({
           onMouseOver={(e) => {
             if (isDrag) {
               selrf("");
-              checkf(-1);
+              checkF(-1);
             }
           }}
           onClick={(e) => {
             if (!isDrag) {
               if (isClick === check) {
-                isClickf(-1);
+                isClickF(-1);
               } else {
-                isClickf(check);
+                isClickF(check);
               }
             }
           }}
@@ -248,7 +254,7 @@ function Paths({
             if (isClick < 0) {
               selrf("");
             }
-            checkf(-1);
+            checkF(-1);
           }}
         ></Path>
       ) : null}
@@ -263,15 +269,15 @@ function Paths({
           onMouseOver={(e) => {
             if (isDrag) {
               selrf("");
-              checkf(-1);
+              checkF(-1);
             }
           }}
           onClick={(e) => {
             if (!isDrag) {
               if (isClick === check) {
-                isClickf(-1);
+                isClickF(-1);
               } else {
-                isClickf(check);
+                isClickF(check);
               }
             }
           }}
@@ -279,7 +285,7 @@ function Paths({
             if (isClick < 0) {
               selrf("");
             }
-            checkf(-1);
+            checkF(-1);
           }}
         />
       ) : null}
@@ -293,6 +299,9 @@ const Frame = styled.div<{ grab: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  border: solid 1px #7c7c7c;
+
+  box-shadow: inset 0px 0px 10px #7c7c7c;
   ${({ grab }) => {
     return `
     ${grab ? `cursor:grab;` : ""}
@@ -305,15 +314,23 @@ export default function Korea({
   height,
   newData,
   selrf,
+  check,
+  checkF,
+  isClick,
+  isClickF,
 }: {
   width: string;
   height: string;
 
   newData: mapData;
   selrf: Function;
+  check: number;
+  checkF: Function;
+  isClick: number;
+  isClickF: Function;
 }) {
   let [vr, vrf] = useState([650, 650]); // view box 크기
-  let [cmin, cminf] = useState([0, 150]); // view box min값
+  let [cmin, cminf] = useState([-10, 150]); // view box min값
   let [dcoor, dcoorf] = useState([0, 0]); // 드래그시 위치 저장(이동거리 계산시 현재 위치반영)
   let [dpath, dpathf] = useState(0); // 이동한 거리 (단순 좌표 차이를 누적 계산함.)
   let [isDrag, isDragf] = useState(false); // 드래깅 여부
@@ -360,9 +377,9 @@ export default function Korea({
           let [x, y] = [vr[0] + 40, vr[1] + 40];
           let [xx, yy] = cmin;
           if (xx >= 0) {
-            xx = xx > 20 ? xx - 20 : 0;
+            xx = xx > 10 ? xx - 20 : -10;
           } else {
-            xx = xx < -20 ? xx + 20 : 0;
+            xx = xx < -30 ? xx + 20 : -10;
           }
           if (yy >= 150) {
             yy = yy > 20 ? yy - 20 : 150;
@@ -370,7 +387,7 @@ export default function Korea({
             yy = yy < -20 ? yy + 20 : 150;
           }
 
-          cminf([x < 650 ? xx : 0, y < 650 ? yy : 150]);
+          cminf([x < 650 ? xx : -10, y < 650 ? yy : 150]);
 
           vrf([x > 650 ? 650 : x, y > 650 ? 650 : y]);
         }
@@ -416,6 +433,10 @@ export default function Korea({
           newData={newData}
           selrf={selrf}
           isDrag={isDrag && dpath > 10}
+          isClick={isClick}
+          isClickF={isClickF}
+          check={check}
+          checkF={checkF}
         ></Paths>
       </svg>
     </Frame>
