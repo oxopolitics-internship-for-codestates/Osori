@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -47,7 +47,8 @@ interface ResProps {
 function Chart() {
   const [responseData, setResponseData] = useState<ResProps>({})
 
-  axios.get('http://localhost:4000/card/map',
+  useEffect(() => {
+    axios.get('http://localhost:4000/card/map',
     {
       headers: {'Content-Type': 'application.json' }
     })
@@ -55,6 +56,8 @@ function Chart() {
       setResponseData(res.data);
     })
 
+  }, [])
+  
   return (
     <ChartWrapper>
       <StaticsTitle>서울 전체 통계 요약</StaticsTitle>
