@@ -52,7 +52,7 @@ function GenderResponseRate({ statData }: { statData: subData }) {
     useState<{ [key: string]: number | string }[]>(defaultGraphicData);
   const [femaleResponseRate, setFemaleResponseRate] =
     useState<{ [key: string]: number | string }[]>(defaultGraphicData);
-
+  const [count, countF] = useState(0);
   useEffect(() => {
     let yes =
         ((100 * statData.male.answer.yes) / statData.male.count).toFixed(2) +
@@ -84,7 +84,8 @@ function GenderResponseRate({ statData }: { statData: subData }) {
       { x: so, y: statData.female.answer.so },
       { x: no, y: statData.female.answer.no },
     ]);
-  }, []);
+    countF(statData.count);
+  }, [maleResponseRate, femaleResponseRate, count]);
 
   return (
     <>
@@ -94,7 +95,7 @@ function GenderResponseRate({ statData }: { statData: subData }) {
           style={{ fontSize: 16 }}
           x={150}
           y={165}
-          text={`${statData.count} 명`}
+          text={`${count} 명`}
         />
         <VictoryPie
           name="여성"

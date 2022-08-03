@@ -17,8 +17,6 @@ const overallResponseData = [
   { x: "32%", y: 32 },
 ];
 
-interface test {}
-
 function OverallResponseRate({
   statData,
 }: {
@@ -33,7 +31,7 @@ function OverallResponseRate({
   // 그래프 애니메이션
   const [overallResponse, setOverallResponse] =
     useState<{ [key: string]: number | string }[]>(defaultGraphicData);
-
+  const [count, countF] = useState(0);
   useEffect(() => {
     let yes = ((100 * statData.yes) / statData.total).toFixed(2) + "%",
       no = ((100 * statData.no) / statData.total).toFixed(2) + "%",
@@ -44,7 +42,8 @@ function OverallResponseRate({
       { x: so, y: statData.so },
       { x: no, y: statData.no },
     ]);
-  }, []);
+    countF(statData.total);
+  }, [overallResponse, count]);
 
   return (
     <>
@@ -54,7 +53,7 @@ function OverallResponseRate({
           style={{ fontSize: 16 }}
           x={150}
           y={160}
-          text={`${statData.total} 명`}
+          text={`${count} 명`}
         />
         <VictoryPie
           standalone={false}

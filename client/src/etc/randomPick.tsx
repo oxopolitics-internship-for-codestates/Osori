@@ -10,9 +10,10 @@ interface dataForm {
 function answerF() {
   let data = ["네", "아니요", "글세요"];
   let k = Math.random();
-  if (k <= 0.33) {
+  let q = 0.1 * Math.random() - 0.05;
+  if (k <= 0.33 + q) {
     k = 0;
-  } else if (k <= 0.66) {
+  } else if (k <= 0.66 + q) {
     k = 1;
   } else {
     k = 2;
@@ -101,7 +102,7 @@ function addressF() {
 
 function genderF() {
   let k = Math.random();
-  return k > 0.5 ? "남" : "여";
+  return k > 0.5 + (Math.random() * 0.2 - 0.1) ? "남" : "여";
 }
 function ageF() {
   let k = 50 * (Math.random() * Math.random() + 0.3 * Math.random()) + 10;
@@ -117,6 +118,11 @@ interface answer {
 interface gender {
   count: number;
   answer: answer;
+  age: age;
+}
+interface age {
+  count: number;
+  [key: string]: number;
 }
 
 interface subData {
@@ -158,15 +164,19 @@ export default function randomPick(n: number) {
       address: addressF(),
       answer: answerF(),
     };
-    let { gender, address, answer } = data[i];
+    let { gender, address, answer, age } = data[i];
     let adr = address.split(" ")[0];
     s1.count++;
     if (s1.data[adr] === undefined) {
       s1.data[adr] = {
         name: adr,
         count: 0,
-        male: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
-        female: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
+        male: { count: 0, answer: { yes: 0, no: 0, so: 0 }, age: { count: 0 } },
+        female: {
+          count: 0,
+          answer: { yes: 0, no: 0, so: 0 },
+          age: { count: 0 },
+        },
       };
     }
     s1.data[adr].count++;
@@ -179,6 +189,11 @@ export default function randomPick(n: number) {
       } else {
         s1.data[adr].male.answer.no++;
       }
+      s1.data[adr].male.age.count++;
+      if (s1.data[adr].male.age[age] === undefined) {
+        s1.data[adr].male.age[age] = 0;
+      }
+      s1.data[adr].male.age[age]++;
     } else {
       s1.data[adr].female.count++;
       if (answer === "네") {
@@ -188,6 +203,11 @@ export default function randomPick(n: number) {
       } else {
         s1.data[adr].female.answer.no++;
       }
+      s1.data[adr].female.age.count++;
+      if (s1.data[adr].female.age[age] === undefined) {
+        s1.data[adr].female.age[age] = 0;
+      }
+      s1.data[adr].female.age[age]++;
     }
 
     if (adr === "서울특별시") {
@@ -197,8 +217,16 @@ export default function randomPick(n: number) {
         s2.data[adr2] = {
           name: adr2,
           count: 0,
-          male: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
-          female: { count: 0, answer: { yes: 0, no: 0, so: 0 } },
+          male: {
+            count: 0,
+            answer: { yes: 0, no: 0, so: 0 },
+            age: { count: 0 },
+          },
+          female: {
+            count: 0,
+            answer: { yes: 0, no: 0, so: 0 },
+            age: { count: 0 },
+          },
         };
       }
       s2.data[adr2].count++;
@@ -211,6 +239,11 @@ export default function randomPick(n: number) {
         } else {
           s2.data[adr2].male.answer.no++;
         }
+        s2.data[adr2].male.age.count++;
+        if (s2.data[adr2].male.age[age] === undefined) {
+          s2.data[adr2].male.age[age] = 0;
+        }
+        s2.data[adr2].male.age[age]++;
       } else {
         s2.data[adr2].female.count++;
         if (answer === "네") {
@@ -221,6 +254,11 @@ export default function randomPick(n: number) {
           s2.data[adr2].female.answer.no++;
         }
       }
+      s2.data[adr2].female.age.count++;
+      if (s2.data[adr2].female.age[age] === undefined) {
+        s2.data[adr2].female.age[age] = 0;
+      }
+      s2.data[adr2].female.age[age]++;
     }
   }
 
