@@ -19,13 +19,6 @@ export class cardanswer extends Document {
     required: true,
   })
   @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @Prop({
-    required: true,
-  })
-  @IsNotEmpty()
   @IsString()
   answer: string;
 }
