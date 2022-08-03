@@ -9,8 +9,15 @@ interface dataForm {
 
 function answerF() {
   let data = ["네", "아니요", "글세요"];
-  let k = Math.floor(Math.random() * 3);
-  k = k > 2 ? 2 : k;
+  let k = Math.random();
+  if (k <= 0.33) {
+    k = 0;
+  } else if (k <= 0.66) {
+    k = 1;
+  } else {
+    k = 2;
+  }
+
   return data[k];
 }
 
@@ -163,23 +170,23 @@ export default function randomPick(n: number) {
       };
     }
     s1.data[adr].count++;
-    if (gender === "남자") {
+    if (gender === "남") {
       s1.data[adr].male.count++;
       if (answer === "네") {
         s1.data[adr].male.answer.yes++;
-      } else if (answer === "아니오") {
-        s1.data[adr].male.answer.no++;
-      } else {
+      } else if (answer === "글세요") {
         s1.data[adr].male.answer.so++;
+      } else {
+        s1.data[adr].male.answer.no++;
       }
     } else {
       s1.data[adr].female.count++;
       if (answer === "네") {
         s1.data[adr].female.answer.yes++;
-      } else if (answer === "아니오") {
-        s1.data[adr].female.answer.no++;
-      } else {
+      } else if (answer === "글세요") {
         s1.data[adr].female.answer.so++;
+      } else {
+        s1.data[adr].female.answer.no++;
       }
     }
 
@@ -195,23 +202,23 @@ export default function randomPick(n: number) {
         };
       }
       s2.data[adr2].count++;
-      if (gender === "남자") {
+      if (gender === "남") {
         s2.data[adr2].male.count++;
         if (answer === "네") {
           s2.data[adr2].male.answer.yes++;
-        } else if (answer === "아니오") {
-          s2.data[adr2].male.answer.no++;
-        } else {
+        } else if (answer === "글세요") {
           s2.data[adr2].male.answer.so++;
+        } else {
+          s2.data[adr2].male.answer.no++;
         }
       } else {
         s2.data[adr2].female.count++;
         if (answer === "네") {
           s2.data[adr2].female.answer.yes++;
-        } else if (answer === "아니오") {
-          s2.data[adr2].female.answer.no++;
-        } else {
+        } else if (answer === "글세요") {
           s2.data[adr2].female.answer.so++;
+        } else {
+          s2.data[adr2].female.answer.no++;
         }
       }
     }

@@ -1,10 +1,10 @@
-import React,{ useState } from 'react';
-import styled from 'styled-components';
-import axios from 'axios';
+import React, { useState } from "react";
+import styled from "styled-components";
+import axios from "axios";
 
-import GenderResponseRate from './chart/GenderResponseRate';
-import OverallResponseRate from './chart/OverallResponseRate';
-import StaticsBox from './chart/StaticsBox';
+import GenderResponseRate from "./chart/GenderResponseRate";
+import OverallResponseRate from "./chart/OverallResponseRate";
+import StaticsBox from "./chart/StaticsBox";
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -16,18 +16,16 @@ const ChartWrapper = styled.div`
   text-align: center;
   justify-content: space-around;
   align-items: center;
-`
+`;
 
-const StaticsTitle = styled.h2`
-
-`
+const StaticsTitle = styled.h2``;
 
 const StatsArea = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 70%;
-`
+`;
 
 interface ResProps {
   all_count?: number;
@@ -44,27 +42,43 @@ interface ResProps {
   female_count_nu?: number;
 }
 
-function Chart() {
-  const [responseData, setResponseData] = useState<ResProps>({})
+interface answer {
+  yes: number;
+  no: number;
+  so: number;
+}
 
-  axios.get('http://localhost:4000/card/map',
-    {
-      headers: {'Content-Type': 'application.json' }
-    })
-    .then((res) => {
-      setResponseData(res.data);
-    })
+interface gender {
+  count: number;
+  answer: answer;
+}
+
+interface subData {
+  name: string;
+  count: number;
+  male: gender;
+  female: gender;
+}
+
+function Chart({ region, mdata }: { region: string; mdata: subData }) {
+  const [responseData, setResponseData] = useState<ResProps>({});
+  let data1 = {
+    total: mdata.count,
+    yes: mdata.female.answer.yes + mdata.male.answer.yes,
+    no: mdata.female.answer.no + mdata.male.answer.no,
+    so: mdata.female.answer.so + mdata.male.answer.so,
+  };
 
   return (
     <ChartWrapper>
       <StaticsTitle>서울 전체 통계 요약</StaticsTitle>
-        <StaticsBox resData={responseData} />
-        <StatsArea>
-          <OverallResponseRate />
-          <GenderResponseRate />
-        </StatsArea>
+      <StaticsBox resData={responseData} />
+      <StatsArea>
+        <OverallResponseRate statData={data1} />
+        <GenderResponseRate statData={mdata} />
+      </StatsArea>
     </ChartWrapper>
-  ); 
+  );
 }
 
 export default Chart;
