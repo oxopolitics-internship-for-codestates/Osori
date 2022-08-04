@@ -100,7 +100,7 @@ function GenderResponseRate({ statData }: { statData: subData }) {
         <VictoryPie
           name="여성"
           standalone={false}
-          animate={{ easing: "exp", duration: 700 }}
+          animate={{ easing: "exp", duration: 5000 }}
           radius={40}
           innerRadius={60}
           origin={{ x: 150, y: 165 }}
@@ -123,7 +123,11 @@ function GenderResponseRate({ statData }: { statData: subData }) {
         <VictoryPie
           name="남성"
           standalone={false}
-          animate={{ easing: "exp", duration: 500 }}
+          animate={{
+            easing: "exp",
+            duration: 5000,
+            onEnter: { duration: 5000 },
+          }}
           data={maleResponseRate}
           radius={70}
           innerRadius={90}
