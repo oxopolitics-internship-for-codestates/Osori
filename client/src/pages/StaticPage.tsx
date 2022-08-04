@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MapArea from "../components/MapArea";
 import Chart from "../components/Chart";
@@ -83,6 +83,11 @@ interface answer {
 interface gender {
   count: number;
   answer: answer;
+  age: age;
+}
+interface age {
+  count: number;
+  [key: string]: number;
 }
 
 interface subData {

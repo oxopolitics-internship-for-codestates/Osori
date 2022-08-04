@@ -299,8 +299,10 @@ function Paths({
               onClick={(e) => {
                 if (!isDrag) {
                   if (isClick === i) {
+                    selrf(data[i].name);
                     isClickF(-1);
                   } else {
+                    selrf(data[i].name);
                     isClickF(i);
                   }
                 }
