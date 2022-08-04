@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { CardService } from './card.service';
 import { create_answerdto } from '../dto/card.create.answer.dto';
 
@@ -6,14 +6,14 @@ import { create_answerdto } from '../dto/card.create.answer.dto';
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
-  @Get('map')
-  async getmap() {
-    return this.cardService.getwholemap();
+  @Get('map/:id')
+  getmap(@Param() params, @Res() response) {
+    return this.cardService.getmap(params.id, response);
   }
 
-  @Get(':id')
-  async getregion(@Param() params) {
-    return this.cardService.getregion(params.id);
+  @Get('region/:id')
+  getregion(@Param() params, @Res() response) {
+    return this.cardService.getregion(params.id, response);
   }
 
   @Post('create_answer')
