@@ -12,6 +12,9 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
+  // 새유저 무작위 생성
+  async signup() {}
+
   // async signUp(body: usersRequestDto) {
   //   const { name, gender, age, address, email, answer } = body;
   //   const is_user_exist = await this.userModel.find({ email: email });
@@ -34,7 +37,7 @@ export class UsersService {
 
   //   return 'create done';
   // }
-  async userinfo() {
+  userinfo() {
     return 'hello';
   }
 

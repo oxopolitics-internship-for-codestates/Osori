@@ -7,7 +7,7 @@ import { create_answerdto } from '../dto/card.create.answer.dto';
 import { User } from 'src/schema/user.schema';
 import { Answer, answer_Schema } from 'src/schema/answer.schema';
 import { Issue } from 'src/schema/issue.schema';
-import { regionData, mapData } from 'src/interface/subdata';
+import { regionData, mapData } from 'src/interface/mapdata';
 
 @Injectable()
 export class CardService {
@@ -128,24 +128,111 @@ export class CardService {
     // }
   }
 
-  getregion(id: string, response) {
-    this.userModel
+  async getregion(id: string) {
+    let arr = await this.userModel
       .find({
         address: new RegExp(id),
       })
-      .populate('answers', 'answer')
-      .then((arr) => {
-        response.send(this.mk_region_data(arr, id));
-      });
+      .populate('answers', 'answer');
+
+    return this.mk_region_data(arr, id);
   }
 
-  getmap(id: string, response) {
+  async getmapcount(id: string) {
+    let names: { [key: string]: string[] } = {
+      전국: [
+        '서울특별시',
+        '부산광역시',
+        '대구광역시',
+        '인천광역시',
+        '광주광역시',
+        '대전광역시',
+        '울산광역시',
+        '경기도',
+        '강원도',
+        '충청북도',
+        '충청남도',
+        '전라북도',
+        '전라남도',
+        '경상북도',
+        '경상남도',
+        '제주특별자치도',
+        '세종특별자치시',
+      ],
+      서울: [
+        '종로구',
+        '중구',
+        '용산구',
+        '성동구',
+        '광진구',
+        '동대문구',
+        '중랑구',
+        '성북구',
+        '강북구',
+        '도봉구',
+        '노원구',
+        '은평구',
+        '서대문구',
+        '마포구',
+        '양천구',
+        '강서구',
+        '구로구',
+        '금천구',
+        '영등포구',
+        '동작구',
+        '관악구',
+        '서초구',
+        '강남구',
+        '송파구',
+        '강동구',
+      ],
+    };
+    let ans: mapData = { name: '', count: 0, data: {} };
+    if (id === '전국') {
+      ans.name = id;
+      for (let i of names[id]) {
+        let c = await this.userModel.countDocuments({ address: new RegExp(i) });
+        ans.count += c;
+        ans.data[i] = { count: c, name: i };
+      }
+
+      return ans;
+    } else if (id === '서울') {
+      ans.name = id;
+      for (let i of names[id]) {
+        let c = await this.userModel.countDocuments({
+          address: new RegExp(i),
+        });
+        ans.count += c;
+        ans.data[i] = { count: c, name: i };
+      }
+      return ans;
+    }
+  }
+
+  async getmap(id: string) {
+    if (id === '전국') {
+      let arr = await this.userModel.find();
+
+      return this.mk_map_data(arr, id);
+    } else if (id === '서울') {
+      let arr = await this.userModel.find({
+        address: new RegExp('서울특별시'),
+      });
+
+      return this.mk_map_data(arr, '서울특별시');
+    }
+  }
+
+  getmap_test(id: string, response) {
     this.userModel
       .find({
         address: new RegExp(id),
       })
       .populate('answers', 'answer')
       .then((arr) => {
+        // console.log(this.mk_map_data(arr, id));
+        // response.send(arr);
         response.send(this.mk_map_data(arr, id));
       });
   }

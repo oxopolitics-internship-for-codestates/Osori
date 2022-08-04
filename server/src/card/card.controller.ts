@@ -1,19 +1,30 @@
 import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { CardService } from './card.service';
 import { create_answerdto } from '../dto/card.create.answer.dto';
+import { response } from 'express';
 
 @Controller('card')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
   @Get('map/:id')
-  getmap(@Param() params, @Res() response) {
-    return this.cardService.getmap(params.id, response);
+  async getmap(@Param() params) {
+    return this.cardService.getmap(params.id);
+  }
+
+  @Get('mapcount/:id')
+  async getmapcount(@Param() params) {
+    return this.cardService.getmapcount(params.id);
   }
 
   @Get('region/:id')
-  getregion(@Param() params, @Res() response) {
-    return this.cardService.getregion(params.id, response);
+  async getregion(@Param() params) {
+    return this.cardService.getregion(params.id);
+  }
+
+  @Get('map_test/:id')
+  getmap_test(@Param() params, @Res() response) {
+    return this.cardService.getmap_test(params.id, response);
   }
 
   @Post('create_answer')

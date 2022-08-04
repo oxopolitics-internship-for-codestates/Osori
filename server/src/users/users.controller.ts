@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { usersRequestDto } from 'src/dto/users.request.dto';
 import { usersInforDto } from 'src/dto/users.info.dto';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -13,7 +13,7 @@ export class UsersController {
   // }
 
   @Get()
-  async userinfo() {
+  userinfo() {
     return this.usersService.userinfo();
   }
 }
