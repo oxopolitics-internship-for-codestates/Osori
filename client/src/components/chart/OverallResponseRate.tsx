@@ -1,55 +1,70 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import {
-  VictoryPie,
-  VictoryLegend,
-  VictoryLabel,
-  VictoryTooltip,
-} from "victory";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip, VictoryAnimation } from 'victory';
 
 const Svg = styled.svg``;
 
 //---- code ----
 const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
-const overallResponseData = [
-  { x: "46%", y: 46 },
-  { x: "22%", y: 22 },
-  { x: "32%", y: 32 },
-];
 
-function OverallResponseRate({
-  statData,
-}: {
-  statData: { total: number; yes: number; no: number; so: number };
-}) {
+interface statData {
+  total: number;
+  yes: number;
+  no: number;
+  so: number;
+}
+
+function OverallResponseRate({ statData }: { statData: statData }) {
   const legend = [
-    { name: "네", symbol: { fill: "#9749B6" } },
-    { name: "글쎄요", symbol: { fill: "#C1ADD1" } },
-    { name: "아니오", symbol: { fill: "#EEA3BF" } },
+    { name: '네', symbol: { fill: '#9749B6' } },
+    { name: '글쎄요', symbol: { fill: '#C1ADD1' } },
+    { name: '아니오', symbol: { fill: '#EEA3BF' } },
   ];
 
-  // 그래프 애니메이션
-  const [overallResponse, setOverallResponse] =
-    useState<{ [key: string]: number | string }[]>(defaultGraphicData);
-  const [count, countF] = useState(0);
-  useEffect(() => {
-    let yes = ((100 * statData.yes) / statData.total).toFixed(2) + "%",
-      no = ((100 * statData.no) / statData.total).toFixed(2) + "%",
-      so = ((100 * statData.so) / statData.total).toFixed(2) + "%";
+  const [overallResponse, setOverallResponse] = useState<
+    { [key: string]: number | string }[]>([]);
+  const [count, setCount] = useState(0);
+  const [change, setChange] = useState(false);
 
-    setOverallResponse([
-      { x: yes, y: statData.yes },
-      { x: so, y: statData.so },
-      { x: no, y: statData.no },
-    ]);
-    countF(statData.total);
-  }, [overallResponse, count]);
+  // overallResponse의 상태가 변하고 change가 true일 때 얻고자 하는 overallResponse 상태로 바꾸기
+  useEffect(() => {
+    if (change) {
+      // 전체 응답 데이터 추출
+      let yes = ((100 * statData.yes) / statData.total).toFixed(2) + '%',
+        no = ((100 * statData.no) / statData.total).toFixed(2) + '%',
+        so = ((100 * statData.so) / statData.total).toFixed(2) + '%';
+      const overallResponseData = [
+        { x: yes, y: statData.yes },
+        { x: so, y: statData.so },
+        { x: no, y: statData.no },
+      ];
+      // 애니메이션 실행 속도 늦추기
+      setTimeout(() => {
+        setOverallResponse(overallResponseData);
+      }, 60);
+
+      setChange(false);
+    }
+  }, [overallResponse]);
+
+  // change가 true일 때, defaultGraphicData로 상태 바꾸기
+  useEffect(() => {
+    if (change) {
+      setOverallResponse(defaultGraphicData);
+    }
+  }, [change]);
+
+  // 부모에게서 받은 statData를 감지. defaultGraphicData를 받기 위한 change 준비.
+  useEffect(() => {
+    setChange(true);
+    setCount(statData.total);
+  }, [statData]);
 
   return (
     <>
       <Svg viewBox="0 0 300 250">
         <VictoryLabel
-          textAnchor={"middle"}
+          textAnchor={'middle'}
           style={{ fontSize: 16 }}
           x={150}
           y={160}
@@ -57,15 +72,11 @@ function OverallResponseRate({
         />
         <VictoryPie
           standalone={false}
-          animate={{
-            easing: "exp",
-            duration: 1000,
-            // onLoad: { duration: 1000 },
-          }}
+          animate={{ easing: 'exp', duration: 700 }}
           radius={60}
           innerRadius={90}
           origin={{ x: 150, y: 160 }}
-          colorScale={["#9749B6", "#C1ADD1", "#EEA3BF"]}
+          colorScale={['#9749B6', '#C1ADD1', '#EEA3BF']}
           padAngle={1}
           data={overallResponse}
           labelComponent={
@@ -76,7 +87,7 @@ function OverallResponseRate({
               cornerRadius={40}
               flyoutWidth={80}
               flyoutHeight={80}
-              flyoutStyle={{ fill: "white", stroke: "none" }}
+              flyoutStyle={{ fill: 'white', stroke: 'none' }}
               style={{ fontSize: 16 }}
             />
           }
@@ -92,7 +103,7 @@ function OverallResponseRate({
           gutter={{ left: 5, right: 35 }}
           borderPadding={{ top: 15 }}
           style={{
-            border: { stroke: "none" },
+            border: { stroke: 'none' },
             title: { fontSize: 15, fontWeight: 700 },
             labels: { fontSize: 10 },
           }}

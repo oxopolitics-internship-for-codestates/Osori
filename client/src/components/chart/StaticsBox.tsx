@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const BoxWrapper = styled.div`
   display: flex;
@@ -45,26 +44,12 @@ const StaticalFigureWrapper = styled.div`
 `;
 
 const StaticalFigure = styled.div``;
-interface ResProps {
-  all_count?: number;
-  all_response_rate_po?: string;
-  all_response_rate_na?: string;
-  all_response_rate_nu?: string;
-  male_count_all?: number;
-  male_count_po?: number;
-  male_count_na?: number;
-  male_count_nu?: number;
-  female_count_all?: number;
-  female_count_po?: number;
-  female_count_na?: number;
-  female_count_nu?: number;
-}
 
 function StaticsBox({
-  resData,
+  // resData,
   newData,
 }: {
-  resData: ResProps;
+  // resData: ResProps;
   newData: {
     female: number;
     male: number;
@@ -74,11 +59,6 @@ function StaticsBox({
     memaxl: string;
   };
 }) {
-  const [maleResponse, setMaleResponse] = useState(0);
-  const [femaleResponse, setFemaleResponse] = useState(0);
-  const [highestMaleResponseAge, setHighestMaleResponseAge] = useState("");
-  const [highestFemaleResponseAge, setHighestFemaleResponseAge] = useState("");
-
   return (
     <BoxWrapper>
       <StaticalNameWrapper>
