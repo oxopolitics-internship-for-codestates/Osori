@@ -135,6 +135,7 @@ function GenderResponseRate({ statData }: { statData: subData }) {
           data={femaleResponseRate}
           labelComponent={
             <VictoryTooltip
+              renderInPortal={false}
               center={{ x: 150, y: 165 }}
               orientation="top"
               pointerLength={0}
@@ -160,6 +161,7 @@ function GenderResponseRate({ statData }: { statData: subData }) {
           endAngle={380}
           labelComponent={
             <VictoryTooltip
+              renderInPortal={false}
               center={{ x: 150, y: 165 }}
               orientation="top"
               pointerLength={0}
