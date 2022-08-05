@@ -174,12 +174,12 @@ function Paths({
 	isClickF,
 }: {
 	newData: MapData;
-	selrf: (x: string) => string;
+	selrf: React.Dispatch<React.SetStateAction<string>>;
 	isDrag: boolean;
 	check: number;
-	checkF: (x: number) => number;
+	checkF: React.Dispatch<React.SetStateAction<number>>;
 	isClick: number;
-	isClickF: (x: number) => number;
+	isClickF: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	return (
 		<>
@@ -318,11 +318,11 @@ export default function Korea({
 	height: string;
 
 	newData: MapData;
-	selrf: (x: string) => string;
+	selrf: React.Dispatch<React.SetStateAction<string>>;
 	check: number;
-	checkF: (x: number) => number;
+	checkF: React.Dispatch<React.SetStateAction<number>>;
 	isClick: number;
-	isClickF: (x: number) => number;
+	isClickF: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	const [vr, vrf] = useState([650, 650]); // view box 크기
 	const [cmin, cminf] = useState([-10, 150]); // view box min값

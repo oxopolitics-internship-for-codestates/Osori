@@ -12,7 +12,7 @@ const Frame = styled.div`
 `;
 
 function App() {
-	return <Frame>{true ? <LoadingPage /> : <StaticPage />}</Frame>;
+	return <Frame>{false ? <LoadingPage /> : <StaticPage />}</Frame>;
 }
 
 export default App;
