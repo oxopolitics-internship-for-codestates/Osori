@@ -3,17 +3,17 @@ import { UsersService } from './users.service';
 import { usersRequestDto } from 'src/dto/users.request.dto';
 import { usersInforDto } from 'src/dto/users.info.dto';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  async signUp(@Body() body: usersRequestDto) {
-    return this.usersService.signUp(body);
-  }
+  // @Post()
+  // async signUp(@Body() body: usersRequestDto) {
+  //   return this.usersService.signUp(body);
+  // }
 
   @Get()
-  async userinfo(@Body() body: usersInforDto) {
-    return this.usersService.userinfo(body);
+  userinfo() {
+    return this.usersService.userinfo();
   }
 }
