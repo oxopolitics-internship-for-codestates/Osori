@@ -17,6 +17,7 @@ module.exports = {
 		'prettier',
 		'airbnb',
 		'airbnb/hooks',
+		'airbnb-typescript',
 		'plugin:react/recommended',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:prettier/recommended',
@@ -34,6 +35,8 @@ module.exports = {
 	ignorePatterns: ['.eslintrc.js'],
 	plugins: ['react', '@typescript-eslint'],
 	rules: {
+		'no-restricted-syntax': ['error', 'FunctionExpression', 'WithStatement', "BinaryExpression[operator='in']"],
 		'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+		'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
 	},
 };

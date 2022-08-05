@@ -1,4 +1,4 @@
-interface dataForm {
+interface DataForm {
 	userName: string;
 	age: string;
 	email: string;
@@ -80,7 +80,7 @@ function addressF() {
 		0.015, 0.028, 0.051, 0.081, 0.117, 0.153, 0.194, 0.239, 0.27, 0.304, 0.357, 0.407, 0.439, 0.478, 0.525, 0.585,
 		0.627, 0.651, 0.691, 0.731, 0.783, 0.826, 0.882, 0.951, 1,
 	];
-	for (let i = 0; i < 17; i++) {
+	for (let i = 0; i < 17; i += 1) {
 		if (ac <= k[i]) {
 			ans += a[i];
 			break;
@@ -88,7 +88,7 @@ function addressF() {
 	}
 	if (ac <= k[0]) {
 		const bc = Math.random();
-		for (let i = 0; i < 25; i++) {
+		for (let i = 0; i < 25; i += 1) {
 			if (bc <= k2[i]) {
 				ans += ` ${b[i]}`;
 				break;
@@ -107,36 +107,36 @@ function ageF() {
 	return `${Math.floor(k / 10) * 10}대`;
 }
 
-interface answer {
+interface Answer {
 	yes: number;
 	no: number;
 	so: number;
 }
 
-interface gender {
+interface Gender {
 	count: number;
-	answer: answer;
-	age: age;
+	answer: Answer;
+	age: Age;
 }
-interface age {
+interface Age {
 	count: number;
 	[key: string]: number;
 }
 
-interface subData {
+interface SubData {
 	name: string;
 	count: number;
-	male: gender;
-	female: gender;
+	male: Gender;
+	female: Gender;
 }
-interface data {
-	[key: string]: subData;
+interface Data {
+	[key: string]: SubData;
 }
 
 interface MapData {
 	name: string;
 	count: number;
-	data: data;
+	data: Data;
 }
 
 interface Sdata {
@@ -144,7 +144,7 @@ interface Sdata {
 }
 
 export default function randomPick(n: number) {
-	const data: dataForm[] = [];
+	const data: DataForm[] = [];
 	const l = `${n}`.length;
 	const sdata: Sdata = {
 		전국: { name: '전국', count: 0, data: {} },
@@ -152,7 +152,7 @@ export default function randomPick(n: number) {
 	};
 	const s1 = sdata['전국'];
 	const s2 = sdata['서울'];
-	for (let i = 0; i < n; i++) {
+	for (let i = 0; i < n; i += 1) {
 		const p = String(i).padStart(l + 1, '0');
 		data[i] = {
 			userName: `name${p}`,
@@ -164,7 +164,7 @@ export default function randomPick(n: number) {
 		};
 		const { gender, address, answer, age } = data[i];
 		const adr = address.split(' ')[0];
-		s1.count++;
+		s1.count += 1;
 		if (s1.data[adr] === undefined) {
 			s1.data[adr] = {
 				name: adr,
@@ -177,40 +177,40 @@ export default function randomPick(n: number) {
 				},
 			};
 		}
-		s1.data[adr].count++;
+		s1.data[adr].count += 1;
 		if (gender === '남') {
-			s1.data[adr].male.count++;
+			s1.data[adr].male.count += 1;
 			if (answer === '네') {
-				s1.data[adr].male.answer.yes++;
+				s1.data[adr].male.answer.yes += 1;
 			} else if (answer === '글세요') {
-				s1.data[adr].male.answer.so++;
+				s1.data[adr].male.answer.so += 1;
 			} else {
-				s1.data[adr].male.answer.no++;
+				s1.data[adr].male.answer.no += 1;
 			}
-			s1.data[adr].male.age.count++;
+			s1.data[adr].male.age.count += 1;
 			if (s1.data[adr].male.age[age] === undefined) {
 				s1.data[adr].male.age[age] = 0;
 			}
-			s1.data[adr].male.age[age]++;
+			s1.data[adr].male.age[age] += 1;
 		} else {
-			s1.data[adr].female.count++;
+			s1.data[adr].female.count += 1;
 			if (answer === '네') {
-				s1.data[adr].female.answer.yes++;
+				s1.data[adr].female.answer.yes += 1;
 			} else if (answer === '글세요') {
-				s1.data[adr].female.answer.so++;
+				s1.data[adr].female.answer.so += 1;
 			} else {
-				s1.data[adr].female.answer.no++;
+				s1.data[adr].female.answer.no += 1;
 			}
-			s1.data[adr].female.age.count++;
+			s1.data[adr].female.age.count += 1;
 			if (s1.data[adr].female.age[age] === undefined) {
 				s1.data[adr].female.age[age] = 0;
 			}
-			s1.data[adr].female.age[age]++;
+			s1.data[adr].female.age[age] += 1;
 		}
 
 		if (adr === '서울특별시') {
 			const adr2 = address.split(' ')[1];
-			s2.count++;
+			s2.count += 1;
 			if (s2.data[adr2] === undefined) {
 				s2.data[adr2] = {
 					name: adr2,
@@ -227,36 +227,36 @@ export default function randomPick(n: number) {
 					},
 				};
 			}
-			s2.data[adr2].count++;
+			s2.data[adr2].count += 1;
 			if (gender === '남') {
-				s2.data[adr2].male.count++;
+				s2.data[adr2].male.count += 1;
 				if (answer === '네') {
-					s2.data[adr2].male.answer.yes++;
+					s2.data[adr2].male.answer.yes += 1;
 				} else if (answer === '글세요') {
-					s2.data[adr2].male.answer.so++;
+					s2.data[adr2].male.answer.so += 1;
 				} else {
-					s2.data[adr2].male.answer.no++;
+					s2.data[adr2].male.answer.no += 1;
 				}
-				s2.data[adr2].male.age.count++;
+				s2.data[adr2].male.age.count += 1;
 				if (s2.data[adr2].male.age[age] === undefined) {
 					s2.data[adr2].male.age[age] = 0;
 				}
-				s2.data[adr2].male.age[age]++;
+				s2.data[adr2].male.age[age] += 1;
 			} else {
-				s2.data[adr2].female.count++;
+				s2.data[adr2].female.count += 1;
 				if (answer === '네') {
-					s2.data[adr2].female.answer.yes++;
+					s2.data[adr2].female.answer.yes += 1;
 				} else if (answer === '글세요') {
-					s2.data[adr2].female.answer.so++;
+					s2.data[adr2].female.answer.so += 1;
 				} else {
-					s2.data[adr2].female.answer.no++;
+					s2.data[adr2].female.answer.no += 1;
 				}
 			}
-			s2.data[adr2].female.age.count++;
+			s2.data[adr2].female.age.count += 1;
 			if (s2.data[adr2].female.age[age] === undefined) {
 				s2.data[adr2].female.age[age] = 0;
 			}
-			s2.data[adr2].female.age[age]++;
+			s2.data[adr2].female.age[age] += 1;
 		}
 	}
 

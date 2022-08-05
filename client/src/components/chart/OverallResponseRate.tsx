@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip, VictoryAnimation } from 'victory';
+import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip } from 'victory';
 
 const Svg = styled.svg``;
 
 // ---- code ----
 const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
 
-interface statData {
+interface StatData {
 	total: number;
 	yes: number;
 	no: number;
 	so: number;
 }
 
-function OverallResponseRate({ statData }: { statData: statData }) {
+function OverallResponseRate({ statData }: { statData: StatData }) {
 	const legend = [
 		{ name: '네', symbol: { fill: '#9749B6' } },
 		{ name: '글쎄요', symbol: { fill: '#C1ADD1' } },
@@ -44,7 +44,7 @@ function OverallResponseRate({ statData }: { statData: statData }) {
 
 			setChange(false);
 		}
-	}, [overallResponse]);
+	}, [overallResponse, count, change, statData]);
 
 	// change가 true일 때, defaultGraphicData로 상태 바꾸기
 	useEffect(() => {

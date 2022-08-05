@@ -5,27 +5,27 @@ import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip } from 'victory
 const Svg = styled.svg``;
 
 // ---- code ----
-interface answer {
+interface Answer {
 	yes: number;
 	no: number;
 	so: number;
 }
 
-interface gender {
+interface Gender {
 	count: number;
-	answer: answer;
+	answer: Answer;
 }
 
-interface subData {
+interface SubData {
 	name: string;
 	count: number;
-	male: gender;
-	female: gender;
+	male: Gender;
+	female: Gender;
 }
 
 const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
 
-function GenderResponseRate({ statData }: { statData: subData }) {
+function GenderResponseRate({ statData }: { statData: SubData }) {
 	const legend = [
 		{ name: '네', symbol: { fill: '#9749B6' } },
 		{ name: '글쎄요', symbol: { fill: '#C1ADD1' } },
@@ -39,7 +39,6 @@ function GenderResponseRate({ statData }: { statData: subData }) {
 	const [change, setChange] = useState(false);
 
 	useEffect(() => {
-		console.log('3');
 		if (change) {
 			// 남성 응답 데이터 추출
 			let yes = `${((100 * statData.male.answer.yes) / statData.male.count).toFixed(2)}%`;
@@ -67,10 +66,9 @@ function GenderResponseRate({ statData }: { statData: subData }) {
 
 			setChange(false);
 		}
-	}, [maleResponseRate, femaleResponseRate]);
+	}, [maleResponseRate, femaleResponseRate, maCount, feCount, change, statData]);
 
 	useEffect(() => {
-		console.log('2');
 		if (change) {
 			setMaleResponseRate(defaultGraphicData);
 			setFemaleResponseRate(defaultGraphicData);
@@ -78,7 +76,6 @@ function GenderResponseRate({ statData }: { statData: subData }) {
 	}, [change]);
 
 	useEffect(() => {
-		console.log('1');
 		setChange(true);
 		setMaCount(statData.male.count);
 		setFeCount(statData.female.count);

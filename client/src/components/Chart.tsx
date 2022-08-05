@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 
 import GenderResponseRate from './chart/GenderResponseRate';
 import OverallResponseRate from './chart/OverallResponseRate';
@@ -27,46 +26,31 @@ const StatsArea = styled.div`
 	height: 70%;
 `;
 
-// interface ResProps {
-//   all_count?: number;
-//   all_response_rate_po?: string;
-//   all_response_rate_na?: string;
-//   all_response_rate_nu?: string;
-//   male_count_all?: number;
-//   male_count_po?: number;
-//   male_count_na?: number;
-//   male_count_nu?: number;
-//   female_count_all?: number;
-//   female_count_po?: number;
-//   female_count_na?: number;
-//   female_count_nu?: number;
-// }
-
-interface answer {
+interface Answer {
 	yes: number;
 	no: number;
 	so: number;
 }
 
-interface gender {
+interface Gender {
 	count: number;
-	answer: answer;
-	age: age;
+	answer: Answer;
+	age: Age;
 }
 
-interface age {
+interface Age {
 	count: number;
 	[key: string]: number;
 }
 
-interface subData {
+interface SubData {
 	name: string;
 	count: number;
-	male: gender;
-	female: gender;
+	male: Gender;
+	female: Gender;
 }
 
-function Chart({ region, mdata }: { region: string; mdata: subData }) {
+function Chart({ region, mdata }: { region: string; mdata: SubData }) {
 	// const [responseData, setResponseData] = useState<ResProps>({});
 
 	// console.log(mdata);

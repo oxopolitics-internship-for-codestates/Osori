@@ -1,7 +1,5 @@
-import axios from 'axios';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import randomPick from '../etc/randomPick';
 
 import ColorBar from './ColorBar';
 import Korea from './map/Korea';
@@ -103,74 +101,19 @@ const ColorBarBox = styled.div`
 	width: 50px;
 `;
 
-const names: { [key: string]: string[] } = {
-	전국: [
-		'서울특별시',
-		'부산광역시',
-		'대구광역시',
-		'인천광역시',
-		'광주광역시',
-		'대전광역시',
-		'울산광역시',
-		'경기도',
-		'강원도',
-		'충청북도',
-		'충청남도',
-		'전라북도',
-		'전라남도',
-		'경상북도',
-		'경상남도',
-		'제주특별자치도',
-		'세종특별자치시',
-	],
-	서울: [
-		'종로구',
-		'중구',
-		'용산구',
-		'성동구',
-		'광진구',
-		'동대문구',
-		'중랑구',
-		'성북구',
-		'강북구',
-		'도봉구',
-		'노원구',
-		'은평구',
-		'서대문구',
-		'마포구',
-		'양천구',
-		'강서구',
-		'구로구',
-		'금천구',
-		'영등포구',
-		'동작구',
-		'관악구',
-		'서초구',
-		'강남구',
-		'송파구',
-		'강동구',
-	],
-};
-
-const colorSet = ['#9749B6', '#C181DB', '#C1ADD1', '#EEA3BF', '#FEDDD5', '#EAEAEA'];
-function RdColor() {
-	const k = Math.floor(6 * Math.random());
-	return k > 5 ? 5 : k;
-}
-
-interface regionData {
+interface RegionData {
 	name: string;
 	count: number;
 	rate: number;
 	color: string;
 }
 
-interface mapData {
+interface MapData {
 	name: string;
 	count: number;
 	min: number;
 	max: number;
-	data: { [regionName: string]: regionData };
+	data: { [regionName: string]: RegionData };
 }
 
 function MapArea({
@@ -183,12 +126,12 @@ function MapArea({
 	isClickF,
 }: {
 	map: string;
-	mapSel: Function;
+	mapSel: (x: string) => string;
 	region: string;
-	regionSel: Function;
-	mdata: mapData;
+	regionSel: (x: string) => string;
+	mdata: MapData;
 	isClick: number;
-	isClickF: Function;
+	isClickF: (x: number) => number;
 }) {
 	const [check, checkF] = useState(-1);
 
