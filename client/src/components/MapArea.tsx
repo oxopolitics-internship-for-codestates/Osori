@@ -126,12 +126,12 @@ function MapArea({
 	isClickF,
 }: {
 	map: string;
-	mapSel: (x: string) => string;
+	mapSel: React.Dispatch<React.SetStateAction<string>>;
 	region: string;
-	regionSel: (x: string) => string;
+	regionSel: React.Dispatch<React.SetStateAction<string>>;
 	mdata: MapData;
 	isClick: number;
-	isClickF: (x: number) => number;
+	isClickF: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	const [check, checkF] = useState(-1);
 
