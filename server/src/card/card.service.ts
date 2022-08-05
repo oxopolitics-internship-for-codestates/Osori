@@ -1,180 +1,380 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { users } from '../users/users.schema';
+
 import { create_answerdto } from '../dto/card.create.answer.dto';
-import { cardanswer } from '../card/card_answer.schema';
-import { counter } from './counter.schema';
+
+import { User } from 'src/schema/user.schema';
+import { Answer, answer_Schema } from 'src/schema/answer.schema';
+import { Issue } from 'src/schema/issue.schema';
+import { regionData, mapData } from 'src/interface/mapdata';
+import { Static } from 'src/schema/static.schema';
+import randomPick from 'etc/randomPick';
 
 @Injectable()
 export class CardService {
   constructor(
-    @InjectModel(users.name) private readonly userModel: Model<users>,
-    @InjectModel(cardanswer.name)
-    private readonly card_answerModel: Model<cardanswer>,
-    @InjectModel(counter.name) private readonly counterModel: Model<counter>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(Answer.name)
+    private readonly answerModel: Model<Answer>,
+    @InjectModel(Issue.name) private readonly issueModel: Model<Issue>,
+    @InjectModel(Static.name) private readonly staticModel: Model<Static>,
   ) {}
 
-  async create_map_name() {
-    const city_all = [
-      '서울특별시',
-      '경기도',
-      '인천광역시',
-      '세종특별자치시',
-      '충청북도',
-      '대전광역시',
-      '충청남도',
-      '광주광역시',
-      '제주특별자치도',
-      '전라남도',
-      '전라북도',
-      '경상남도',
-      '부산광역시',
-      '울산광역시',
-      '대구광역시',
-      '경상북도',
-      '강원도',
-    ];
-    const city_name_all = [
-      'seoul',
-      'kyunggido',
-      'incheon',
-      'sejong',
-      'chungchongbuk_do',
-      'daejeon',
-      'chungchongnam_do',
-      'gwangju',
-      'jeju',
-      'jeollanam_do',
-      'jeollabuk_do',
-      'kyungsannam_do',
-      'busan',
-      'ulsan',
-      'daegu',
-      'kyungsanbuk_do',
-      'gangwon_do',
-    ];
-    const target_map = await Promise.all(
-      city_all.map(async (el) => {
-        return await this.userModel.find({
-          answer: { $exists: true },
-          'address.city_name': { $regex: el },
-        });
-      }),
-    );
-    console.log(target_map);
-    // console.log(target_map_answer)
+  mk_region_data(data, region) {
+    let sdata: regionData = {
+        name: region,
+        count: 0,
+        male: { count: 0, answer: { yes: 0, no: 0, so: 0 }, age: { count: 0 } },
+        female: {
+          count: 0,
+          answer: { yes: 0, no: 0, so: 0 },
+          age: { count: 0 },
+        },
+      },
+      n = data.length;
 
-    // target_map_answer
+    for (let i = 0; i < n; i++) {
+      let { gender, age, answers } = data[i];
+      let { answer } = answers[0];
 
-    return;
+      sdata.count++;
+      if (gender === '남') {
+        sdata.male.count++;
+        if (answer === '네') {
+          sdata.male.answer.yes++;
+        } else if (answer === '글세요') {
+          sdata.male.answer.so++;
+        } else {
+          sdata.male.answer.no++;
+        }
+        sdata.male.age.count++;
+        if (sdata.male.age[age] === undefined) {
+          sdata.male.age[age] = 0;
+        }
+        sdata.male.age[age]++;
+      } else {
+        sdata.female.count++;
+        if (answer === '네') {
+          sdata.female.answer.yes++;
+        } else if (answer === '글세요') {
+          sdata.female.answer.so++;
+        } else {
+          sdata.female.answer.no++;
+        }
+        sdata.female.age.count++;
+        if (sdata.female.age[age] === undefined) {
+          sdata.female.age[age] = 0;
+        }
+        sdata.female.age[age]++;
+      }
+    }
+    return sdata;
   }
-  //각 전체 지도를 도시로 나눠주는 함수
 
-  async reserch_birthDate(array) {
-    let count = 0;
-    const birthDate = await array.map((el) => {
-      const re = el.age.split(' ');
-      return new Date(Number(re[0]), Number(re[1]), Number(re[2]));
-    });
+  mk_map_data(data, map) {
+    let sdata: mapData = {
+        name: map,
+        count: 0,
+        data: {},
+      },
+      n = data.length;
 
-    birthDate.map((el) => {
-      const day_cal = new Date().getFullYear() - el.getFullYear() + 1;
-      day_cal >= 19 ? count++ : count;
-    });
-    return count;
+    for (let i = 0; i < n; i++) {
+      let { address } = data[i];
+
+      let adr =
+        map === '서울특별시' ? address.split(' ')[1] : address.split(' ')[0];
+      sdata.count++;
+      if (sdata.data[adr] === undefined) {
+        sdata.data[adr] = {
+          name: adr,
+          count: 0,
+        };
+      }
+      sdata.data[adr].count++;
+    }
+    return sdata;
   }
-  // 투표가능한 나이 걸러주는 함수
-
-  async reserch_answer(gender: string, answer: string) {
-    const age_array = await this.userModel.find(
-      gender === undefined || answer === undefined
-        ? { answer: { $exists: true } }
-        : { gender: gender, answer: answer },
-    );
-
-    return await this.reserch_birthDate(age_array);
-  }
-  // 각 응답에 대한 전체 성별 및 투표가능 나이 찾는 함수
 
   async getNextSequence() {
-    const ret = await this.counterModel.findOneAndUpdate(
-      {},
-      { $inc: { seq: 1 } },
-      { returnOriginal: false },
-    );
-    console.log(ret);
-    return ret.seq;
+    // const ret = await this.counterModel.findOneAndUpdate(
+    //   {},
+    //   { $inc: { seq: 1 } },
+    //   { returnOriginal: false },
+    // );
+    // console.log(ret);
+    // return ret.seq;
   }
 
   async create_answer(body: create_answerdto) {
-    const { email, answer } = body;
-    const find_exist = await this.card_answerModel.find({ email: email });
-    if (find_exist.length === 0) {
-      const id = await this.getNextSequence();
-      await this.card_answerModel.create({
-        _id: id,
-        email: email,
-        answer: answer,
-      });
-      await this.userModel.updateMany(
-        { email: email },
-        { $addToSet: { card_answer_id: 2 } },
-      );
-    } else {
-      await this.card_answerModel.findOneAndUpdate(
-        {
-          email: email,
-        },
-        { $set: { answer: answer } },
-      );
+    // const { email, answer } = body;
+    // const find_exist = await this.card_answerModel.find({ email: email });
+    // if (find_exist.length === 0) {
+    //   const id = await this.getNextSequence();
+    //   await this.card_answerModel.create({
+    //     _id: id,
+    //     email: email,
+    //     answer: answer,
+    //   });
+    //   await this.userModel.updateMany(
+    //     { email: email },
+    //     { $addToSet: { card_answer_id: 2 } },
+    //   );
+    // } else {
+    //   await this.card_answerModel.findOneAndUpdate(
+    //     {
+    //       email: email,
+    //     },
+    //     { $set: { answer: answer } },
+    //   );
+    // }
+  }
+
+  async getregion(id: string) {
+    let arr = await this.userModel
+      .find({
+        address: new RegExp(id),
+      })
+      .populate('answers', 'answer');
+
+    return this.mk_region_data(arr, id);
+  }
+
+  async getmapcount(id: string) {
+    let names: { [key: string]: string[] } = {
+      전국: [
+        '서울특별시',
+        '부산광역시',
+        '대구광역시',
+        '인천광역시',
+        '광주광역시',
+        '대전광역시',
+        '울산광역시',
+        '경기도',
+        '강원도',
+        '충청북도',
+        '충청남도',
+        '전라북도',
+        '전라남도',
+        '경상북도',
+        '경상남도',
+        '제주특별자치도',
+        '세종특별자치시',
+      ],
+      서울: [
+        '종로구',
+        '중구',
+        '용산구',
+        '성동구',
+        '광진구',
+        '동대문구',
+        '중랑구',
+        '성북구',
+        '강북구',
+        '도봉구',
+        '노원구',
+        '은평구',
+        '서대문구',
+        '마포구',
+        '양천구',
+        '강서구',
+        '구로구',
+        '금천구',
+        '영등포구',
+        '동작구',
+        '관악구',
+        '서초구',
+        '강남구',
+        '송파구',
+        '강동구',
+      ],
+    };
+    let ans: mapData = { name: '', count: 0, data: {} };
+    if (id === '전국') {
+      ans.name = id;
+      for (let i of names[id]) {
+        let c = await this.userModel.countDocuments({ address: new RegExp(i) });
+        ans.count += c;
+        ans.data[i] = { count: c, name: i };
+      }
+
+      return ans;
+    } else if (id === '서울') {
+      ans.name = id;
+      for (let i of names[id]) {
+        let c = await this.userModel.countDocuments({
+          address: new RegExp(i),
+        });
+        ans.count += c;
+        ans.data[i] = { count: c, name: i };
+      }
+      return ans;
     }
   }
 
-  async getwholemap() {
-    const all_count = await this.reserch_answer(undefined, undefined);
-    const male_answer_po = await this.reserch_answer('m', 'o');
-    const male_answer_na = await this.reserch_answer('m', 'x');
-    const male_answer_ne = await this.reserch_answer('m', 'n');
-    const female_answer_po = await this.reserch_answer('f', 'o');
-    const female_answer_na = await this.reserch_answer('f', 'x');
-    const female_answer_ne = await this.reserch_answer('f', 'n');
+  async getmap(id: string) {
+    if (id === '전국') {
+      let arr = await this.userModel.find();
 
-    const all_answer_po = (
-      ((male_answer_po + female_answer_po) / all_count) *
-      100
-    ).toFixed();
-    const all_answer_na = (
-      ((male_answer_ne + female_answer_ne) / all_count) *
-      100
-    ).toFixed();
-    const all_answer_ne = (
-      ((male_answer_na + female_answer_na) / all_count) *
-      100
-    ).toFixed();
+      return this.mk_map_data(arr, id);
+    } else if (id === '서울') {
+      let arr = await this.userModel.find({
+        address: new RegExp('서울특별시'),
+      });
 
-    const result = {
-      all_count: all_count,
-      all_response_rate_po: all_answer_po,
-      all_response_rate_na: all_answer_na,
-      all_response_rate_nu: all_answer_ne,
-      male_count_all: male_answer_na + male_answer_na + male_answer_ne,
-      male_count_po: male_answer_po,
-      male_count_na: male_answer_na,
-      male_count_nu: male_answer_ne,
-      female_count_all: female_answer_po + female_answer_na + female_answer_ne,
-      female_count_po: female_answer_po,
-      female_count_na: female_answer_na,
-      female_count_nu: female_answer_ne,
-    };
-    const each_city = await this.create_map_name();
+      return this.mk_map_data(arr, '서울특별시');
+    }
+  }
 
-    // each_city.filter(el => el.length > 0);
-    // await each_city.map((el) => {
-    //   console.log(el)
-    // })
-    // await each_city['kyunggido'].filter(el => el.answer !== undefined);
-    // reserch_birthDate()
-    return result;
+  async getmapdata(id: string) {
+    let arr = await this.staticModel
+      .find({ mapName: new RegExp(id) })
+      .select({ count: 1, regionName: 1 });
+
+    return arr;
+  }
+
+  async getregiondata(id: string) {
+    let arr = await this.staticModel.find({ regionName: new RegExp(id) });
+
+    return arr;
+  }
+
+  getmap_test(id: string, response) {
+    this.userModel
+      .find({
+        address: new RegExp(id),
+      })
+      .populate('answers', 'answer')
+      .then((arr) => {
+        // console.log(this.mk_map_data(arr, id));
+        // response.send(arr);
+        response.send(this.mk_map_data(arr, id));
+      });
+  }
+
+  async getdata() {
+    let { gender, answer, age, address } = randomPick(1)[0];
+    let addNames = address.split(' '),
+      mapName = '',
+      regionName = '';
+    console.log(addNames);
+    if (addNames.length > 1) {
+      [mapName, regionName] = addNames;
+    } else {
+      [mapName, regionName] = ['전국', addNames[0]];
+    }
+    let region = await this.staticModel.findOne({ regionName: regionName });
+    if (region === null) {
+      region = await new this.staticModel({
+        mapName: mapName,
+        regionName: regionName,
+      });
+      region = await region.save();
+    }
+    region.count++;
+    if (gender === '남') {
+      region.male.count++;
+      if (answer === '네') {
+        region.male.yes++;
+      } else if (answer === '아니오') {
+        region.male.no++;
+      } else {
+        region.male.so++;
+      }
+      if (age === '10대') {
+        region.male.age['10대']++;
+      } else if (age === '20대') {
+        region.male.age['20대']++;
+      } else if (age === '30대') {
+        region.male.age['30대']++;
+      } else if (age === '40대') {
+        region.male.age['40대']++;
+      } else if (age === '50대') {
+        region.male.age['50대']++;
+      } else {
+        region.male.age['60대이상']++;
+      }
+    } else {
+      region.female.count++;
+      if (answer === '네') {
+        region.female.yes++;
+      } else if (answer === '아니오') {
+        region.female.no++;
+      } else {
+        region.female.so++;
+      }
+      if (age === '10대') {
+        region.female.age['10대']++;
+      } else if (age === '20대') {
+        region.female.age['20대']++;
+      } else if (age === '30대') {
+        region.female.age['30대']++;
+      } else if (age === '40대') {
+        region.female.age['40대']++;
+      } else if (age === '50대') {
+        region.female.age['50대']++;
+      } else {
+        region.female.age['60대이상']++;
+      }
+    }
+    region = await region.save();
+    let map = await this.staticModel.findOne({ regionName: mapName });
+    if (map === null) {
+      map = await new this.staticModel({
+        mapName: '지구',
+        regionName: mapName,
+      });
+      map = await map.save();
+    }
+    map.count++;
+    if (gender === '남') {
+      map.male.count++;
+      if (answer === '네') {
+        map.male.yes++;
+      } else if (answer === '아니오') {
+        map.male.no++;
+      } else {
+        map.male.so++;
+      }
+      if (age === '10대') {
+        map.male.age['10대']++;
+      } else if (age === '20대') {
+        map.male.age['20대']++;
+      } else if (age === '30대') {
+        map.male.age['30대']++;
+      } else if (age === '40대') {
+        map.male.age['40대']++;
+      } else if (age === '50대') {
+        map.male.age['50대']++;
+      } else {
+        map.male.age['60대이상']++;
+      }
+    } else {
+      map.female.count++;
+      if (answer === '네') {
+        map.female.yes++;
+      } else if (answer === '아니오') {
+        map.female.no++;
+      } else {
+        map.female.so++;
+      }
+      if (age === '10대') {
+        map.female.age['10대']++;
+      } else if (age === '20대') {
+        map.female.age['20대']++;
+      } else if (age === '30대') {
+        map.female.age['30대']++;
+      } else if (age === '40대') {
+        map.female.age['40대']++;
+      } else if (age === '50대') {
+        map.female.age['50대']++;
+      } else {
+        map.female.age['60대이상']++;
+      }
+    }
+    map = await map.save();
+    return [region, map];
   }
 }

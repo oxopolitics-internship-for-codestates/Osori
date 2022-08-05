@@ -256,13 +256,19 @@ function Paths({
   newData,
   selrf,
   isDrag,
+  check,
+  checkF,
+  isClick,
+  isClickF,
 }: {
   newData: mapData;
   selrf: Function;
   isDrag: boolean;
+  check: number;
+  checkF: Function;
+  isClick: number;
+  isClickF: Function;
 }) {
-  let [check, checkf] = useState(-1);
-  let [isClick, isClickf] = useState(-1);
   return (
     <>
       {data.map((xx, i) => {
@@ -282,20 +288,22 @@ function Paths({
               onMouseOver={(e) => {
                 if (!isDrag && isClick < 0) {
                   selrf(data[i].name);
-                  checkf(i);
+                  checkF(i);
                 } else if (isClick < 0) {
                   selrf("");
-                  checkf(-1);
+                  checkF(-1);
                 } else {
-                  checkf(-1);
+                  checkF(-1);
                 }
               }}
               onClick={(e) => {
                 if (!isDrag) {
                   if (isClick === i) {
-                    isClickf(-1);
+                    selrf(data[i].name);
+                    isClickF(-1);
                   } else {
-                    isClickf(i);
+                    selrf(data[i].name);
+                    isClickF(i);
                   }
                 }
               }}
@@ -316,15 +324,15 @@ function Paths({
           onMouseOver={(e) => {
             if (isDrag) {
               selrf("");
-              checkf(-1);
+              checkF(-1);
             }
           }}
           onClick={(e) => {
             if (!isDrag) {
               if (isClick === check) {
-                isClickf(-1);
+                isClickF(-1);
               } else {
-                isClickf(check);
+                isClickF(check);
               }
             }
           }}
@@ -332,7 +340,7 @@ function Paths({
             if (isClick < 0) {
               selrf("");
             }
-            checkf(-1);
+            checkF(-1);
           }}
         />
       ) : null}
@@ -347,15 +355,15 @@ function Paths({
           onMouseOver={(e) => {
             if (isDrag) {
               selrf("");
-              checkf(-1);
+              checkF(-1);
             }
           }}
           onClick={(e) => {
             if (!isDrag) {
               if (isClick === check) {
-                isClickf(-1);
+                isClickF(-1);
               } else {
-                isClickf(check);
+                isClickF(check);
               }
             }
           }}
@@ -363,7 +371,7 @@ function Paths({
             if (isClick < 0) {
               selrf("");
             }
-            checkf(-1);
+            checkF(-1);
           }}
         />
       ) : null}
@@ -377,25 +385,34 @@ const Frame = styled.div<{ grab: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-
+  border: solid 1px #7c7c7c;
+  box-shadow: inset 0px 0px 10px #7c7c7c;
   ${({ grab }) => {
     return `
     ${grab ? `cursor:grab;` : null}
     `;
   }}
 `;
+
 export default function Seoul({
   width,
   height,
-
   newData,
   selrf,
+  check,
+  checkF,
+  isClick,
+  isClickF,
 }: {
   width: string;
   height: string;
 
   newData: mapData;
   selrf: Function;
+  check: number;
+  checkF: Function;
+  isClick: number;
+  isClickF: Function;
 }) {
   let [vr, vrf] = useState([700, 600]); // view box 크기
   let [cmin, cminf] = useState([50, 50]); // view box min값
@@ -494,20 +511,15 @@ export default function Seoul({
             isDragf(false);
           }
         }}
-        // onClick={(e) => {
-        //   let { localName } = e.target as SVGElement;
-        //   console.dir(localName);
-        //   (e.target as SVGElement).style.fill = "red";
-
-        //   if (isDrag&& dpath<10 && localName==='path') {
-
-        //   }
-        // }}
       >
         <Paths
           newData={newData}
           selrf={selrf}
           isDrag={isDrag && dpath > 10}
+          isClick={isClick}
+          isClickF={isClickF}
+          check={check}
+          checkF={checkF}
         ></Paths>
       </svg>
     </Frame>

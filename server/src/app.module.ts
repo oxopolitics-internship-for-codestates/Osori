@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { CardModule } from './card/card.module';
 import { UsersModule } from './users/users.module';
+import { IssueModule } from './issue/issue.modules';
 
 @Module({
   imports: [
@@ -14,9 +15,11 @@ import { UsersModule } from './users/users.module';
       // useUnifiedTopology: true,
       // useCreateIndex: true,
       // useFindAndModify: false,
+      dbName: 'test3',
     }),
     CardModule,
     UsersModule,
+    IssueModule,
   ],
   controllers: [],
   providers: [],
