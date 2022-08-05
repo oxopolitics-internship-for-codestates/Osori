@@ -1,23 +1,23 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-interface regionData {
+interface RegionData {
 	name: string;
 	count: number;
 	rate: number;
 	color: string;
 }
 
-interface mapData {
+interface MapData {
 	name: string;
 	count: number;
-	data: { [regionName: string]: regionData };
+	data: { [regionName: string]: RegionData };
 }
 
-interface shadowType {
+interface ShadowType {
 	[key: string]: string;
 }
-const shadowSet: shadowType = {
+const shadowSet: ShadowType = {
 	'#9749B6': '#642F79',
 	'#C181DB': '#9462A8',
 	'#C1ADD1': '#83778D',
@@ -38,7 +38,7 @@ const Path = styled.path<{ check: boolean; fill: string }>`
 		return '';
 	}}
 `;
-interface mapData2 {
+interface MapData2 {
 	id: string;
 	stroke: string;
 	d: string;
@@ -47,7 +47,7 @@ interface mapData2 {
 	name: string;
 }
 
-const data: mapData2[] = [
+const data: MapData2[] = [
 	{
 		id: 'CD11110',
 		x: '399',
@@ -260,13 +260,13 @@ function Paths({
 	isClick,
 	isClickF,
 }: {
-	newData: mapData;
-	selrf: Function;
+	newData: MapData;
+	selrf: (x: string) => string;
 	isDrag: boolean;
 	check: number;
-	checkF: Function;
+	checkF: (x: number) => number;
 	isClick: number;
-	isClickF: Function;
+	isClickF: (x: number) => number;
 }) {
 	return (
 		<>
@@ -284,7 +284,7 @@ function Paths({
 							stroke={shadowSet[fill]}
 							d={d}
 							check={isClick === i || check === i}
-							onMouseOver={(e) => {
+							onMouseOver={() => {
 								if (!isDrag && isClick < 0) {
 									selrf(data[i].name);
 									checkF(i);
@@ -295,7 +295,7 @@ function Paths({
 									checkF(-1);
 								}
 							}}
-							onClick={(e) => {
+							onClick={() => {
 								if (!isDrag) {
 									if (isClick === i) {
 										selrf(data[i].name);
@@ -319,13 +319,13 @@ function Paths({
 					stroke={shadowSet[newData.data[data[check].name].color]}
 					d={data[check].d}
 					check
-					onMouseOver={(e) => {
+					onMouseOver={() => {
 						if (isDrag) {
 							selrf('');
 							checkF(-1);
 						}
 					}}
-					onClick={(e) => {
+					onClick={() => {
 						if (!isDrag) {
 							if (isClick === check) {
 								isClickF(-1);
@@ -334,7 +334,7 @@ function Paths({
 							}
 						}
 					}}
-					onMouseOut={(e) => {
+					onMouseOut={() => {
 						if (isClick < 0) {
 							selrf('');
 						}
@@ -350,13 +350,13 @@ function Paths({
 					stroke={shadowSet[newData.data[data[isClick].name].color]}
 					d={data[isClick].d}
 					check
-					onMouseOver={(e) => {
+					onMouseOver={() => {
 						if (isDrag) {
 							selrf('');
 							checkF(-1);
 						}
 					}}
-					onClick={(e) => {
+					onClick={() => {
 						if (!isDrag) {
 							if (isClick === check) {
 								isClickF(-1);
@@ -365,7 +365,7 @@ function Paths({
 							}
 						}
 					}}
-					onMouseOut={(e) => {
+					onMouseOut={() => {
 						if (isClick < 0) {
 							selrf('');
 						}
@@ -403,12 +403,12 @@ export default function Seoul({
 	width: string;
 	height: string;
 
-	newData: mapData;
-	selrf: Function;
+	newData: MapData;
+	selrf: (x: string) => string;
 	check: number;
-	checkF: Function;
+	checkF: (x: number) => number;
 	isClick: number;
-	isClickF: Function;
+	isClickF: (x: number) => number;
 }) {
 	const [vr, vrf] = useState([700, 600]); // view box 크기
 	const [cmin, cminf] = useState([50, 50]); // view box min값
@@ -488,7 +488,7 @@ export default function Seoul({
 					cminf([xmin, ymin]);
 				}
 			}}
-			onMouseUp={(e) => {
+			onMouseUp={() => {
 				isDragf(false);
 			}}
 		>
@@ -497,7 +497,7 @@ export default function Seoul({
 				height={height}
 				viewBox={`${cmin[0]} ${cmin[1]} ${vr[0]} ${vr[1]} `}
 				preserveAspectRatio="xMidYMid meet"
-				onMouseLeave={(e) => {
+				onMouseLeave={() => {
 					if (isDrag && dpath > 10) {
 						isDragf(false);
 					}

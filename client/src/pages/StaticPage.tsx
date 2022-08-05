@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import MapArea from '../components/MapArea';
 import Chart from '../components/Chart';
@@ -67,54 +67,54 @@ const names: { [key: string]: string[] } = {
 
 const colorSet = ['#9749B6', '#C181DB', '#C1ADD1', '#EEA3BF', '#FEDDD5', '#EAEAEA'];
 
-interface answer {
+interface Answer {
 	yes: number;
 	no: number;
 	so: number;
 }
 
-interface gender {
+interface Gender {
 	count: number;
-	answer: answer;
-	age: age;
+	answer: Answer;
+	age: Age;
 }
-interface age {
+interface Age {
 	count: number;
 	[key: string]: number;
 }
 
-interface subData {
+interface SubData {
 	name: string;
 	count: number;
-	male: gender;
-	female: gender;
+	male: Gender;
+	female: Gender;
 }
-interface smData {
-	[key: string]: subData;
+interface SmData {
+	[key: string]: SubData;
 }
 
-interface regionData {
+interface RegionData {
 	name: string;
 	count: number;
 	rate: number;
 	color: string;
 }
 
-interface mapData {
+interface MapData {
 	name: string;
 	count: number;
 	min: number;
 	max: number;
-	data: { [regionName: string]: regionData };
-	odata: smData;
+	data: { [regionName: string]: RegionData };
+	odata: SmData;
 }
 
-interface dbData {
-	[key: string]: mapData;
+interface DbData {
+	[key: string]: MapData;
 }
 
 const { sdata } = randomPick(10000);
-const dbinit: dbData = {
+const dbinit: DbData = {
 	전국: {
 		name: '',
 		count: 0,

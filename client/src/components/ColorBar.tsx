@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 const Frame = styled.div`
@@ -53,9 +54,10 @@ function ColorBar() {
 			<Label width={50}>응답률(%)</Label>
 			<InnerFrame>
 				<ColorBox>
-					{colorSet.map((x, i) => (
-						<Box key={i} color={x} />
-					))}
+					{colorSet.map((x, i) => {
+						const key = `${x}${i}`;
+						return <Box key={key} color={x} />;
+					})}
 				</ColorBox>
 				<LabelBox>
 					<Label width={30}>높음</Label>
