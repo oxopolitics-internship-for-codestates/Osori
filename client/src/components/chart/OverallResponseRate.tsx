@@ -81,6 +81,7 @@ function OverallResponseRate({ statData }: { statData: statData }) {
           data={overallResponse}
           labelComponent={
             <VictoryTooltip
+              renderInPortal={false}
               center={{ x: 150, y: 160 }}
               orientation="top"
               pointerLength={0}
