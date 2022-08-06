@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { usersRequestDto } from 'src/dto/users.request.dto';
@@ -22,7 +22,7 @@ export class IssueService {
   }
 
   async issueinfo() {
-    let res = await this.issueModel.find();
+    const res = await this.issueModel.find();
     return res;
   }
 }

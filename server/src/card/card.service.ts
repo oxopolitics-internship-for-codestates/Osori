@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { create_answerdto } from '../dto/card.create.answer.dto';
 
 import { User } from 'src/schema/user.schema';
-import { Answer, answer_Schema } from 'src/schema/answer.schema';
+import { Answer } from 'src/schema/answer.schema';
 import { Issue } from 'src/schema/issue.schema';
 import { regionData, mapData } from 'src/interface/mapdata';
 import { Static } from 'src/schema/static.schema';
@@ -22,7 +22,7 @@ export class CardService {
   ) {}
 
   mk_region_data(data, region) {
-    let sdata: regionData = {
+    const sdata: regionData = {
         name: region,
         count: 0,
         male: { count: 0, answer: { yes: 0, no: 0, so: 0 }, age: { count: 0 } },
@@ -35,8 +35,8 @@ export class CardService {
       n = data.length;
 
     for (let i = 0; i < n; i++) {
-      let { gender, age, answers } = data[i];
-      let { answer } = answers[0];
+      const { gender, age, answers } = data[i];
+      const { answer } = answers[0];
 
       sdata.count++;
       if (gender === '남') {
@@ -73,7 +73,7 @@ export class CardService {
   }
 
   mk_map_data(data, map) {
-    let sdata: mapData = {
+    const sdata: mapData = {
         name: map,
         count: 0,
         data: {},
@@ -81,9 +81,9 @@ export class CardService {
       n = data.length;
 
     for (let i = 0; i < n; i++) {
-      let { address } = data[i];
+      const { address } = data[i];
 
-      let adr =
+      const adr =
         map === '서울특별시' ? address.split(' ')[1] : address.split(' ')[0];
       sdata.count++;
       if (sdata.data[adr] === undefined) {
@@ -132,7 +132,7 @@ export class CardService {
   }
 
   async getregion(id: string) {
-    let arr = await this.userModel
+    const arr = await this.userModel
       .find({
         address: new RegExp(id),
       })
@@ -142,7 +142,7 @@ export class CardService {
   }
 
   async getmapcount(id: string) {
-    let names: { [key: string]: string[] } = {
+    const names: { [key: string]: string[] } = {
       전국: [
         '서울특별시',
         '부산광역시',
@@ -190,11 +190,13 @@ export class CardService {
         '강동구',
       ],
     };
-    let ans: mapData = { name: '', count: 0, data: {} };
+    const ans: mapData = { name: '', count: 0, data: {} };
     if (id === '전국') {
       ans.name = id;
-      for (let i of names[id]) {
-        let c = await this.userModel.countDocuments({ address: new RegExp(i) });
+      for (const i of names[id]) {
+        const c = await this.userModel.countDocuments({
+          address: new RegExp(i),
+        });
         ans.count += c;
         ans.data[i] = { count: c, name: i };
       }
@@ -202,8 +204,8 @@ export class CardService {
       return ans;
     } else if (id === '서울') {
       ans.name = id;
-      for (let i of names[id]) {
-        let c = await this.userModel.countDocuments({
+      for (const i of names[id]) {
+        const c = await this.userModel.countDocuments({
           address: new RegExp(i),
         });
         ans.count += c;
@@ -215,11 +217,11 @@ export class CardService {
 
   async getmap(id: string) {
     if (id === '전국') {
-      let arr = await this.userModel.find();
+      const arr = await this.userModel.find();
 
       return this.mk_map_data(arr, id);
     } else if (id === '서울') {
-      let arr = await this.userModel.find({
+      const arr = await this.userModel.find({
         address: new RegExp('서울특별시'),
       });
 
@@ -228,7 +230,7 @@ export class CardService {
   }
 
   async getmapdata(id: string) {
-    let arr = await this.staticModel
+    const arr = await this.staticModel
       .find({ mapName: new RegExp(id) })
       .select({ count: 1, regionName: 1 });
 
@@ -236,7 +238,7 @@ export class CardService {
   }
 
   async getregiondata(id: string) {
-    let arr = await this.staticModel.find({ regionName: new RegExp(id) });
+    const arr = await this.staticModel.find({ regionName: new RegExp(id) });
 
     return arr;
   }
@@ -255,9 +257,9 @@ export class CardService {
   }
 
   async getdata() {
-    let { gender, answer, age, address } = randomPick(1)[0];
-    let addNames = address.split(' '),
-      mapName = '',
+    const { gender, answer, birthYear, address } = randomPick(1, 0)[0];
+    const addNames = address.split(' ');
+    let mapName = '',
       regionName = '';
     console.log(addNames);
     if (addNames.length > 1) {
@@ -274,6 +276,10 @@ export class CardService {
       region = await region.save();
     }
     region.count++;
+    const today = new Date();
+    const age = `
+    ${Math.floor((today.getFullYear() - birthYear + 1) / 10) * 10}대
+    `;
     if (gender === '남') {
       region.male.count++;
       if (answer === '네') {

@@ -11,17 +11,13 @@ import { IssueModule } from './issue/issue.modules';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URI, {
-      // useNewUrlParser: true,
-      // useUnifiedTopology: true,
-      // useCreateIndex: true,
-      // useFindAndModify: false,
       dbName: 'test3',
     }),
     CardModule,
     UsersModule,
     IssueModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

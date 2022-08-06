@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import randomPick from '../etc/randomPick';
-import mongoose, { Schema, model, connect } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 
 // 1. Create an interface representing a document in MongoDB.
 interface User {
@@ -10,7 +10,7 @@ interface User {
   email: string;
   address: string;
   gender: string;
-  age: string;
+  birthYear: number;
   answers: [
     {
       type: mongoose.Schema.Types.ObjectId;
@@ -95,7 +95,7 @@ const userSchema = new Schema<User>({
   email: { type: String, required: true },
   address: { type: String, required: true },
   gender: { type: String, required: true },
-  age: { type: String, required: true },
+  birthYear: { type: Number, required: true },
   answers: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -173,78 +173,51 @@ const staticSchema = new Schema<Static>({
   },
 });
 
-mongoose.connect(process.env.MONGODB_URI, { dbName: 'test3' });
+mongoose.connect(process.env.MONGODB_URI, {
+  dbName: process.env.MONGODB_DBNAME,
+});
 // 3. Create a Model.
 const User = model<User>('User', userSchema);
 const Issue = model<Issue>('Issue', issueSchema);
 const Answer = model<Answer>('Answer', answerSchema);
 const Static = model<Static>('Static', staticSchema);
-
-// let test = new Static({
-//   regionName: 'test',
-//   mapName: 'test',
-// });
-// test.save();
-
-// async function t1() {
-//   let test = new Static({
-//     regionName: 'test',
-//     mapName: 'test',
-//   });
-//   let x = await test.save();
-//   console.log(x);
-//   x.female.count++;
-//   x.female.so++;
-//   x.female.age['20대']++;
-//   x = await x.save();
-//   console.log(x);
-// }
-// t1();
-
-let data = randomPick(10000);
-
-// User.find({}).then((x) => {
-//   console.log(x);
-//   console.log(x.length);
-// });
-// a document instance
-// let issue1 = new Issue({
-//   title: "뭐니뭐니해도 부먹이 최고시다.",
-//   answerTextO: "맞아맞아 부먹이 최고지",
-//   answerTextX: "아냐 찍먹이 최고야",
-//   answerTextS: "부먹이나 찍먹보다는 처먹이 최고 아닐까?",
-// });
-
-// save model to database
-// issue1.save(function (err, rst) {
-//   if (err) return console.error(err);
-//   console.log("issue1 saved");
-// });
-
+const today = new Date().getFullYear();
+let startNumber = 0;
 async function test() {
-  // let issue1 = new Issue({
-  //   title: "뭐니뭐니해도 부먹이 최고시다.",
-  //   answerTextO: "맞아맞아 부먹이 최고지",
-  //   answerTextX: "아냐 찍먹이 최고야",
-  //   answerTextS: "부먹이나 찍먹보다는 처먹이 최고 아닐까?",
-  // });
-  // await issue1.save();
-  await User.collection.drop();
-  await Answer.collection.drop();
-  await Static.collection.drop();
-  let issue = await Issue.findOne();
+  if (process.env.MONGODB_TYPE === 'new') {
+    await Issue.collection.drop();
+    await User.collection.drop();
+    await Answer.collection.drop();
+    await Static.collection.drop();
+    const issue1 = new Issue({
+      title: '뭐니뭐니해도 부먹이 최고시다.',
+      answerTextO: '맞아맞아 부먹이 최고지',
+      answerTextX: '아냐 찍먹이 최고야',
+      answerTextS: '부먹이나 찍먹보다는 처먹이 최고 아닐까?',
+    });
+    await issue1.save();
+  } else if (process.env.MONGODB_TYPE === 'update') {
+    startNumber = await User.countDocuments();
+  } else {
+    console.log('wrong type');
+    await mongoose.disconnect();
+  }
+
+  const dataNumber = Number(process.env.DUMMYDATANUMER) | 10;
+  const data = randomPick(dataNumber, startNumber);
+  const issue = await Issue.findOne();
   if (issue !== null) {
     await Issue.updateOne({ _id: issue._id }, { answers: [] });
   }
 
-  for (let { userName, age, email, address, answer, gender } of data) {
-    let issue = await Issue.findOne();
+  for (const { userName, birthYear, email, address, answer, gender } of data) {
+    const issue = await Issue.findOne();
 
     if (issue !== null) {
-      let issue_id = issue._id;
-      let user = new User({
+      const issue_id = issue._id;
+      const user = new User({
         userName: userName,
-        age: age,
+        birthYear: birthYear,
         email: email,
         address: address,
         answer: answer,
@@ -254,9 +227,9 @@ async function test() {
       await user.save();
 
       if (user !== null) {
-        let user_id = user._id;
+        const user_id = user._id;
 
-        let ans = new Answer({
+        const ans = new Answer({
           answer: answer,
           user: user_id,
           issue: issue_id,
@@ -264,19 +237,19 @@ async function test() {
         await ans.save();
 
         if (ans !== null) {
-          let ans_id = ans._id;
+          const ans_id = ans._id;
 
-          let a = await Issue.updateOne(
+          await Issue.updateOne(
             { _id: issue_id },
             { answers: [...issue.answers, ans_id] },
           );
-          let b = await User.updateOne(
+          await User.updateOne(
             { _id: user_id },
             { answers: [ans_id], Issues: [issue_id] },
           );
 
-          let addNames = address.split(' '),
-            mapName = '',
+          const addNames = address.split(' ');
+          let mapName = '',
             regionName = '';
 
           if (addNames.length > 1) {
@@ -297,6 +270,9 @@ async function test() {
             region = await region.save();
           }
           region.count++;
+
+          const age =
+            (Math.floor((today - birthYear + 1) / 10) * 10).toString() + '대';
           if (gender === '남') {
             region.male.count++;
             if (answer === '네') {
@@ -306,6 +282,7 @@ async function test() {
             } else {
               region.male.so++;
             }
+
             if (age === '10대') {
               region.male.age['10대']++;
             } else if (age === '20대') {
@@ -407,72 +384,7 @@ async function test() {
     }
   }
   console.log('end');
+  await mongoose.disconnect();
 }
 
 test();
-
-// async function test2() {
-//   let data = await User.findOne().populate({
-//     path: 'answers',
-//     // populate: {
-//     //   path: "user",
-//     // },
-//   });
-//   // let issue = data[0];
-//   // let answers = issue.answers.slice(0, 10);
-
-//   // console.log(answers);
-//   console.log(data);
-// }
-
-// test2();
-
-// Issue.find({})
-//   .then(async (x) => {
-//     // console.log(x[0].answers);
-//     let issue_id = x[0]._id;
-
-//     let c = 1;
-//     await Issue.updateOne({ issue_id }, { answers: [] });
-//     for (let { userName, age, email, address, answer, gender } of data) {
-//       let user = await User.findOne({
-//         userName: userName,
-//         age: age,
-//         email: email,
-//         address: address,
-//         gender: gender,
-//       });
-
-//       if (user !== null) {
-//         let ans = await Answer.findOne({
-//           answer: answer,
-//           issue: issue_id,
-//           user: user._id,
-//         });
-//         if (ans !== null) {
-//           let user_id = user._id;
-//           let ans_id = ans._id;
-//           user.answers.push(ans_id);
-
-//           await user.save();
-
-//           await Issue.updateOne(
-//             { issue_id },
-//             { answers: [...x[0].answers, ans._id] }
-//           );
-//         }
-//       }
-//     }
-//   })
-//   .then((x) => {
-//     console.log("end");
-//   })
-//   .then((x) => {
-//     User.findOne()
-//       .populate("answers")
-//       .then(async (x) => {
-//         console.log(x);
-//       });
-//   });
-
-// User.collection.drop();

@@ -4,11 +4,8 @@ import { Answer, answer_Schema } from 'src/schema/answer.schema';
 import { Issue, issue_Schema } from 'src/schema/issue.schema';
 import { Static, static_Schema } from 'src/schema/static.schema';
 import { User, user_Schema } from 'src/schema/user.schema';
-import { users, userSchema } from '../users/users.schema';
 import { CardController } from './card.controller';
 import { CardService } from './card.service';
-import { cardanswer, card_answer_Schema } from './card_answer.schema';
-import { counter, counterSchema } from './counter.schema';
 
 @Module({
   // imports: [

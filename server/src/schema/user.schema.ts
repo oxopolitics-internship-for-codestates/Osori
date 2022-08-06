@@ -34,8 +34,8 @@ export class User extends Document {
     required: true,
   })
   @IsNotEmpty()
-  @IsString()
-  age: string;
+  @IsNumber()
+  BirthYear: number;
 
   @Prop({
     required: true,
