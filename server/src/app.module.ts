@@ -11,7 +11,7 @@ import { IssueModule } from './issue/issue.modules';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URI, {
-      dbName: 'test3',
+      dbName: process.env.MONGODB_DBNAME,
     }),
     CardModule,
     UsersModule,

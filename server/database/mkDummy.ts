@@ -174,7 +174,7 @@ const staticSchema = new Schema<Static>({
 });
 
 mongoose.connect(process.env.MONGODB_URI, {
-  dbName: process.env.MONGODB_DBNAME,
+  dbName: process.env.MONGODB_DUMMY_DBNAME,
 });
 // 3. Create a Model.
 const User = model<User>('User', userSchema);
@@ -196,14 +196,14 @@ async function test() {
       answerTextS: '부먹이나 찍먹보다는 처먹이 최고 아닐까?',
     });
     await issue1.save();
-  } else if (process.env.MONGODB_TYPE === 'update') {
+  } else if (process.env.MONGODB_DUMMY_TYPE === 'update') {
     startNumber = await User.countDocuments();
   } else {
     console.log('wrong type');
     await mongoose.disconnect();
   }
 
-  const dataNumber = Number(process.env.DUMMYDATANUMER) | 10;
+  const dataNumber = Number(process.env.DUMMYDATANUMER) || 10;
   const data = randomPick(dataNumber, startNumber);
   const issue = await Issue.findOne();
   if (issue !== null) {
