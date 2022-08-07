@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
-import { create_answerdto } from '../dto/card.create.answer.dto';
-
 import { User } from 'src/schema/user.schema';
 import { Answer } from 'src/schema/answer.schema';
 import { Issue } from 'src/schema/issue.schema';
@@ -95,40 +92,6 @@ export class CardService {
       sdata.data[adr].count++;
     }
     return sdata;
-  }
-
-  async getNextSequence() {
-    // const ret = await this.counterModel.findOneAndUpdate(
-    //   {},
-    //   { $inc: { seq: 1 } },
-    //   { returnOriginal: false },
-    // );
-    // console.log(ret);
-    // return ret.seq;
-  }
-
-  async create_answer(body: create_answerdto) {
-    // const { email, answer } = body;
-    // const find_exist = await this.card_answerModel.find({ email: email });
-    // if (find_exist.length === 0) {
-    //   const id = await this.getNextSequence();
-    //   await this.card_answerModel.create({
-    //     _id: id,
-    //     email: email,
-    //     answer: answer,
-    //   });
-    //   await this.userModel.updateMany(
-    //     { email: email },
-    //     { $addToSet: { card_answer_id: 2 } },
-    //   );
-    // } else {
-    //   await this.card_answerModel.findOneAndUpdate(
-    //     {
-    //       email: email,
-    //     },
-    //     { $set: { answer: answer } },
-    //   );
-    // }
   }
 
   async getregion(id: string) {

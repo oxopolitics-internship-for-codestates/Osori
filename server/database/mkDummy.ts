@@ -89,119 +89,125 @@ interface Static {
 }
 
 // 2. Create a Schema corresponding to the document interface.
-const userSchema = new Schema<User>({
-  userName: { type: String, required: true },
-  //   nickName: { type: String, required: true },
-  email: { type: String, required: true },
-  address: { type: String, required: true },
-  gender: { type: String, required: true },
-  birthYear: { type: Number, required: true },
-  answers: [
-    {
+const userSchema = new Schema<User>(
+  {
+    userName: { type: String, required: true },
+    //   nickName: { type: String, required: true },
+    email: { type: String, required: true },
+    address: { type: String, required: true },
+    gender: { type: String, required: true },
+    birthYear: { type: Number, required: true },
+    answers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Answer',
+      },
+    ],
+    issues: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Issue',
+      },
+    ],
+  },
+  { timestamps: true },
+);
+
+const issueSchema = new Schema<Issue>(
+  {
+    title: { type: String, required: true },
+    answerTextO: { type: String, required: true },
+    answerTextX: { type: String, required: true },
+    answerTextS: { type: String, required: true },
+    answers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Answer',
+      },
+    ],
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Answer',
+      ref: 'User',
     },
-  ],
-  issues: [
-    {
+  },
+  { timestamps: true },
+);
+const answerSchema = new Schema<Answer>(
+  {
+    answer: { type: String, required: true },
+    issue: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Issue',
     },
-  ],
-});
-
-const issueSchema = new Schema<Issue>({
-  title: { type: String, required: true },
-  answerTextO: { type: String, required: true },
-  answerTextX: { type: String, required: true },
-  answerTextS: { type: String, required: true },
-  answers: [
-    {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Answer',
+      ref: 'User',
     },
-  ],
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
   },
-});
-const answerSchema = new Schema<Answer>({
-  answer: { type: String, required: true },
-  issue: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Issue',
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
-});
+  { timestamps: true },
+);
 
-const staticSchema = new Schema<Static>({
-  issueId: { type: mongoose.Schema.Types.ObjectId, required: true },
-  mapName: { type: String, required: true },
-  regionName: { type: String, required: true },
-  count: { type: Number, required: true, default: 0 },
-  male: {
+const staticSchema = new Schema<Static>(
+  {
+    issueId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    mapName: { type: String, required: true },
+    regionName: { type: String, required: true },
     count: { type: Number, required: true, default: 0 },
-    yes: { type: Number, required: true, default: 0 },
-    no: { type: Number, required: true, default: 0 },
-    so: { type: Number, required: true, default: 0 },
-    age: {
-      '10대': { type: Number, required: true, default: 0 },
-      '20대': { type: Number, required: true, default: 0 },
-      '30대': { type: Number, required: true, default: 0 },
-      '40대': { type: Number, required: true, default: 0 },
-      '50대': { type: Number, required: true, default: 0 },
-      '60대이상': { type: Number, required: true, default: 0 },
+    male: {
+      count: { type: Number, required: true, default: 0 },
+      yes: { type: Number, required: true, default: 0 },
+      no: { type: Number, required: true, default: 0 },
+      so: { type: Number, required: true, default: 0 },
+      age: {
+        '10대': { type: Number, required: true, default: 0 },
+        '20대': { type: Number, required: true, default: 0 },
+        '30대': { type: Number, required: true, default: 0 },
+        '40대': { type: Number, required: true, default: 0 },
+        '50대': { type: Number, required: true, default: 0 },
+        '60대이상': { type: Number, required: true, default: 0 },
+      },
+    },
+    female: {
+      count: { type: Number, required: true, default: 0 },
+      yes: { type: Number, required: true, default: 0 },
+      no: { type: Number, required: true, default: 0 },
+      so: { type: Number, required: true, default: 0 },
+      age: {
+        '10대': { type: Number, required: true, default: 0 },
+        '20대': { type: Number, required: true, default: 0 },
+        '30대': { type: Number, required: true, default: 0 },
+        '40대': { type: Number, required: true, default: 0 },
+        '50대': { type: Number, required: true, default: 0 },
+        '60대이상': { type: Number, required: true, default: 0 },
+      },
     },
   },
-  female: {
-    count: { type: Number, required: true, default: 0 },
-    yes: { type: Number, required: true, default: 0 },
-    no: { type: Number, required: true, default: 0 },
-    so: { type: Number, required: true, default: 0 },
-    age: {
-      '10대': { type: Number, required: true, default: 0 },
-      '20대': { type: Number, required: true, default: 0 },
-      '30대': { type: Number, required: true, default: 0 },
-      '40대': { type: Number, required: true, default: 0 },
-      '50대': { type: Number, required: true, default: 0 },
-      '60대이상': { type: Number, required: true, default: 0 },
-    },
-  },
-});
+  { timestamps: true },
+);
 
 mongoose.connect(process.env.MONGODB_URI, {
   dbName: process.env.MONGODB_DUMMY_DBNAME,
 });
+
 // 3. Create a Model.
 const User = model<User>('User', userSchema);
 const Issue = model<Issue>('Issue', issueSchema);
 const Answer = model<Answer>('Answer', answerSchema);
 const Static = model<Static>('Static', staticSchema);
 const today = new Date().getFullYear();
-let startNumber = 0;
+const startNumber = 0;
 async function test() {
-  if (process.env.MONGODB_TYPE === 'new') {
-    await Issue.collection.drop();
-    await User.collection.drop();
-    await Answer.collection.drop();
-    await Static.collection.drop();
-    const issue1 = new Issue({
-      title: '뭐니뭐니해도 부먹이 최고시다.',
-      answerTextO: '맞아맞아 부먹이 최고지',
-      answerTextX: '아냐 찍먹이 최고야',
-      answerTextS: '부먹이나 찍먹보다는 처먹이 최고 아닐까?',
-    });
-    await issue1.save();
-  } else if (process.env.MONGODB_DUMMY_TYPE === 'update') {
-    startNumber = await User.countDocuments();
-  } else {
-    console.log('wrong type');
-    await mongoose.disconnect();
-  }
+  await Issue.collection.drop();
+  await User.collection.drop();
+  await Answer.collection.drop();
+  await Static.collection.drop();
+  const issue1 = new Issue({
+    title: '뭐니뭐니해도 부먹이 최고시다.',
+    answerTextO: '맞아맞아 부먹이 최고지',
+    answerTextX: '아냐 찍먹이 최고야',
+    answerTextS: '부먹이나 찍먹보다는 처먹이 최고 아닐까?',
+  });
+  await issue1.save();
 
   const dataNumber = Number(process.env.DUMMYDATANUMER) || 10;
   const data = randomPick(dataNumber, startNumber);

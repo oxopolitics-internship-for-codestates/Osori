@@ -8,22 +8,6 @@ import { CardController } from './card.controller';
 import { CardService } from './card.service';
 
 @Module({
-  // imports: [
-  //   MongooseModule.forFeature([
-  //     {
-  //       name: cardanswer.name,
-  //       schema: card_answer_Schema,
-  //     },
-  //     {
-  //       name: users.name,
-  //       schema: userSchema,
-  //     },
-  //     {
-  //       name: counter.name,
-  //       schema: counterSchema,
-  //     },
-  //   ]),
-  // ],
   imports: [
     MongooseModule.forFeature([
       {

@@ -13,13 +13,13 @@ export class UsersService {
   ) {}
 
   // 새유저 무작위 생성
-  async signup() {
+  async signUp() {
     const newData = randomPick(1, 0);
     let userData = new this.userModel({ ...newData[0] });
     userData = await userData.save();
     return { _id: userData._id, userName: userData.userName };
   }
-  async userinfo(userName: string) {
+  async userInfo(userName: string) {
     const res = await this.userModel
       .findOne({ userName: userName })
       .select({ userName: 1, birthYear: 1, gender: 1, address: 1, email: 1 });

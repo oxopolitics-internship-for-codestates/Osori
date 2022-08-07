@@ -15,7 +15,7 @@ export class Issue extends Document {
   })
   @IsNotEmpty()
   @IsString()
-  Title: string;
+  title: string;
 
   @Prop({
     required: true,

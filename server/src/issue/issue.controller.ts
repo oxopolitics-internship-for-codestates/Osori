@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { IssueService } from './issue.service';
 import { issueCreateDto } from 'src/dto/issue.create.dto';
+import { issueAnswerDto } from 'src/dto/issue.select.answer.dto';
 
 @Controller('issue')
 export class IssueController {
@@ -10,9 +11,9 @@ export class IssueController {
   async createIssue(@Body() body: issueCreateDto) {
     return this.issueService.createIssue(body);
   }
-  @Post()
-  async selectAnswer(@Body() body) {
-    return this.issueService.createIssue(body);
+  @Post('answer')
+  async selectAnswer(@Body() body: issueAnswerDto) {
+    return this.issueService.selectAnswer(body);
   }
   @Get()
   async issueinfo() {
