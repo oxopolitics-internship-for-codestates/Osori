@@ -111,19 +111,18 @@ function birthYearF() {
 }
 
 export default function randomPick(n: number, n0: number) {
-  const data: dataForm[] = [],
-    l = `${n}`.length;
+  const data: dataForm[] = [];
 
   for (let i = n0; i < n0 + n; i++) {
-    const p = String(i).padStart(l + 1, '0');
-    data[i] = {
+    const p = String(i).padStart(10, '0');
+    data.push({
       userName: 'name' + p,
       gender: genderF(),
       birthYear: birthYearF(),
       email: 'email' + p + '@gmail.com',
       address: addressF(),
       answer: answerF(),
-    };
+    });
   }
   return data;
 }

@@ -14,7 +14,8 @@ export class UsersService {
 
   // 새유저 무작위 생성
   async signUp() {
-    const newData = randomPick(1, 0);
+    const k = await this.userModel.countDocuments();
+    const newData = randomPick(1, k);
     let userData = new this.userModel({ ...newData[0] });
     userData = await userData.save();
     return { _id: userData._id, userName: userData.userName };
