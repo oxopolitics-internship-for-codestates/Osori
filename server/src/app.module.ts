@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { CardModule } from './card/card.module';
+import { StatsModule } from './stats/stats.module';
 import { UsersModule } from './users/users.module';
 import { IssueModule } from './issue/issue.modules';
 
@@ -13,7 +13,7 @@ import { IssueModule } from './issue/issue.modules';
     MongooseModule.forRoot(process.env.MONGODB_URI, {
       dbName: process.env.MONGODB_DBNAME,
     }),
-    CardModule,
+    StatsModule,
     UsersModule,
     IssueModule,
   ],

@@ -4,8 +4,8 @@ import { Answer, answer_Schema } from 'src/schema/answer.schema';
 import { Issue, issue_Schema } from 'src/schema/issue.schema';
 import { Stats, stats_Schema } from 'src/schema/stats.schema';
 import { User, user_Schema } from 'src/schema/user.schema';
-import { CardController } from './stats.controller';
-import { CardService } from './stats.service';
+import { StatsController } from './stats.controller';
+import { StatsService } from './stats.service';
 
 @Module({
   imports: [
@@ -28,8 +28,8 @@ import { CardService } from './stats.service';
       },
     ]),
   ],
-  controllers: [CardController],
-  providers: [CardService],
-  exports: [CardService],
+  controllers: [StatsController],
+  providers: [StatsService],
+  exports: [StatsService],
 })
-export class CardModule {}
+export class StatsModule {}

@@ -1,17 +1,17 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { CardService } from './stats.service';
+import { StatsService } from './stats.service';
 
-@Controller('card')
-export class CardController {
-  constructor(private readonly cardService: CardService) {}
+@Controller('stats')
+export class StatsController {
+  constructor(private readonly statsService: StatsService) {}
 
   @Get('map/:id')
   async getmapdata(@Param() params) {
-    return this.cardService.getmapdata(params.id);
+    return this.statsService.getmapdata(params.id);
   }
 
   @Get('region/:id')
   async getregiondata(@Param() params) {
-    return this.cardService.getregiondata(params.id);
+    return this.statsService.getregiondata(params.id);
   }
 }

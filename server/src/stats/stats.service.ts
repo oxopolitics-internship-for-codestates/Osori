@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Stats } from 'src/schema/stats.schema';
 
 @Injectable()
-export class CardService {
+export class StatsService {
   constructor(
     @InjectModel(Stats.name) private readonly statsModel: Model<Stats>,
   ) {}
