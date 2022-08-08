@@ -1,19 +1,13 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsString,
-} from 'class-validator';
-import mongoose, { Document } from 'mongoose';
+import { IsNumber, IsString } from 'class-validator';
+import { Document } from 'mongoose';
 
 const options: SchemaOptions = {
   timestamps: true,
 };
 
 @Schema(options)
-export class Static extends Document {
+export class Stats extends Document {
   @Prop({
     required: true,
     default: '',
@@ -130,4 +124,4 @@ export class Static extends Document {
   };
 }
 
-export const static_Schema = SchemaFactory.createForClass(Static);
+export const stats_Schema = SchemaFactory.createForClass(Stats);

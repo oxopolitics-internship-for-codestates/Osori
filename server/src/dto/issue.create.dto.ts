@@ -20,5 +20,5 @@ export class issueCreateDto {
 
   @IsNotEmpty()
   @IsMongoId()
-  user: mongoose.Schema.Types.ObjectId;
+  userId: mongoose.Schema.Types.ObjectId;
 }

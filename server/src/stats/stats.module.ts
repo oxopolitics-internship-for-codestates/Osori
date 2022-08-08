@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Answer, answer_Schema } from 'src/schema/answer.schema';
 import { Issue, issue_Schema } from 'src/schema/issue.schema';
-import { Static, static_Schema } from 'src/schema/static.schema';
+import { Stats, stats_Schema } from 'src/schema/stats.schema';
 import { User, user_Schema } from 'src/schema/user.schema';
-import { CardController } from './card.controller';
-import { CardService } from './card.service';
+import { CardController } from './stats.controller';
+import { CardService } from './stats.service';
 
 @Module({
   imports: [
@@ -23,8 +23,8 @@ import { CardService } from './card.service';
         schema: issue_Schema,
       },
       {
-        name: Static.name,
-        schema: static_Schema,
+        name: Stats.name,
+        schema: stats_Schema,
       },
     ]),
   ],

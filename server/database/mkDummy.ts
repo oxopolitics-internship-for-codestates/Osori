@@ -53,7 +53,7 @@ interface Answer {
   };
 }
 
-interface Static {
+interface Stats {
   issueId: mongoose.Schema.Types.ObjectId;
   mapName: string;
   regionName: string;
@@ -147,7 +147,7 @@ const answerSchema = new Schema<Answer>(
   { timestamps: true },
 );
 
-const staticSchema = new Schema<Static>(
+const StatsSchema = new Schema<Stats>(
   {
     issueId: { type: mongoose.Schema.Types.ObjectId, required: true },
     mapName: { type: String, required: true },
@@ -193,14 +193,14 @@ mongoose.connect(process.env.MONGODB_URI, {
 const User = model<User>('User', userSchema);
 const Issue = model<Issue>('Issue', issueSchema);
 const Answer = model<Answer>('Answer', answerSchema);
-const Static = model<Static>('Static', staticSchema);
+const Stats = model<Stats>('Stats', StatsSchema);
 const today = new Date().getFullYear();
 const startNumber = 0;
 async function test() {
   await Issue.collection.drop();
   await User.collection.drop();
   await Answer.collection.drop();
-  await Static.collection.drop();
+  await Stats.collection.drop();
   const issue1 = new Issue({
     title: '뭐니뭐니해도 부먹이 최고시다.',
     answerTextO: '맞아맞아 부먹이 최고지',
@@ -263,12 +263,12 @@ async function test() {
           } else {
             [mapName, regionName] = ['전국', addNames[0]];
           }
-          let region = await Static.findOne({
+          let region = await Stats.findOne({
             issueId: issue_id,
             regionName: regionName,
           });
           if (region === null) {
-            region = await new Static({
+            region = await new Stats({
               issueId: issue_id,
               mapName: mapName,
               regionName: regionName,
@@ -326,12 +326,12 @@ async function test() {
             }
           }
           region = await region.save();
-          let map = await Static.findOne({
+          let map = await Stats.findOne({
             issueId: issue_id,
             regionName: mapName,
           });
           if (map === null) {
-            map = await new Static({
+            map = await new Stats({
               issueId: issue_id,
               mapName: '지구',
               regionName: mapName,
