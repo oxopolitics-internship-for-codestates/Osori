@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import mongoose, { Document } from 'mongoose';
 import { Issue } from './issue.schema';
 import { User } from './user.schema';

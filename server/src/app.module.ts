@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { CardModule } from './card/card.module';
+import { StatsModule } from './stats/stats.module';
 import { UsersModule } from './users/users.module';
 import { IssueModule } from './issue/issue.modules';
 
@@ -11,17 +11,13 @@ import { IssueModule } from './issue/issue.modules';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URI, {
-      // useNewUrlParser: true,
-      // useUnifiedTopology: true,
-      // useCreateIndex: true,
-      // useFindAndModify: false,
-      dbName: 'test3',
+      dbName: process.env.MONGODB_DBNAME,
     }),
-    CardModule,
+    StatsModule,
     UsersModule,
     IssueModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

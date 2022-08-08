@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import mongoose, { Document } from 'mongoose';
 import { Answer } from './answer.schema';
 import { User } from './user.schema';
@@ -15,7 +15,7 @@ export class Issue extends Document {
   })
   @IsNotEmpty()
   @IsString()
-  Title: string;
+  title: string;
 
   @Prop({
     required: true,

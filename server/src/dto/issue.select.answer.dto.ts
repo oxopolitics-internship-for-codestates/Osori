@@ -1,11 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 import mongoose from 'mongoose';
 
-export class issueCreateDto {
+export class issueAnswerDto {
   @IsNotEmpty()
+  @IsMongoId()
   issueId: mongoose.Schema.Types.ObjectId;
 
   @IsNotEmpty()
+  @IsMongoId()
   userId: mongoose.Schema.Types.ObjectId;
 
   @IsNotEmpty()

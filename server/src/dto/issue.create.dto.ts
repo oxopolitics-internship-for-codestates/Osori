@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import mongoose from 'mongoose';
 
 export class issueCreateDto {
   @IsString()
@@ -16,4 +17,8 @@ export class issueCreateDto {
   @IsNotEmpty()
   @IsString()
   answerTextS: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  userId: mongoose.Schema.Types.ObjectId;
 }
