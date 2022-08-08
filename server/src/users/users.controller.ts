@@ -13,7 +13,7 @@ export class UsersController {
   }
 
   @Get(':userName')
-  userinfo(@Param() { userName }) {
+  async userinfo(@Param() { userName }) {
     return this.usersService.userInfo(userName);
   }
   // async await 사용하지 않고 express처럼 처리할경우
