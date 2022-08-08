@@ -173,9 +173,7 @@ function StaticPage() {
 
 	return (
 		<InnerFrame>
-			<Box>
-				{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} mdata={dbinit[map].odata[region]} />}
-			</Box>
+			<Box>{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} />}</Box>
 			<Box>
 				<MapArea
 					map={map}
