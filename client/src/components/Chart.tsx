@@ -74,7 +74,7 @@ function Chart({ region }: { region: string }) {
 
 	if (isGetRegion !== region) {
 		axios
-			.get(`http://ec2-3-39-194-137.ap-northeast-2.compute.amazonaws.com/stats/region/${region}`, {
+			.get(`${process.env.REACT_APP_SERVER_URI}stats/region/${region}`, {
 				headers: { 'Content-Type': 'application/json' },
 			})
 			.then((res) => {
