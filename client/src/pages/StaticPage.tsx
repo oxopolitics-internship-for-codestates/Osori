@@ -16,6 +16,11 @@ const Box = styled.div`
 	height: 100%;
 `;
 
+const Button = styled.button`
+	width: 50px;
+	height: 50px;
+`;
+
 const names: { [key: string]: string[] } = {
 	전국: [
 		'서울특별시',
@@ -166,13 +171,20 @@ for (const name of ['전국', '서울']) {
 	}
 }
 
-function StaticPage() {
+function StaticPage({ setPageChange }: { setPageChange: React.Dispatch<React.SetStateAction<boolean>> }) {
 	const [region, regionSel] = useState('');
 	const [map, mapSel] = useState('전국');
 	const [isClick, isClickF] = useState(-1);
 
 	return (
 		<InnerFrame>
+			<Button
+				onClick={() => {
+					setPageChange(true);
+				}}
+			>
+				돌아가기
+			</Button>
 			<Box>{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} />}</Box>
 			<Box>
 				<MapArea

@@ -12,6 +12,10 @@ const Frame = styled.div`
 	flex-direction: column;
 	/* justify-content: center; */
 	align-items: center;
+	overflow-y: scroll;
+	&::-webkit-scrollbar {
+		display: none;
+	}
 `;
 
 const Context = styled.div`
@@ -53,14 +57,14 @@ function scroll() {
 	console.log('test');
 }
 
-function IssuePage() {
+function IssuePage({ setPageChange }: { setPageChange: React.Dispatch<React.SetStateAction<boolean>> }) {
 	const [issues, setIssues] = useState(Dummyissues);
 
 	return (
-		<Frame>
+		<Frame id="scroll">
 			<IssueNav />
 			<Context>
-				<IssueList issues={issues} />
+				<IssueList issues={issues} setPageChange={setPageChange} />
 			</Context>
 			<TopButton onClick={scroll}>
 				<TopImage src={TopImg} alt="" />

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import TopImg from '../../assets/images/up-arrow.png';
 
 const Frame = styled.div`
 	display: flex;
@@ -73,6 +74,12 @@ const ConfirmDiv = styled.div`
 	width: 100%;
 `;
 
+const Div = styled.div`
+	display: flex;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+`;
 const Confirm = styled.button`
 	font-size: 17px;
 	font-weight: 500;
@@ -84,6 +91,31 @@ const Confirm = styled.button`
 	padding: 2px;
 	cursor: pointer;
 `;
+const TopButton = styled.div`
+	position: fixed;
+	bottom: 20px; /* Place the button at the bottom of the page */
+	right: 200px; /* Place the button 30px from the right */
+	z-index: 99; /* Make sure it does not overlap */
+	border: none; /* Remove borders */
+	cursor: pointer; /* Add a mouse pointer on hover */
+	padding: 15px; /* Some padding */
+	border-radius: 10px; /* Rounded corners */
+	font-size: 18px; /* Increase font size */
+	width: 50px;
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* background-color: white; */
+	flex-direction: column;
+	margin-bottom: 30px;
+	padding: 5px;
+`;
+
+const TopImage = styled.img`
+	width: 50px;
+	height: 50px;
+`;
 
 interface DummyissuesProps {
 	title: string;
@@ -91,10 +123,24 @@ interface DummyissuesProps {
 	so: string;
 	no: string;
 }
+function scroll() {
+	const myElement: HTMLElement | null = document.getElementById('scroll');
+	if (myElement !== null) {
+		myElement.scrollTo(0, 0);
+		console.log(myElement);
+	}
+	console.log('test');
+}
 
-function Issues({ issues }: { issues: DummyissuesProps[] }) {
+function Issues({
+	issues,
+	setPageChange,
+}: {
+	issues: DummyissuesProps[];
+	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
 	return (
-		<div id="scroll">
+		<Div>
 			{issues.map((issue, idx) => {
 				const key = `isssue${idx}`;
 				return (
@@ -128,12 +174,18 @@ function Issues({ issues }: { issues: DummyissuesProps[] }) {
 							</Examples>
 						</Issue>
 						<ConfirmDiv>
-							<Confirm>통계보기</Confirm>
+							<Confirm
+								onClick={() => {
+									setPageChange(false);
+								}}
+							>
+								통계보기
+							</Confirm>
 						</ConfirmDiv>
 					</Frame>
 				);
 			})}
-		</div>
+		</Div>
 	);
 }
 
