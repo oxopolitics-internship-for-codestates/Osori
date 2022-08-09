@@ -40,6 +40,7 @@ const Button = styled.button<{ direc: string; check: boolean }>`
 	align-items: center;
 	border: solid 1px #7c7c7c;
 	font-weight: 700;
+	color: #333333;
 	${({ direc }) => {
 		if (direc === 'L') {
 			return `
@@ -72,7 +73,7 @@ const MainArea = styled.div`
 `;
 const MapBox = styled.div`
 	height: 100%;
-	max-width: 545px;
+	max-width: 600px;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -93,13 +94,18 @@ const SelRegionBox = styled.div`
 	border-radius: 20px;
 	border: solid 2px #7c7c7c;
 	box-shadow: 0px 0px 5px #7c7c7c;
+	color: #333333;
 	background-color: white;
 	user-select: none;
 `;
 
 const ColorBarBox = styled.div`
-	height: 100%;
+	height: 300px;
+	top: calc(90% - 300px);
+	position: absolute;
+	margin: 15px;
 	width: 50px;
+	user-select: none;
 `;
 
 const colorSet = ['#9749B6', '#C181DB', '#C1ADD1', '#EEA3BF', '#FEDDD5', '#EAEAEA'];
@@ -279,10 +285,10 @@ function MapArea({
 									checkF={checkF}
 								/>
 							)}
+							<ColorBarBox>
+								<ColorBar />
+							</ColorBarBox>
 						</MapBox>
-						<ColorBarBox>
-							<ColorBar />
-						</ColorBarBox>
 					</MainArea>
 				</InnerFrame>
 			) : null}
