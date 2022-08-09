@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import IssuePage from './pages/IssuePage';
 import LoadingPage from './pages/LoadingPage';
@@ -10,14 +10,16 @@ const Frame = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	overflow-y: scroll;
-	&::-webkit-scrollbar {
-		display: none;
-	}
 `;
 
 function App() {
-	return <Frame>{true ? <IssuePage /> : <StaticPage />}</Frame>;
+	const [pageChange, setPageChange] = useState(true);
+
+	return (
+		<Frame>
+			{pageChange ? <IssuePage setPageChange={setPageChange} /> : <StaticPage setPageChange={setPageChange} />}
+		</Frame>
+	);
 }
 
 export default App;

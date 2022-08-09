@@ -5,13 +5,13 @@ import { StatsService } from './stats.service';
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
-  @Get('map/:id')
+  @Get('map/:mapName')
   async getmapdata(@Param() params) {
-    return this.statsService.getmapdata(params.id);
+    return this.statsService.getmapdata(params.mapName);
   }
 
-  @Get('region/:id')
+  @Get('region/:regionName')
   async getregiondata(@Param() params) {
-    return this.statsService.getregiondata(params.id);
+    return this.statsService.getregiondata(params.regionName);
   }
 }
