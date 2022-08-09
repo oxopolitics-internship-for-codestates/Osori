@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import MapArea from '../components/MapArea';
 import Chart from '../components/Chart';
-import Waiting from './StatisticsWaiting';
+import Waiting from '../components/waiting/StatisticsWaiting';
 import randomPick from '../etc/randomPick';
 
 const InnerFrame = styled.div`
