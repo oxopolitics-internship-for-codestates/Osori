@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import osori from '../assets/images/scandi-123.png';
+import osori from '../../assets/images/scandi-123.png';
 
 // 전체 콘테이너
 const Waiting = styled.div`
