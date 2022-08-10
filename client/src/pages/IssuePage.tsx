@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import IssueList from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
 import Dummyissues from '../etc/DummyIssue';
@@ -51,7 +51,7 @@ const TopImage = styled.img`
 function scroll() {
 	const myElement: HTMLElement | null = document.getElementById('scroll');
 	if (myElement !== null) {
-		myElement.scrollTo(0, 0);
+		myElement.scrollTo({ top: 0, behavior: 'smooth' });
 		console.log(myElement);
 	}
 	console.log('test');
