@@ -234,7 +234,9 @@ function StaticPage({
 					<BackImg src={back} />
 				</Button>
 			</BackFrame>
-			<Box>{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} selectIssue={selectIssue} />}</Box>
+			<Box>
+				{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} selectIssue={selectIssue} />}
+			</Box>
 			<Box>
 				<MapArea
 					map={map}

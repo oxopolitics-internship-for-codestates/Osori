@@ -91,7 +91,6 @@ function IssuePage({
 	const [target, setTarget] = useState<(EventTarget & HTMLDivElement) | null>(null);
 	const [isLogin, setIsLogin] = useState(false);
 	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
-	
 	useEffect(() => {
 		if (target !== null) {
 			target.scrollTo({ top });
