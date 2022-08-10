@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import HomeImg from '../../assets/images/issueImg.png';
+import HomeImg from '../../assets/images/IssueImage.png';
 import osoriLogo from '../../assets/images/osori-logo.png';
 
 const Frame = styled.div`
@@ -35,19 +35,6 @@ const NewsImg = styled.img`
 	margin-right: 20px;
 `;
 
-const TitleName = styled.span`
-	font-size: 20px;
-	font-weight: 900;
-`;
-
-// const Menu = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-// `;
-
-// const MenuTitle = styled.div``;
-
 function IssueNav() {
 	return (
 		<Frame>
@@ -56,11 +43,7 @@ function IssueNav() {
 			</LogoFrame>
 			<Title>
 				<NewsImg src={HomeImg} />
-				<TitleName>Issue</TitleName>
 			</Title>
-			{/* <Menu>
-        <MenuTitle>News</MenuTitle>
-      </Menu> */}
 		</Frame>
 	);
 }

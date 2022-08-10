@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import IssueList from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
 import Dummyissues from '../etc/DummyIssue';
 import TopImg from '../assets/images/up-arrow.png';
+import Editor from '../components/editor/Editor';
 
 const Frame = styled.div`
 	display: flex;
 	width: 100%;
 	height: 100%;
 	flex-direction: column;
-	/* justify-content: center; */
 	align-items: center;
 	overflow-y: scroll;
 	&::-webkit-scrollbar {
@@ -37,7 +37,6 @@ const TopButton = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/* background-color: white; */
 	flex-direction: column;
 	margin-bottom: 30px;
 	padding: 5px;

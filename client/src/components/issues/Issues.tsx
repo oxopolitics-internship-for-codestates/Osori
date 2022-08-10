@@ -31,14 +31,14 @@ const Answer = styled.div`
 	border-bottom: 1px solid #878787;
 `;
 
-const Ans = styled.button<{ padValue: string; marginL?: string; hoverColor?: string; backC?: string }>`
+const Ans = styled.button<{ padValue: string; marginL?: string; hoverColor?: string; backC?: string; colorA?: string }>`
 	align-items: center;
-	/* background: #eeeeee; */
 	background: ${({ backC }) => backC || '#eeeeee'};
 	border: 0 solid #e2e8f0;
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);
 	box-sizing: border-box;
-	color: #1a202c;
+	/* color: #fff; */
+	color: ${({ colorA }) => colorA || '#fff'};
 	display: inline-flex;
 	font-family: Inter, sans-serif;
 	font-size: 1rem;
@@ -58,7 +58,7 @@ const Ans = styled.button<{ padValue: string; marginL?: string; hoverColor?: str
 	-webkit-user-select: none;
 	touch-action: manipulation;
 	&:hover {
-		background-color: ${({ hoverColor }) => hoverColor || '#519b7a'};
+		background-color: ${({ hoverColor }) => hoverColor || 'rgba(81, 155, 122, 0.80)'};
 	}
 `;
 
@@ -81,9 +81,7 @@ const ExampleList1 = styled.span<{ examplListLS?: string }>`
 	margin-left: 20px;
 `;
 
-const ExampleList2 = styled.span`
-	/* margin-right: 100px; */
-`;
+const ExampleList2 = styled.span``;
 
 const ConfirmDiv = styled.div`
 	display: flex;
@@ -135,13 +133,13 @@ function Issues({
 						<Issue>
 							<Topic>{issue.title}</Topic>
 							<Answer>
-								<Ans padValue="8px 25px" backC="#rgba(81, 155, 122, 0.27)" marginL="50px">
+								<Ans padValue="8px 25px" backC="#519b7a" marginL="50px">
 									네
 								</Ans>
-								<Ans padValue="8px 10px" backC="#rgba(251, 205, 87, 0.27)" hoverColor="#fbcd57">
+								<Ans padValue="8px 10px" colorA="#858585" backC="#fbcd57" hoverColor="rgba(251, 205, 87, 0.80)">
 									글쎄요
 								</Ans>
-								<Ans padValue="8px 10px" backC="#rgba(251, 123, 119, 0.27)" hoverColor="#fb7b77">
+								<Ans padValue="8px 10px" backC="#fb7b77" hoverColor="rgba(251, 123, 119, 0.80)">
 									아니요
 								</Ans>
 							</Answer>
