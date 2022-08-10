@@ -191,14 +191,11 @@ export class IssueService {
 
   async issueinfo(userId: issueInfoDto) {
     if (userId) {
-      const res = await this.issueModel
-        .find()
-        .select({ answers: 1 })
-        .populate({
-          path: 'answers',
-          match: { user: userId },
-          select: 'answer',
-        });
+      const res = await this.issueModel.find().populate({
+        path: 'answers',
+        match: { user: userId },
+        select: 'answer',
+      });
       return res;
     } else {
       const res = await this.issueModel.find().select({ answers: 0 });

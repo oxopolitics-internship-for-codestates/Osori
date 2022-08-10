@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Frame = styled.div`
@@ -31,10 +32,21 @@ const Answer = styled.div`
 	border-bottom: 1px solid #878787;
 `;
 
-const Ans = styled.button<{ padValue: string; marginL?: string; hoverColor?: string; backC?: string }>`
+const Ans = styled.button<{
+	padValue: string;
+	marginL?: string;
+	hoverColor?: string;
+	backC?: string;
+	pressed: boolean;
+}>`
 	align-items: center;
 	/* background: #eeeeee; */
-	background: ${({ backC }) => backC || '#eeeeee'};
+	background: ${({ backC, pressed }) => {
+		if (!pressed) {
+			return backC || '#eeeeee';
+		}
+		return 'black';
+	}};
 	border: 0 solid #e2e8f0;
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);
 	box-sizing: border-box;
@@ -58,7 +70,12 @@ const Ans = styled.button<{ padValue: string; marginL?: string; hoverColor?: str
 	-webkit-user-select: none;
 	touch-action: manipulation;
 	&:hover {
-		background-color: ${({ hoverColor }) => hoverColor || '#519b7a'};
+		background-color: ${({ hoverColor, pressed }) => {
+			if (!pressed) {
+				return hoverColor || '#519b7a';
+			}
+			return 'black';
+		}};
 	}
 `;
 
@@ -68,6 +85,7 @@ const Examples = styled.div`
 	width: 90%;
 	margin: 20px 45px;
 	padding: 10px;
+	box-shadow: inset 0px 0px 10px #7c7c7c;
 `;
 
 const Example = styled.div`
@@ -108,11 +126,13 @@ const Confirm = styled.button`
 	cursor: pointer;
 `;
 
-interface DummyissuesProps {
+interface IssuesData {
+	_id: string;
 	title: string;
-	yes: string;
-	so: string;
-	no: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answers?: { _id: string; answer: string }[];
 }
 
 function Issues({
@@ -120,64 +140,124 @@ function Issues({
 	setPageChange,
 	target,
 	setTop,
+	setSelectIssue,
 }: {
-	issues: DummyissuesProps[];
+	issues: IssuesData[];
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	target: (EventTarget & HTMLDivElement) | null;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
+	setSelectIssue: React.Dispatch<React.SetStateAction<string>>;
 }) {
+	const [check, setCheck] = useState(false);
+	const [pressed, setPressed] = useState<{ [key: string]: boolean[] }>({});
+	if (!check) {
+		const data: { [key: string]: boolean[] } = {};
+		for (const i of issues) {
+			const base = [false, false, false];
+			if (i.answers === undefined) {
+				data[i.title] = base;
+			} else {
+				const { answer } = i.answers[0];
+				if (answer === '네') {
+					base[0] = true;
+				} else if (answer === '아니요') {
+					base[2] = true;
+				} else {
+					base[1] = true;
+				}
+				data[i.title] = base;
+			}
+		}
+		setPressed(data);
+		setCheck(true);
+	}
+
 	return (
 		<Div>
-			{issues.map((issue, idx) => {
-				const key = `isssue${idx}`;
-				return (
-					<Frame key={key}>
-						<Issue>
-							<Topic>{issue.title}</Topic>
-							<Answer>
-								<Ans padValue="8px 25px" backC="#rgba(81, 155, 122, 0.27)" marginL="50px">
-									네
-								</Ans>
-								<Ans padValue="8px 10px" backC="#rgba(251, 205, 87, 0.27)" hoverColor="#fbcd57">
-									글쎄요
-								</Ans>
-								<Ans padValue="8px 10px" backC="#rgba(251, 123, 119, 0.27)" hoverColor="#fb7b77">
-									아니요
-								</Ans>
-							</Answer>
-							<Examples>
-								<Example>
-									<ExampleList1 examplListLS="30px">네</ExampleList1>
-									<ExampleList2> {issue.yes}</ExampleList2>
-								</Example>
-								<Example>
-									<ExampleList1>글쎄요</ExampleList1>
-									<ExampleList2> {issue.so}</ExampleList2>
-								</Example>
-								<Example>
-									<ExampleList1>아니요</ExampleList1>
-									<ExampleList2> {issue.no}</ExampleList2>
-								</Example>
-							</Examples>
-						</Issue>
-						<ConfirmDiv>
-							<Confirm
-								onClick={() => {
-									if (target !== null) {
-										console.log(target);
-										console.log(target.scrollTop);
-										setTop(target.scrollTop);
-									}
+			{issues.length > 0
+				? issues.map((issue, idx) => {
+						const key = `isssue${idx}`;
+						return (
+							<Frame key={key}>
+								<Issue>
+									<Topic>{issue.title}</Topic>
+									<Answer>
+										<Ans
+											padValue="8px 25px"
+											backC="#rgba(81, 155, 122, 0.27)"
+											marginL="50px"
+											pressed={pressed[issue.title] ? pressed[issue.title][0] : false}
+											onClick={() => {
+												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
+													console.log('yes');
+													setPressed({ ...pressed, [issue.title]: [true, false, false] });
+												});
+											}}
+										>
+											네
+										</Ans>
+										<Ans
+											padValue="8px 10px"
+											backC="#rgba(251, 205, 87, 0.27)"
+											hoverColor="#fbcd57"
+											pressed={pressed[issue.title] ? pressed[issue.title][1] : false}
+											onClick={() => {
+												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
+													console.log('so');
 
-									setPageChange(false);
-								}}
-							>
-								통계보기
-							</Confirm>
-						</ConfirmDiv>
-					</Frame>
-				);
-			})}
+													setPressed({ ...pressed, [issue.title]: [false, true, false] });
+												});
+											}}
+										>
+											글쎄요
+										</Ans>
+										<Ans
+											padValue="8px 10px"
+											backC="#rgba(251, 123, 119, 0.27)"
+											hoverColor="#fb7b77"
+											pressed={pressed[issue.title] ? pressed[issue.title][2] : false}
+											onClick={() => {
+												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
+													setPressed({ ...pressed, [issue.title]: [false, false, true] });
+												});
+											}}
+										>
+											아니요
+										</Ans>
+									</Answer>
+									<Examples>
+										<Example>
+											<ExampleList1 examplListLS="30px">네</ExampleList1>
+											<ExampleList2> {issue.answerTextO}</ExampleList2>
+										</Example>
+										<Example>
+											<ExampleList1>글쎄요</ExampleList1>
+											<ExampleList2> {issue.answerTextS}</ExampleList2>
+										</Example>
+										<Example>
+											<ExampleList1>아니요</ExampleList1>
+											<ExampleList2> {issue.answerTextX}</ExampleList2>
+										</Example>
+									</Examples>
+								</Issue>
+								<ConfirmDiv>
+									<Confirm
+										onClick={() => {
+											if (target !== null) {
+												setTop(target.scrollTop);
+											}
+											// eslint-disable-next-line no-underscore-dangle
+											setSelectIssue(issue._id);
+											setPageChange(false);
+										}}
+									>
+										통계보기
+									</Confirm>
+								</ConfirmDiv>
+							</Frame>
+						);
+				  })
+				: null}
 		</Div>
 	);
 }

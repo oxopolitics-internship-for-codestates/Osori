@@ -177,10 +177,12 @@ function StaticPage({
 	setPageChange,
 	setIsLoading,
 	isLoading,
+	selectIssue,
 }: {
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 	isLoading: boolean;
+	selectIssue: string;
 }) {
 	const [region, regionSel] = useState('');
 	const [map, mapSel] = useState('전국');
@@ -188,7 +190,9 @@ function StaticPage({
 
 	return (
 		<InnerFrame>
-			<Box>{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} />}</Box>
+			<Box>
+				{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} selectIssue={selectIssue} />}
+			</Box>
 			<Button
 				onClick={() => {
 					setPageChange(true);
@@ -206,6 +210,7 @@ function StaticPage({
 					isClick={isClick}
 					isClickF={isClickF}
 					isLoading={isLoading}
+					selectIssue={selectIssue}
 					setIsLoading={setIsLoading}
 				/>
 			</Box>

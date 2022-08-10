@@ -140,6 +140,7 @@ function MapArea({
 	isClickF,
 	setIsLoading,
 	isLoading,
+	selectIssue,
 }: {
 	map: string;
 	mapSel: React.Dispatch<React.SetStateAction<string>>;
@@ -150,13 +151,14 @@ function MapArea({
 	isClickF: React.Dispatch<React.SetStateAction<number>>;
 	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 	isLoading: boolean;
+	selectIssue: string;
 }) {
 	const [check, checkF] = useState(-1);
 	const [data, dataF] = useState<MapData | null>(null);
 
 	function mapUpdate(mapName: string) {
 		return axios
-			.get(`${process.env.REACT_APP_SERVER_URI}stats/map/${mapName}`)
+			.get(`${process.env.REACT_APP_SERVER_URI}stats/map/${selectIssue}/${mapName}`)
 			.then((x) => {
 				const mapdata: RegionData2[] = x.data;
 				const sub: MapData = {
@@ -183,11 +185,15 @@ function MapArea({
 						color: '',
 					};
 				}
+				if (sub.min === 0) {
+					sub.min = 1;
+				}
 				const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
 				for (const { regionName } of mapdata) {
 					const { rate } = sub.data[`${regionName}`];
 					let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
 					k = k < 0 ? 0 : k;
+					k = k > 5 ? 5 : k;
 					sub.data[`${regionName}`].color = colorSet[k];
 				}
 				dataF(sub);
@@ -259,9 +265,9 @@ function MapArea({
 								<SelRegionBox>
 									{region}
 									<br />
-									{`${data.data[region].count} 명`}
+									{`${data.data[region] ? data.data[region].count : 0} 명`}
 									<br />
-									{`${data.data[region].rate}%`}
+									{`${data.data[region] ? data.data[region].rate : 0}%`}
 								</SelRegionBox>
 							) : null}
 							{data !== null && region.length === 0 ? (
