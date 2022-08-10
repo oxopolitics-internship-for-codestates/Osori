@@ -65,21 +65,6 @@ const TopImage = styled.img`
 	width: 50px;
 	height: 50px;
 `;
-const Button = styled.button`
-	position: absolute;
-	right: calc((100% - 1200px) / 2);
-	width: 50px;
-	height: 50px;
-`;
-const Button2 = styled.button<{ logIn: boolean }>`
-	position: absolute;
-	right: calc(((100% - 1200px) / 2) + 60px);
-	width: 50px;
-	height: 50px;
-	opacity: 0;
-	animation: ${({ logIn }) => (logIn ? fadeIn : fadeOut)} 2s;
-	animation-fill-mode: forwards;
-`;
 
 interface IssuesData {
 	_id: string;
@@ -106,7 +91,7 @@ function IssuePage({
 	const [target, setTarget] = useState<(EventTarget & HTMLDivElement) | null>(null);
 	const [isLogin, setIsLogin] = useState(false);
 	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
-	const [isBoot, setIsBoot] = useState(false);
+	
 	useEffect(() => {
 		if (target !== null) {
 			target.scrollTo({ top });
@@ -126,39 +111,6 @@ function IssuePage({
 			}}
 		>
 			<IssueNav />
-			{isBoot ? <Button2 logIn={isLogin}>글쓰기</Button2> : null}
-			{isLogin ? (
-				<Button
-					onClick={() => {
-						axios.get(`${process.env.REACT_APP_SERVER_URI}issue`).then((x) => {
-							setIssues(x.data);
-							setIsLogin(false);
-						});
-					}}
-				>
-					로그아웃
-				</Button>
-			) : (
-				<Button
-					onClick={() => {
-						axios.get(`${process.env.REACT_APP_SERVER_URI}user`).then((x) => {
-							// eslint-disable-next-line no-underscore-dangle
-							const data = { userName: x.data.userName, id: x.data._id };
-
-							setUserInfo(data);
-							return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${data.id}`).then((reIssueData) => {
-								setIssues(reIssueData.data);
-								setIsLogin(true);
-								if (!isBoot) {
-									setIsBoot(true);
-								}
-							});
-						});
-					}}
-				>
-					로그인
-				</Button>
-			)}
 			<Context>
 				<IssueList
 					issues={issues}
