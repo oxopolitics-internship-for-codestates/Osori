@@ -199,8 +199,22 @@ interface dataForm {
   birthYear: number;
   email: string;
   address: string;
-  answer: string;
   gender: string;
+}
+
+function answerF() {
+  const data = ['네', '아니요', '글세요'];
+  let k = Math.random();
+  const q = 0.1 * Math.random() - 0.05;
+  if (k <= 0.33 + q) {
+    k = 0;
+  } else if (k <= 0.66 + q) {
+    k = 1;
+  } else {
+    k = 2;
+  }
+
+  return data[k];
 }
 
 async function test(
@@ -212,7 +226,8 @@ async function test(
   },
   data: dataForm[],
 ) {
-  for (const { userName, birthYear, address, answer, gender } of data) {
+  for (const { userName, birthYear, address, gender } of data) {
+    const answer = answerF();
     const k = Math.random();
     if (k > 0.3) {
       const issue = await Issue.findOne({ title: issued.title });
