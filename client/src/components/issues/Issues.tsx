@@ -135,13 +135,13 @@ function Issues({
 						<Issue>
 							<Topic>{issue.title}</Topic>
 							<Answer>
-								<Ans padValue="8px 25px" backC="#rgba(81, 155, 122, 0.27)" marginL="50px">
+								<Ans padValue="8px 25px" backC="rgba(81, 155, 122, 0.27)" marginL="50px">
 									네
 								</Ans>
-								<Ans padValue="8px 10px" backC="#rgba(251, 205, 87, 0.27)" hoverColor="#fbcd57">
+								<Ans padValue="8px 10px" backC="rgba(251, 205, 87, 0.27)" hoverColor="#fbcd57">
 									글쎄요
 								</Ans>
-								<Ans padValue="8px 10px" backC="#rgba(251, 123, 119, 0.27)" hoverColor="#fb7b77">
+								<Ans padValue="8px 10px" backC="rgba(251, 123, 119, 0.27)" hoverColor="#fb7b77">
 									아니요
 								</Ans>
 							</Answer>
