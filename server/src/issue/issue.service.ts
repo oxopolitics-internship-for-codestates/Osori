@@ -7,6 +7,7 @@ import { issueAnswerDto } from 'src/dto/issue.select.answer.dto';
 import { Answer } from 'src/schema/answer.schema';
 import { User } from 'src/schema/user.schema';
 import { Stats } from 'src/schema/stats.schema';
+import { issueInfoDto } from 'src/dto/issue.info.dto';
 
 @Injectable()
 export class IssueService {
@@ -188,8 +189,20 @@ export class IssueService {
     return answer !== null;
   }
 
-  async issueinfo() {
-    const res = await this.issueModel.find().select({ answers: 0 });
-    return res;
+  async issueinfo(userId: issueInfoDto) {
+    if (userId) {
+      const res = await this.issueModel
+        .find()
+        .select({ answers: 1 })
+        .populate({
+          path: 'answers',
+          match: { user: userId },
+          select: 'answer',
+        });
+      return res;
+    } else {
+      const res = await this.issueModel.find().select({ answers: 0 });
+      return res;
+    }
   }
 }

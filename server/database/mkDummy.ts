@@ -212,7 +212,7 @@ async function test(
   },
   data: dataForm[],
 ) {
-  for (const { userName, birthYear, email, address, answer, gender } of data) {
+  for (const { userName, birthYear, address, answer, gender } of data) {
     const k = Math.random();
     if (k > 0.3) {
       const issue = await Issue.findOne({ title: issued.title });

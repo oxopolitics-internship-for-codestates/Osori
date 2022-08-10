@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { IssueService } from './issue.service';
 import { issueCreateDto } from 'src/dto/issue.create.dto';
 import { issueAnswerDto } from 'src/dto/issue.select.answer.dto';
+import { issueInfoDto } from 'src/dto/issue.info.dto';
 
 @Controller('issue')
 export class IssueController {
@@ -16,7 +17,11 @@ export class IssueController {
     return this.issueService.selectAnswer(body);
   }
   @Get()
-  async issueinfo() {
-    return this.issueService.issueinfo();
+  async issueinfot() {
+    return this.issueService.issueinfo(undefined);
+  }
+  @Get(':userId')
+  async issueinfo(@Param() { userId }: { userId: issueInfoDto }) {
+    return this.issueService.issueinfo(userId);
   }
 }
