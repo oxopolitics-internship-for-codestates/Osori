@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import MapArea from '../components/MapArea';
 import Chart from '../components/Chart';
-import Waiting from './StatisticsWaiting';
+import Waiting from '../components/waiting/StatisticsWaiting';
 import randomPick from '../etc/randomPick';
 
 const InnerFrame = styled.div`
@@ -14,6 +14,13 @@ const InnerFrame = styled.div`
 const Box = styled.div`
 	width: 50%;
 	height: 100%;
+`;
+
+const Button = styled.button`
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	user-select: none;
 `;
 
 const names: { [key: string]: string[] } = {
@@ -166,7 +173,15 @@ for (const name of ['전국', '서울']) {
 	}
 }
 
-function StaticPage() {
+function StaticPage({
+	setPageChange,
+	setIsLoading,
+	isLoading,
+}: {
+	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
+	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+	isLoading: boolean;
+}) {
 	const [region, regionSel] = useState('');
 	const [map, mapSel] = useState('전국');
 	const [isClick, isClickF] = useState(-1);
@@ -174,6 +189,13 @@ function StaticPage() {
 	return (
 		<InnerFrame>
 			<Box>{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} />}</Box>
+			<Button
+				onClick={() => {
+					setPageChange(true);
+				}}
+			>
+				돌아가기
+			</Button>
 			<Box>
 				<MapArea
 					map={map}
@@ -183,6 +205,8 @@ function StaticPage() {
 					mdata={dbinit[map]}
 					isClick={isClick}
 					isClickF={isClickF}
+					isLoading={isLoading}
+					setIsLoading={setIsLoading}
 				/>
 			</Box>
 		</InnerFrame>

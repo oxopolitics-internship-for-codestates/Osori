@@ -7,14 +7,14 @@ const Svg = styled.svg``;
 // ---- code ----
 const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
 
-interface StatData {
+interface OverallResData {
 	total: number;
 	yes: number;
 	no: number;
 	so: number;
 }
 
-function OverallResponseRate({ statData }: { statData: StatData }) {
+function OverallResponseRate({ overallResData }: { overallResData: OverallResData }) {
 	const legend = [
 		{ name: '네', symbol: { fill: '#9749B6' } },
 		{ name: '글쎄요', symbol: { fill: '#C1ADD1' } },
@@ -26,17 +26,17 @@ function OverallResponseRate({ statData }: { statData: StatData }) {
 
 	useEffect(() => {
 		// 전체 응답 데이터 추출
-		const yes = `${((100 * statData.yes) / statData.total).toFixed(2)}%`;
-		const no = `${((100 * statData.no) / statData.total).toFixed(2)}%`;
-		const so = `${((100 * statData.so) / statData.total).toFixed(2)}%`;
+		const yes = `${((100 * overallResData.yes) / overallResData.total).toFixed(2)}%`;
+		const no = `${((100 * overallResData.no) / overallResData.total).toFixed(2)}%`;
+		const so = `${((100 * overallResData.so) / overallResData.total).toFixed(2)}%`;
 		const overallResponseData = [
-			{ x: yes, y: statData.yes },
-			{ x: so, y: statData.so },
-			{ x: no, y: statData.no },
+			{ x: yes, y: overallResData.yes },
+			{ x: so, y: overallResData.so },
+			{ x: no, y: overallResData.no },
 		];
-		setCount(statData.total);
+		setCount(overallResData.total);
 		setOverallResponse(overallResponseData);
-	}, [statData]);
+	}, [overallResData]);
 
 	return (
 		<Svg viewBox="0 0 300 250">

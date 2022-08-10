@@ -7,7 +7,6 @@ const Frame = styled.div`
 	width: 55px;
 	display: flex;
 	flex-direction: column;
-	padding-bottom: 50px;
 	justify-content: flex-end;
 `;
 const InnerFrame = styled.div`
@@ -37,13 +36,16 @@ const Label = styled.div<{ width: number }>`
 	justify-content: center;
 	align-items: center;
 	text-align: center;
+	text-shadow: 0px 0px 5px #7c7c7c;
+	color: #333333;
 `;
 const Box = styled.div<{ color: string }>`
 	width: 20px;
 	height: 50px;
 	background-color: ${({ color }) => `${color}`};
 	border-radius: 10px;
-	border: solid 1px black;
+	box-shadow: 0px 0px 5px #7c7c7c;
+	border: solid 1px #7c7c7c;
 `;
 
 const colorSet = ['#9749B6', '#C181DB', '#C1ADD1', '#EEA3BF', '#FEDDD5', '#EAEAEA'];

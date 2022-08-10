@@ -5,27 +5,21 @@ import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip, LineSegment } 
 const Svg = styled.svg``;
 
 // ---- code ----
-interface Answer {
+interface Gender {
+	count: number;
 	yes: number;
 	no: number;
 	so: number;
 }
 
-interface Gender {
-	count: number;
-	answer: Answer;
-}
-
-interface SubData {
-	name: string;
-	count: number;
-	male: Gender;
+interface GenderData {
 	female: Gender;
+	male: Gender;
 }
 
 const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
 
-function GenderResponseRate({ statData }: { statData: SubData }) {
+function GenderResponseRate({ genderData }: { genderData: GenderData }) {
 	const legend = [
 		{ name: '네', symbol: { fill: '#9749B6' } },
 		{ name: '글쎄요', symbol: { fill: '#C1ADD1' } },
@@ -40,29 +34,29 @@ function GenderResponseRate({ statData }: { statData: SubData }) {
 
 	useEffect(() => {
 		// 남성 응답 데이터 추출
-		let yes = `${((100 * statData.male.answer.yes) / statData.male.count).toFixed(2)}%`;
-		let no = `${((100 * statData.male.answer.no) / statData.male.count).toFixed(2)}%`;
-		let so = `${((100 * statData.male.answer.so) / statData.male.count).toFixed(2)}%`;
+		let yes = `${((100 * genderData.male.yes) / genderData.male.count).toFixed(2)}%`;
+		let no = `${((100 * genderData.male.no) / genderData.male.count).toFixed(2)}%`;
+		let so = `${((100 * genderData.male.so) / genderData.male.count).toFixed(2)}%`;
 		const maleResponseData = [
-			{ x: yes, y: statData.male.answer.yes },
-			{ x: so, y: statData.male.answer.so },
-			{ x: no, y: statData.male.answer.no },
+			{ x: yes, y: genderData.male.yes },
+			{ x: so, y: genderData.male.so },
+			{ x: no, y: genderData.male.no },
 		];
 
 		// 여성 응답 데이터 추출
-		yes = `${((100 * statData.female.answer.yes) / statData.female.count).toFixed(2)}%`;
-		no = `${((100 * statData.female.answer.no) / statData.female.count).toFixed(2)}%`;
-		so = `${((100 * statData.female.answer.so) / statData.female.count).toFixed(2)}%`;
+		yes = `${((100 * genderData.female.yes) / genderData.female.count).toFixed(2)}%`;
+		no = `${((100 * genderData.female.no) / genderData.female.count).toFixed(2)}%`;
+		so = `${((100 * genderData.female.so) / genderData.female.count).toFixed(2)}%`;
 		const femaleResponseData = [
-			{ x: yes, y: statData.female.answer.yes },
-			{ x: so, y: statData.female.answer.so },
-			{ x: no, y: statData.female.answer.no },
+			{ x: yes, y: genderData.female.yes },
+			{ x: so, y: genderData.female.so },
+			{ x: no, y: genderData.female.no },
 		];
-		setMaCount(statData.male.count);
-		setFeCount(statData.female.count);
+		setMaCount(genderData.male.count);
+		setFeCount(genderData.female.count);
 		setMaleResponseRate(maleResponseData);
 		setFemaleResponseRate(femaleResponseData);
-	}, [statData]);
+	}, [genderData]);
 
 	return (
 		<Svg viewBox="0 0 300 300">

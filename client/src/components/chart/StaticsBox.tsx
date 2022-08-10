@@ -46,20 +46,17 @@ const StaticalFigureWrapper = styled.div`
 
 const StaticalFigure = styled.div``;
 
-function StaticsBox({
-	// resData,
-	newData,
-}: {
-	// resData: ResProps;
-	newData: {
-		female: number;
-		male: number;
-		femaxc: number;
-		femaxl: string;
-		memaxc: number;
-		memaxl: string;
-	};
-}) {
+// ---- code
+interface GenderResData {
+	female: number;
+	male: number;
+	femaleMaxAgeCnt: number;
+	femaleMaxAgeLabel: string;
+	maleMaxAgeCnt: number;
+	maleMaxAgeLabel: string;
+}
+
+function StaticsBox({ genderResData }: { genderResData: GenderResData }) {
 	return (
 		<BoxWrapper>
 			<StaticalNameWrapper>
@@ -77,10 +74,10 @@ function StaticsBox({
 				</StaticalName>
 			</StaticalNameWrapper>
 			<StaticalFigureWrapper>
-				<StaticalFigure>{`${newData.male} 명`}</StaticalFigure>
-				<StaticalFigure>{`${newData.female} 명`}</StaticalFigure>
-				<StaticalFigure>{`${newData.memaxl}`}</StaticalFigure>
-				<StaticalFigure>{`${newData.femaxl}`}</StaticalFigure>
+				<StaticalFigure>{`${genderResData.male} 명`}</StaticalFigure>
+				<StaticalFigure>{`${genderResData.female} 명`}</StaticalFigure>
+				<StaticalFigure>{`${genderResData.maleMaxAgeLabel}`}</StaticalFigure>
+				<StaticalFigure>{`${genderResData.femaleMaxAgeLabel}`}</StaticalFigure>
 			</StaticalFigureWrapper>
 		</BoxWrapper>
 	);

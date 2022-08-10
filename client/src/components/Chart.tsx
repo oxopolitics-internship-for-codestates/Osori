@@ -27,15 +27,9 @@ const StatsArea = styled.div`
 	height: 70%;
 `;
 
-interface Answer {
-	yes: number;
-	no: number;
-	so: number;
-}
-
+// ---- code ----
 interface Gender {
 	count: number;
-	// answer: Answer;
 	age: Age;
 	yes: number;
 	no: number;
@@ -43,11 +37,11 @@ interface Gender {
 }
 
 interface Age {
-	// count: number;
 	[key: string]: number;
 }
 
 interface ResponseRegionData {
+	issueId: string;
 	mapName: string;
 	regionName: string;
 	count: number;
@@ -57,6 +51,7 @@ interface ResponseRegionData {
 
 function Chart({ region }: { region: string }) {
 	const [responseData, setResponseData] = useState<ResponseRegionData>({
+		issueId: '',
 		mapName: '',
 		regionName: '',
 		count: 0,
@@ -75,63 +70,79 @@ function Chart({ region }: { region: string }) {
 			age: {},
 		},
 	});
+	const [isGetRegion, setIsGetRegion] = useState('');
 
-	// if ()
-	axios
-		.get(`http://ec2-3-39-194-137.ap-northeast-2.compute.amazonaws.com/card/regiondata/강원도`, {
-			headers: { 'Content-Type': 'application/json' },
-		})
-		.then((res) => {
-			console.log(res.data[0]);
-			// setResponseData({ ...res.data[0] });
-		});
+	if (isGetRegion !== region) {
+		axios
+			.get(`${process.env.REACT_APP_SERVER_URI}stats/region/${region}`, {
+				headers: { 'Content-Type': 'application/json' },
+			})
+			.then((res) => {
+				setResponseData({ ...res.data[0] });
+				setIsGetRegion(region);
+			});
+	}
 
-	// console.log('지역데이터: ', regionData);
-	// const data1 = {
-	// 	total: mdata.count,
-	// 	yes: mdata.female.answer.yes + mdata.male.answer.yes,
-	// 	no: mdata.female.answer.no + mdata.male.answer.no,
-	// 	so: mdata.female.answer.so + mdata.male.answer.so,
-	// };
-	// const fage = mdata.female.age;
-	// let femax = 0;
-	// let felabel = '';
-	// for (const i in fage) {
-	// 	if (i !== 'count') {
-	// 		if (fage[i] > femax) {
-	// 			femax = fage[i];
-	// 			felabel = i;
-	// 		}
-	// 	}
-	// }
-	// const mage = mdata.male.age;
-	// let memax = 0;
-	// let melabel = '';
-	// for (const i in mage) {
-	// 	if (i !== 'count') {
-	// 		if (mage[i] > memax) {
-	// 			memax = mage[i];
-	// 			melabel = i;
-	// 		}
-	// 	}
-	// }
-	// const data2 = {
-	// 	female: mdata.female.count,
-	// 	male: mdata.male.count,
-	// 	femaxc: femax,
-	// 	femaxl: felabel,
-	// 	memaxc: memax,
-	// 	memaxl: melabel,
-	// };
+	// 전체 응답 데이터
+	const overallResData = {
+		total: responseData.count,
+		yes: responseData.female.yes + responseData.male.yes,
+		no: responseData.female.no + responseData.male.no,
+		so: responseData.female.so + responseData.male.so,
+	};
+	// 남녀 응답 데이터
+	const genderData = {
+		male: {
+			count: responseData.male.count,
+			yes: responseData.male.yes,
+			no: responseData.male.no,
+			so: responseData.male.so,
+		},
+		female: {
+			count: responseData.female.count,
+			yes: responseData.female.yes,
+			no: responseData.female.no,
+			so: responseData.female.so,
+		},
+	};
+	// 여성 세부 데이터 추출
+	const femaleAge = responseData.female.age;
+	let femaleMaxAge = 0;
+	let femaleAgeLabel = '';
+	for (const i in femaleAge) {
+		if (femaleAge[i] > femaleMaxAge) {
+			femaleMaxAge = femaleAge[i];
+			femaleAgeLabel = i;
+		}
+	}
+	// 남성 세부 데이터 추출
+	const maleAge = responseData.male.age;
+	let maleMaxAge = 0;
+	let maleAgeLabel = '';
+	for (const i in maleAge) {
+		if (maleAge[i] > maleMaxAge) {
+			maleMaxAge = maleAge[i];
+			maleAgeLabel = i;
+		}
+	}
+	// 남녀 전체 응답 데이터(최다연령대 포함)
+	const genderResData = {
+		female: responseData.female.count,
+		male: responseData.male.count,
+		femaleMaxAgeCnt: femaleMaxAge,
+		femaleMaxAgeLabel: femaleAgeLabel,
+		maleMaxAgeCnt: maleMaxAge,
+		maleMaxAgeLabel: maleAgeLabel,
+	};
 
 	return (
 		<ChartWrapper>
 			<StaticsTitle>{`${region} 전체 통계 요약`}</StaticsTitle>
-			{/* <StaticsBox newData={data2} />
+			<StaticsBox genderResData={genderResData} />
 			<StatsArea>
-				<OverallResponseRate statData={data1} />
-				<GenderResponseRate statData={mdata} />
-			</StatsArea> */}
+				<OverallResponseRate overallResData={overallResData} />
+				<GenderResponseRate genderData={genderData} />
+			</StatsArea>
 		</ChartWrapper>
 	);
 }

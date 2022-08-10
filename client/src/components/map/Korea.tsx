@@ -185,7 +185,6 @@ function Paths({
 		<>
 			{data.map((xx, i) => {
 				const { id, name, d } = xx;
-
 				const fill = i !== isClick ? newData.data[name].color : 'red';
 
 				if (i !== check) {
