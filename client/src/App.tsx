@@ -16,12 +16,24 @@ function App() {
 	const [pageChange, setPageChange] = useState(true);
 	const [top, setTop] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
+	const [selectIssue, setSelectIssue] = useState('');
 	return (
 		<Frame>
 			{pageChange ? (
-				<IssuePage setPageChange={setPageChange} top={top} setTop={setTop} pageChange={pageChange} />
+				<IssuePage
+					setPageChange={setPageChange}
+					top={top}
+					setTop={setTop}
+					pageChange={pageChange}
+					setSelectIssue={setSelectIssue}
+				/>
 			) : (
-				<StaticPage setPageChange={setPageChange} isLoading={isLoading} setIsLoading={setIsLoading} />
+				<StaticPage
+					setPageChange={setPageChange}
+					isLoading={isLoading}
+					setIsLoading={setIsLoading}
+					selectIssue={selectIssue}
+				/>
 			)}
 			{isLoading ? <LoadingPage /> : null}
 		</Frame>

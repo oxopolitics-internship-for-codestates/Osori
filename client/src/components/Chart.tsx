@@ -49,7 +49,7 @@ interface ResponseRegionData {
 	female: Gender;
 }
 
-function Chart({ region }: { region: string }) {
+function Chart({ region, selectIssue }: { region: string; selectIssue: string }) {
 	const [responseData, setResponseData] = useState<ResponseRegionData>({
 		issueId: '',
 		mapName: '',
@@ -74,7 +74,7 @@ function Chart({ region }: { region: string }) {
 
 	if (isGetRegion !== region) {
 		axios
-			.get(`${process.env.REACT_APP_SERVER_URI}stats/region/${region}`, {
+			.get(`${process.env.REACT_APP_SERVER_URI}stats/region/${selectIssue}/${region}`, {
 				headers: { 'Content-Type': 'application/json' },
 			})
 			.then((res) => {

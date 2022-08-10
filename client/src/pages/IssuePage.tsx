@@ -1,9 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import axios from 'axios';
 import IssueList from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
-import Dummyissues from '../etc/DummyIssue';
 import TopImg from '../assets/images/up-arrow.png';
+
+const fadeOut = keyframes`
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+`;
+
+const fadeIn = keyframes`
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+`;
 
 const Frame = styled.div`
 	display: flex;
@@ -48,25 +66,42 @@ const TopImage = styled.img`
 	height: 50px;
 `;
 
+interface IssuesData {
+	_id: string;
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answers?: { _id: string; answer: string }[];
+}
 function IssuePage({
 	pageChange,
 	setPageChange,
 	setTop,
 	top,
+	setSelectIssue,
 }: {
 	pageChange: boolean;
 	top: number;
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
+	setSelectIssue: React.Dispatch<React.SetStateAction<string>>;
 }) {
-	const [issues, setIssues] = useState(Dummyissues);
+	const [issues, setIssues] = useState<IssuesData[]>([]);
 	const [target, setTarget] = useState<(EventTarget & HTMLDivElement) | null>(null);
 	const [isLogin, setIsLogin] = useState(false);
+	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
+	
 	useEffect(() => {
 		if (target !== null) {
 			target.scrollTo({ top });
 		}
-	}, [top, target]);
+		if (issues.length === 0) {
+			axios.get(`${process.env.REACT_APP_SERVER_URI}issue`).then((x) => {
+				setIssues(x.data);
+			});
+		}
+	}, [top, target, issues, setIssues]);
 	return (
 		<Frame
 			onMouseOver={(e) => {
@@ -77,7 +112,13 @@ function IssuePage({
 		>
 			<IssueNav />
 			<Context>
-				<IssueList issues={issues} setPageChange={setPageChange} setTop={setTop} target={target} />
+				<IssueList
+					issues={issues}
+					setPageChange={setPageChange}
+					setTop={setTop}
+					target={target}
+					setSelectIssue={setSelectIssue}
+				/>
 			</Context>
 			<TopButton
 				onClick={() => {

@@ -113,7 +113,7 @@ function birthYearF() {
 export default function randomPick(n: number, n0: number) {
   const data: dataForm[] = [];
 
-  for (let i = n0; i < n0 + n; i++) {
+  for (let i = n0; i < n; i++) {
     const p = String(i).padStart(10, '0');
     data.push({
       userName: 'name' + p,

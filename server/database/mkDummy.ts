@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import randomPick from '../etc/randomPick';
 import mongoose, { Schema, model } from 'mongoose';
-
 // 1. Create an interface representing a document in MongoDB.
 interface User {
   userName: string;
@@ -195,202 +194,343 @@ const Issue = model<Issue>('Issue', issueSchema);
 const Answer = model<Answer>('Answer', answerSchema);
 const Stats = model<Stats>('Stats', StatsSchema);
 const today = new Date().getFullYear();
-const startNumber = 0;
-async function test() {
-  await Issue.collection.drop();
-  await User.collection.drop();
-  await Answer.collection.drop();
-  await Stats.collection.drop();
-  const issue1 = new Issue({
-    title: '뭐니뭐니해도 부먹이 최고시다.',
-    answerTextO: '맞아맞아 부먹이 최고지',
-    answerTextX: '아냐 찍먹이 최고야',
-    answerTextS: '부먹이나 찍먹보다는 처먹이 최고 아닐까?',
-  });
-  await issue1.save();
+interface dataForm {
+  userName: string;
+  birthYear: number;
+  email: string;
+  address: string;
+  answer: string;
+  gender: string;
+}
 
-  const dataNumber = Number(process.env.DUMMYDATANUMER) || 10;
-  const data = randomPick(dataNumber, startNumber);
-  const issue = await Issue.findOne();
-  if (issue !== null) {
-    await Issue.updateOne({ _id: issue._id }, { answers: [] });
-  }
+async function test(
+  issued: {
+    title: string;
+    answerTextO: string;
+    answerTextX: string;
+    answerTextS: string;
+  },
+  data: dataForm[],
+) {
+  for (const { userName, birthYear, address, answer, gender } of data) {
+    const k = Math.random();
+    if (k > 0.3) {
+      const issue = await Issue.findOne({ title: issued.title });
+      if (issue !== null) {
+        const issue_id = issue._id;
 
-  for (const { userName, birthYear, email, address, answer, gender } of data) {
-    const issue = await Issue.findOne();
+        const user = await User.findOne({ userName: userName });
 
-    if (issue !== null) {
-      const issue_id = issue._id;
-      const user = new User({
-        userName: userName,
-        birthYear: birthYear,
-        email: email,
-        address: address,
-        answer: answer,
-        gender: gender,
-        issues: [issue_id],
-      });
-      await user.save();
+        if (user !== null) {
+          const user_id = user._id;
 
-      if (user !== null) {
-        const user_id = user._id;
-
-        const ans = new Answer({
-          answer: answer,
-          user: user_id,
-          issue: issue_id,
-        });
-        await ans.save();
-
-        if (ans !== null) {
-          const ans_id = ans._id;
-
-          await Issue.updateOne(
-            { _id: issue_id },
-            { answers: [...issue.answers, ans_id] },
-          );
-          await User.updateOne(
-            { _id: user_id },
-            { answers: [ans_id], Issues: [issue_id] },
-          );
-
-          const addNames = address.split(' ');
-          let mapName = '',
-            regionName = '';
-
-          if (addNames.length > 1) {
-            [mapName, regionName] = addNames;
-          } else {
-            [mapName, regionName] = ['전국', addNames[0]];
-          }
-          let region = await Stats.findOne({
-            issueId: issue_id,
-            regionName: regionName,
+          const ans = new Answer({
+            answer: answer,
+            user: user_id,
+            issue: issue_id,
           });
-          if (region === null) {
-            region = await new Stats({
+          await ans.save();
+
+          if (ans !== null) {
+            const ans_id = ans._id;
+
+            await Issue.updateOne(
+              { _id: issue_id },
+              { answers: [...issue.answers, ans_id] },
+            );
+            await User.updateOne({ _id: user_id }, { answers: [ans_id] });
+
+            const addNames = address.split(' ');
+            let mapName = '',
+              regionName = '';
+
+            if (addNames.length > 1) {
+              [mapName, regionName] = addNames;
+            } else {
+              [mapName, regionName] = ['전국', addNames[0]];
+            }
+            let region = await Stats.findOne({
               issueId: issue_id,
-              mapName: mapName,
               regionName: regionName,
             });
+            if (region === null) {
+              region = await new Stats({
+                issueId: issue_id,
+                mapName: mapName,
+                regionName: regionName,
+              });
+              region = await region.save();
+            }
+            region.count++;
+
+            const age =
+              (Math.floor((today - birthYear + 1) / 10) * 10).toString() + '대';
+            if (gender === '남') {
+              region.male.count++;
+              if (answer === '네') {
+                region.male.yes++;
+              } else if (answer === '아니요') {
+                region.male.no++;
+              } else {
+                region.male.so++;
+              }
+
+              if (age === '10대') {
+                region.male.age['10대']++;
+              } else if (age === '20대') {
+                region.male.age['20대']++;
+              } else if (age === '30대') {
+                region.male.age['30대']++;
+              } else if (age === '40대') {
+                region.male.age['40대']++;
+              } else if (age === '50대') {
+                region.male.age['50대']++;
+              } else {
+                region.male.age['60대이상']++;
+              }
+            } else {
+              region.female.count++;
+              if (answer === '네') {
+                region.female.yes++;
+              } else if (answer === '아니요') {
+                region.female.no++;
+              } else {
+                region.female.so++;
+              }
+              if (age === '10대') {
+                region.female.age['10대']++;
+              } else if (age === '20대') {
+                region.female.age['20대']++;
+              } else if (age === '30대') {
+                region.female.age['30대']++;
+              } else if (age === '40대') {
+                region.female.age['40대']++;
+              } else if (age === '50대') {
+                region.female.age['50대']++;
+              } else {
+                region.female.age['60대이상']++;
+              }
+            }
             region = await region.save();
-          }
-          region.count++;
-
-          const age =
-            (Math.floor((today - birthYear + 1) / 10) * 10).toString() + '대';
-          if (gender === '남') {
-            region.male.count++;
-            if (answer === '네') {
-              region.male.yes++;
-            } else if (answer === '아니요') {
-              region.male.no++;
-            } else {
-              region.male.so++;
-            }
-
-            if (age === '10대') {
-              region.male.age['10대']++;
-            } else if (age === '20대') {
-              region.male.age['20대']++;
-            } else if (age === '30대') {
-              region.male.age['30대']++;
-            } else if (age === '40대') {
-              region.male.age['40대']++;
-            } else if (age === '50대') {
-              region.male.age['50대']++;
-            } else {
-              region.male.age['60대이상']++;
-            }
-          } else {
-            region.female.count++;
-            if (answer === '네') {
-              region.female.yes++;
-            } else if (answer === '아니요') {
-              region.female.no++;
-            } else {
-              region.female.so++;
-            }
-            if (age === '10대') {
-              region.female.age['10대']++;
-            } else if (age === '20대') {
-              region.female.age['20대']++;
-            } else if (age === '30대') {
-              region.female.age['30대']++;
-            } else if (age === '40대') {
-              region.female.age['40대']++;
-            } else if (age === '50대') {
-              region.female.age['50대']++;
-            } else {
-              region.female.age['60대이상']++;
-            }
-          }
-          region = await region.save();
-          let map = await Stats.findOne({
-            issueId: issue_id,
-            regionName: mapName,
-          });
-          if (map === null) {
-            map = await new Stats({
+            let map = await Stats.findOne({
               issueId: issue_id,
-              mapName: '지구',
               regionName: mapName,
             });
+            if (map === null) {
+              map = await new Stats({
+                issueId: issue_id,
+                mapName: mapName === '전국' ? '지구' : '전국',
+                regionName: mapName,
+              });
+              map = await map.save();
+            }
+            map.count++;
+            if (gender === '남') {
+              map.male.count++;
+              if (answer === '네') {
+                map.male.yes++;
+              } else if (answer === '아니요') {
+                map.male.no++;
+              } else {
+                map.male.so++;
+              }
+              if (age === '10대') {
+                map.male.age['10대']++;
+              } else if (age === '20대') {
+                map.male.age['20대']++;
+              } else if (age === '30대') {
+                map.male.age['30대']++;
+              } else if (age === '40대') {
+                map.male.age['40대']++;
+              } else if (age === '50대') {
+                map.male.age['50대']++;
+              } else {
+                map.male.age['60대이상']++;
+              }
+            } else {
+              map.female.count++;
+              if (answer === '네') {
+                map.female.yes++;
+              } else if (answer === '아니요') {
+                map.female.no++;
+              } else {
+                map.female.so++;
+              }
+              if (age === '10대') {
+                map.female.age['10대']++;
+              } else if (age === '20대') {
+                map.female.age['20대']++;
+              } else if (age === '30대') {
+                map.female.age['30대']++;
+              } else if (age === '40대') {
+                map.female.age['40대']++;
+              } else if (age === '50대') {
+                map.female.age['50대']++;
+              } else {
+                map.female.age['60대이상']++;
+              }
+            }
             map = await map.save();
           }
-          map.count++;
-          if (gender === '남') {
-            map.male.count++;
-            if (answer === '네') {
-              map.male.yes++;
-            } else if (answer === '아니요') {
-              map.male.no++;
-            } else {
-              map.male.so++;
-            }
-            if (age === '10대') {
-              map.male.age['10대']++;
-            } else if (age === '20대') {
-              map.male.age['20대']++;
-            } else if (age === '30대') {
-              map.male.age['30대']++;
-            } else if (age === '40대') {
-              map.male.age['40대']++;
-            } else if (age === '50대') {
-              map.male.age['50대']++;
-            } else {
-              map.male.age['60대이상']++;
-            }
-          } else {
-            map.female.count++;
-            if (answer === '네') {
-              map.female.yes++;
-            } else if (answer === '아니요') {
-              map.female.no++;
-            } else {
-              map.female.so++;
-            }
-            if (age === '10대') {
-              map.female.age['10대']++;
-            } else if (age === '20대') {
-              map.female.age['20대']++;
-            } else if (age === '30대') {
-              map.female.age['30대']++;
-            } else if (age === '40대') {
-              map.female.age['40대']++;
-            } else if (age === '50대') {
-              map.female.age['50대']++;
-            } else {
-              map.female.age['60대이상']++;
-            }
-          }
-          map = await map.save();
         }
       }
     }
   }
+}
+
+async function Run() {
+  const issueLibrary = [
+    {
+      title: '서울시 집중호우 대비 어떻게 생각하세요?',
+      answerTextO: '대비는 할 만큼 했어요.',
+      answerTextS: '대비를 잘 했는지 모르겠어요.',
+      answerTextX: '줄어든 예산! 미흡했어요.',
+    },
+    {
+      title: '외국어 고등학교 폐지 찬성하세요',
+      answerTextO: '외국어 고등하고 폐지해야 되요.',
+      answerTextS: '잘 모르겠어요.',
+      answerTextX: '외국어 고등학교 폐지하면 안 돼요.',
+    },
+    {
+      title: '청와대로의 회귀, 어떻게 생각하세요?',
+      answerTextO: '청와대 회귀돼야 해요.',
+      answerTextS: '잘 모르겠어요.',
+      answerTextX: '청와대 회기 하면 안 돼요.',
+    },
+    {
+      title: '여러분들은 학제 개편이 필요하다고 생각하시나요?',
+      answerTextO: '학재 개편 필요합니다.',
+      answerTextS: '잘 모르겠어요.',
+      answerTextX: '대학 진학률을 낮춰야 합니다.',
+    },
+    {
+      title: '한국인의 양심은 특별하다고 생각하세요? (feat. K-양심)',
+      answerTextO: '네! 빈자리 귀중품, 빈 집 택배 손 대지 않아요.',
+      answerTextS: '잘 모르겠어요.',
+      answerTextX: '아뇨! 자전거 없어지는 거 보면 그렇지도 않죠.',
+    },
+  ];
+  let startNumber = 1;
+  if (process.env.MONGODB_DUMMY_TYPE === 'new') {
+    await Issue.collection.drop();
+    await User.collection.drop();
+    await Answer.collection.drop();
+    await Stats.collection.drop();
+    const editer = new User({
+      userName: 'editer',
+      birthYear: 1985,
+      email: 'editer@gmail.com',
+      address: '경기도',
+      gender: '남',
+    });
+    await editer.save();
+  } else if (process.env.MONGODB_DUMMY_TYPE === 'update') {
+    startNumber = await User.countDocuments();
+  }
+
+  const dataNumber = Number(process.env.DUMMYDATANUMER) || 10;
+
+  // 이슈 생성
+  const issueCount = await Issue.countDocuments();
+  if (issueCount === 0) {
+    const editer = await User.findOne({ userName: 'editer' });
+    const data = issueLibrary.map((x) => {
+      x['user'] = editer._id;
+      return x;
+    });
+    const issueData = await Issue.insertMany(data);
+    const a = [
+      '서울특별시',
+      '부산광역시',
+      '대구광역시',
+      '인천광역시',
+      '광주광역시',
+      '대전광역시',
+      '울산광역시',
+      '세종특별자치시',
+      '경기도',
+      '강원도',
+      '충청북도',
+      '충청남도',
+      '전라북도',
+      '전라남도',
+      '경상북도',
+      '경상남도',
+      '제주특별자치도',
+    ];
+    const b = [
+      '종로구',
+      '중구',
+      '용산구',
+      '성동구',
+      '광진구',
+      '동대문구',
+      '중랑구',
+      '성북구',
+      '강북구',
+      '도봉구',
+      '노원구',
+      '은평구',
+      '서대문구',
+      '마포구',
+      '양천구',
+      '강서구',
+      '구로구',
+      '금천구',
+      '영등포구',
+      '동작구',
+      '관악구',
+      '서초구',
+      '강남구',
+      '송파구',
+      '강동구',
+    ];
+
+    for (const i of issueData) {
+      let map = '전국';
+
+      const region = await new Stats({
+        issueId: i._id,
+        mapName: '지구',
+        regionName: '전국',
+      });
+      await region.save();
+
+      for (const regionName of a) {
+        const region = await new Stats({
+          issueId: i._id,
+          mapName: map,
+          regionName: regionName,
+        });
+        await region.save();
+      }
+      map = '서울특별시';
+      for (const regionName of b) {
+        const region = await new Stats({
+          issueId: i._id,
+          mapName: map,
+          regionName: regionName,
+        });
+        await region.save();
+      }
+    }
+  }
+
+  // 유저 생성
+  if (startNumber < dataNumber) {
+    const data = randomPick(dataNumber, startNumber);
+    console.log(data.length);
+    await User.insertMany(data);
+
+    //이슈별 응답 데이터 생성
+    for (const issue of issueLibrary) {
+      await test(issue, data);
+    }
+  }
+
   console.log('end');
   await mongoose.disconnect();
 }
 
-test();
+Run();

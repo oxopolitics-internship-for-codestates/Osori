@@ -268,13 +268,18 @@ function Paths({
 	isClick: number;
 	isClickF: React.Dispatch<React.SetStateAction<number>>;
 }) {
+	function HasItColor(mdata: RegionData | undefined) {
+		if (mdata !== undefined) {
+			return mdata.color;
+		}
+		return '#EAEAEA';
+	}
+
 	return (
 		<>
 			{data.map((xx, i) => {
 				const { id, name, d } = xx;
-
-				const fill = newData.data[name].color;
-
+				const fill = HasItColor(newData.data[name]);
 				if (i !== isClick || i !== check) {
 					return (
 						<Path
@@ -315,8 +320,8 @@ function Paths({
 				<Path
 					key={data[check].id}
 					id={data[check].id}
-					fill={newData.data[data[check].name].color}
-					stroke={shadowSet[newData.data[data[check].name].color]}
+					fill={isClick !== check ? HasItColor(newData.data[data[check].name]) : 'red'}
+					stroke={shadowSet[HasItColor(newData.data[data[check].name])]}
 					d={data[check].d}
 					check
 					onMouseOver={() => {
@@ -346,8 +351,8 @@ function Paths({
 				<Path
 					key={data[isClick].id}
 					id={data[isClick].id}
-					fill={newData.data[data[isClick].name].color}
-					stroke={shadowSet[newData.data[data[isClick].name].color]}
+					fill={HasItColor(newData.data[data[isClick].name])}
+					stroke={shadowSet[HasItColor(newData.data[data[isClick].name])]}
 					d={data[isClick].d}
 					check
 					onMouseOver={() => {

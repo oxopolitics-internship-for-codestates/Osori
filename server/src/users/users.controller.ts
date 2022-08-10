@@ -1,4 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { userInfoDto } from 'src/dto/user.userinfo.dto';
 import { UsersService } from './users.service';
 // async await 사용하지 않고 express처럼 처리할경우
 // import { Response } from 'express';
@@ -13,8 +14,8 @@ export class UsersController {
   }
 
   @Get(':userName')
-  async userinfo(@Param() { userName }) {
-    return this.usersService.userInfo(userName);
+  async userinfo(@Param() params: userInfoDto) {
+    return this.usersService.userInfo(params.userName);
   }
   // async await 사용하지 않고 express처럼 처리할경우
   // @Get(':userName')
