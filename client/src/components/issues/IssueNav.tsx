@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import HomeImg from '../../assets/images/IssueImage.png';
@@ -75,6 +76,9 @@ const Button = styled.button<{ color?: string; animate?: string }>`
 function IssueNav() {
 	const [isLogin, setIsLogin] = useState(false);
 	const [fadein, setFadein] = useState<boolean>(false);
+	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
+	const [issues, setIssues] = useState('');
+
 	const fadeinAnimate = () => {
 		setFadein(true);
 		setTimeout(() => setFadein(false), 2000);
@@ -92,7 +96,10 @@ function IssueNav() {
 				{isLogin ? (
 					<Button
 						onClick={() => {
-							setIsLogin(false);
+							axios.get(`${process.env.REACT_APP_SERVER_URI}issue`).then((x) => {
+								setIssues(x.data);
+								setIsLogin(false);
+							});
 						}}
 					>
 						로그아웃
@@ -100,7 +107,17 @@ function IssueNav() {
 				) : (
 					<Button
 						onClick={() => {
-							setIsLogin(true);
+							axios.get(`${process.env.REACT_APP_SERVER_URI}user`).then((x) => {
+								// eslint-disable-next-line no-underscore-dangle
+								const data = { userName: x.data.userName, id: x.data._id };
+
+								setUserInfo(data);
+								return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${data.id}`).then((reIssueData) => {
+									setIssues(reIssueData.data);
+									setIsLogin(true);
+								});
+							});
+
 							fadeinAnimate();
 						}}
 						className={fadein ? 'fadein' : ''}
