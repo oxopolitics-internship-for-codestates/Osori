@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import HomeImg from '../../assets/images/issueImg.png';
+import HomeImg from '../../assets/images/IssueImage.png';
 import osoriLogo from '../../assets/images/osori-logo.png';
 
 const Frame = styled.div`
