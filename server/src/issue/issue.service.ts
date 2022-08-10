@@ -97,14 +97,16 @@ export class IssueService {
       issueId: issue._id,
       regionName: mapName,
     });
+
     if (map === null) {
       map = await new this.statsModel({
         issueId: issue._id,
-        mapName: '지구',
+        mapName: mapName === '전국' ? '지구' : '전국',
         regionName: mapName,
       });
       map = await map.save();
     }
+
     map.count++;
     if (gender === '남') {
       map.male.count++;

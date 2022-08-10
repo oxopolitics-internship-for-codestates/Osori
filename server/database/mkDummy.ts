@@ -439,7 +439,82 @@ async function Run() {
       x['user'] = editer._id;
       return x;
     });
-    await Issue.insertMany(data);
+    const issueData = await Issue.insertMany(data);
+    const a = [
+      '서울특별시',
+      '부산광역시',
+      '대구광역시',
+      '인천광역시',
+      '광주광역시',
+      '대전광역시',
+      '울산광역시',
+      '세종특별자치시',
+      '경기도',
+      '강원도',
+      '충청북도',
+      '충청남도',
+      '전라북도',
+      '전라남도',
+      '경상북도',
+      '경상남도',
+      '제주특별자치도',
+    ];
+    const b = [
+      '종로구',
+      '중구',
+      '용산구',
+      '성동구',
+      '광진구',
+      '동대문구',
+      '중랑구',
+      '성북구',
+      '강북구',
+      '도봉구',
+      '노원구',
+      '은평구',
+      '서대문구',
+      '마포구',
+      '양천구',
+      '강서구',
+      '구로구',
+      '금천구',
+      '영등포구',
+      '동작구',
+      '관악구',
+      '서초구',
+      '강남구',
+      '송파구',
+      '강동구',
+    ];
+
+    for (const i of issueData) {
+      let map = '전국';
+
+      const region = await new Stats({
+        issueId: i._id,
+        mapName: '지구',
+        regionName: '전국',
+      });
+      await region.save();
+
+      for (const regionName of a) {
+        const region = await new Stats({
+          issueId: i._id,
+          mapName: map,
+          regionName: regionName,
+        });
+        await region.save();
+      }
+      map = '서울특별시';
+      for (const regionName of b) {
+        const region = await new Stats({
+          issueId: i._id,
+          mapName: map,
+          regionName: regionName,
+        });
+        await region.save();
+      }
+    }
   }
 
   // 유저 생성
