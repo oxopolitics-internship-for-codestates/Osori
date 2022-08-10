@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import IssuePage from './pages/IssuePage';
 import LoadingPage from './pages/LoadingPage';
 import StaticPage from './pages/StaticPage';
+import Editor from './components/editor/Editor';
 
 const Frame = styled.div`
 	height: 100vh;
@@ -18,12 +19,13 @@ function App() {
 	const [isLoading, setIsLoading] = useState(false);
 	return (
 		<Frame>
-			{pageChange ? (
+			<Editor />
+			{/* {pageChange ? (
 				<IssuePage setPageChange={setPageChange} top={top} setTop={setTop} pageChange={pageChange} />
 			) : (
 				<StaticPage setPageChange={setPageChange} isLoading={isLoading} setIsLoading={setIsLoading} />
 			)}
-			{isLoading ? <LoadingPage /> : null}
+			{isLoading ? <LoadingPage /> : null} */}
 		</Frame>
 	);
 }
