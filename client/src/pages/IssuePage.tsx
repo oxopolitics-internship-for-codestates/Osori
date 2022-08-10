@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import IssueList from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
@@ -47,18 +47,6 @@ const TopImage = styled.img`
 	width: 50px;
 	height: 50px;
 `;
-const Button = styled.button`
-	position: absolute;
-	right: calc((100% - 1200px) / 2);
-	width: 50px;
-	height: 50px;
-`;
-const Button2 = styled.button`
-	position: absolute;
-	right: calc(((100% - 1200px) / 2) + 60px);
-	width: 50px;
-	height: 50px;
-`;
 
 function IssuePage({
 	pageChange,
@@ -88,24 +76,6 @@ function IssuePage({
 			}}
 		>
 			<IssueNav />
-			{isLogin ? <Button2>글쓰기</Button2> : null}
-			{isLogin ? (
-				<Button
-					onClick={() => {
-						setIsLogin(false);
-					}}
-				>
-					로그아웃
-				</Button>
-			) : (
-				<Button
-					onClick={() => {
-						setIsLogin(true);
-					}}
-				>
-					로그인
-				</Button>
-			)}
 			<Context>
 				<IssueList issues={issues} setPageChange={setPageChange} setTop={setTop} target={target} />
 			</Context>
