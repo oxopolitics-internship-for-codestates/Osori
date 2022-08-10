@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import HomeImg from '../../assets/images/IssueImage.png';
 import osoriLogo from '../../assets/images/osori-logo.png';
+import EditorModal from '../editor/EditorModal';
 
 const Frame = styled.div`
 	width: 100%;
@@ -75,9 +76,24 @@ const Button = styled.button<{ color?: string; animate?: string }>`
 function IssueNav() {
 	const [isLogin, setIsLogin] = useState(false);
 	const [fadein, setFadein] = useState<boolean>(false);
+	const [editor, setEditor] = useState(false);
 	const fadeinAnimate = () => {
 		setFadein(true);
 		setTimeout(() => setFadein(false), 2000);
+	};
+
+	const editorOnOff = () => {
+		setEditor(true);
+	};
+
+	const onConfirm = () => {
+		console.log('확인');
+		setEditor(false);
+	};
+
+	const onCancel = () => {
+		console.log('취소');
+		setEditor(false);
 	};
 
 	return (
@@ -109,10 +125,11 @@ function IssueNav() {
 					</Button>
 				)}
 				{isLogin ? (
-					<Button color="#C1ADD1" animate="fadeinAni 0.5s">
+					<Button onClick={editorOnOff} color="#C1ADD1" animate="fadeinAni 0.5s">
 						글쓰기
 					</Button>
 				) : null}
+				<EditorModal visible={editor} onConfirm={onConfirm} onCancel={onCancel} />
 			</InOutFrame>
 		</Frame>
 	);
