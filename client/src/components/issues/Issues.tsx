@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import TopImg from '../../assets/images/up-arrow.png';
 
 const Frame = styled.div`
 	display: flex;
@@ -32,18 +31,35 @@ const Answer = styled.div`
 	border-bottom: 1px solid #878787;
 `;
 
-const Ans = styled.button<{ padValue: string; marginL?: string; hoverColor?: string }>`
-	font-size: 15px;
-	border: 1px solid #878787;
-	border-radius: 10px;
+const Ans = styled.button<{ padValue: string; marginL?: string; hoverColor?: string; backC?: string }>`
+	align-items: center;
+	/* background: #eeeeee; */
+	background: ${({ backC }) => backC || '#eeeeee'};
+	border: 0 solid #e2e8f0;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);
+	box-sizing: border-box;
+	color: #1a202c;
+	display: inline-flex;
+	font-family: Inter, sans-serif;
+	font-size: 1rem;
+	font-weight: 700;
+	height: 45px;
+	justify-content: center;
+	line-height: 24px;
+	overflow-wrap: break-word;
 	${({ padValue }) => `padding : ${padValue} ;`}
 	margin: 20px 50px;
 	margin-left: ${({ marginL }) => marginL || '0px'};
-	background-color: rgb(230, 230, 230);
+	text-decoration: none;
+	width: auto;
+	border-radius: 8px;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
 	&:hover {
 		background-color: ${({ hoverColor }) => hoverColor || '#519b7a'};
 	}
-	cursor: pointer;
 `;
 
 const Examples = styled.div`
@@ -91,45 +107,12 @@ const Confirm = styled.button`
 	padding: 2px;
 	cursor: pointer;
 `;
-const TopButton = styled.div`
-	position: fixed;
-	bottom: 20px; /* Place the button at the bottom of the page */
-	right: 200px; /* Place the button 30px from the right */
-	z-index: 99; /* Make sure it does not overlap */
-	border: none; /* Remove borders */
-	cursor: pointer; /* Add a mouse pointer on hover */
-	padding: 15px; /* Some padding */
-	border-radius: 10px; /* Rounded corners */
-	font-size: 18px; /* Increase font size */
-	width: 50px;
-	height: 50px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	/* background-color: white; */
-	flex-direction: column;
-	margin-bottom: 30px;
-	padding: 5px;
-`;
-
-const TopImage = styled.img`
-	width: 50px;
-	height: 50px;
-`;
 
 interface DummyissuesProps {
 	title: string;
 	yes: string;
 	so: string;
 	no: string;
-}
-function scroll() {
-	const myElement: HTMLElement | null = document.getElementById('scroll');
-	if (myElement !== null) {
-		myElement.scrollTo(0, 0);
-		console.log(myElement);
-	}
-	console.log('test');
 }
 
 function Issues({
@@ -152,13 +135,13 @@ function Issues({
 						<Issue>
 							<Topic>{issue.title}</Topic>
 							<Answer>
-								<Ans padValue="8px 25px" marginL="50px">
+								<Ans padValue="8px 25px" backC="#rgba(81, 155, 122, 0.27)" marginL="50px">
 									네
 								</Ans>
-								<Ans padValue="8px 10px" hoverColor="#fbcd57">
+								<Ans padValue="8px 10px" backC="#rgba(251, 205, 87, 0.27)" hoverColor="#fbcd57">
 									글쎄요
 								</Ans>
-								<Ans padValue="8px 10px" hoverColor="#fb7b77">
+								<Ans padValue="8px 10px" backC="#rgba(251, 123, 119, 0.27)" hoverColor="#fb7b77">
 									아니요
 								</Ans>
 							</Answer>

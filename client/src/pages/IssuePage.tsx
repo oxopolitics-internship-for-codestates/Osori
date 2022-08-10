@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import IssueList from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
 import Dummyissues from '../etc/DummyIssue';
@@ -69,7 +69,6 @@ function IssuePage({
 	pageChange: boolean;
 	top: number;
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
-
 	setTop: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	const [issues, setIssues] = useState(Dummyissues);
