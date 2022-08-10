@@ -8,7 +8,7 @@ const Frame = styled.div`
 	border: 1px solid #878787;
 	border-radius: 20px;
 	padding: 20px 0px;
-	width: 550px;
+	width: 700px;
 	justify-content: center;
 	align-items: center;
 	margin-top: 30px;
@@ -40,7 +40,6 @@ const Ans = styled.button<{
 	pressed: boolean;
 }>`
 	align-items: center;
-	/* background: #eeeeee; */
 	background: ${({ backC, pressed }) => {
 		if (!pressed) {
 			return backC || '#eeeeee';
@@ -72,7 +71,7 @@ const Ans = styled.button<{
 	&:hover {
 		background-color: ${({ hoverColor, pressed }) => {
 			if (!pressed) {
-				return hoverColor || '#519b7a';
+				return hoverColor || 'rgba(81, 155, 122, 0.80)';
 			}
 			return 'black';
 		}};
@@ -82,7 +81,7 @@ const Ans = styled.button<{
 const Examples = styled.div`
 	background-color: rgb(230, 230, 230);
 	border-radius: 20px;
-	width: 90%;
+	width: 500px;
 	margin: 20px 45px;
 	padding: 10px;
 	box-shadow: inset 0px 0px 10px #7c7c7c;
@@ -99,9 +98,7 @@ const ExampleList1 = styled.span<{ examplListLS?: string }>`
 	margin-left: 20px;
 `;
 
-const ExampleList2 = styled.span`
-	/* margin-right: 100px; */
-`;
+const ExampleList2 = styled.span``;
 
 const ConfirmDiv = styled.div`
 	display: flex;
@@ -184,7 +181,7 @@ function Issues({
 									<Answer>
 										<Ans
 											padValue="8px 25px"
-											backC="#rgba(81, 155, 122, 0.27)"
+											backC="#519b7a"
 											marginL="50px"
 											pressed={pressed[issue.title] ? pressed[issue.title][0] : false}
 											onClick={() => {
@@ -198,8 +195,8 @@ function Issues({
 										</Ans>
 										<Ans
 											padValue="8px 10px"
-											backC="#rgba(251, 205, 87, 0.27)"
-											hoverColor="#fbcd57"
+											backC="#fbcd57"
+											hoverColor="rgba(251, 205, 87, 0.80)"
 											pressed={pressed[issue.title] ? pressed[issue.title][1] : false}
 											onClick={() => {
 												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
@@ -213,8 +210,8 @@ function Issues({
 										</Ans>
 										<Ans
 											padValue="8px 10px"
-											backC="#rgba(251, 123, 119, 0.27)"
-											hoverColor="#fb7b77"
+											backC="#fb7b77"
+											hoverColor="rgba(251, 123, 119, 0.80)"
 											pressed={pressed[issue.title] ? pressed[issue.title][2] : false}
 											onClick={() => {
 												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
