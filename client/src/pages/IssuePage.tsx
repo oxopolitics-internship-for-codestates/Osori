@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import IssueList from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
@@ -47,26 +47,76 @@ const TopImage = styled.img`
 	width: 50px;
 	height: 50px;
 `;
+const Button = styled.button`
+	position: absolute;
+	right: calc((100% - 1200px) / 2);
+	width: 50px;
+	height: 50px;
+`;
+const Button2 = styled.button`
+	position: absolute;
+	right: calc(((100% - 1200px) / 2) + 60px);
+	width: 50px;
+	height: 50px;
+`;
 
-function scroll() {
-	const myElement: HTMLElement | null = document.getElementById('scroll');
-	if (myElement !== null) {
-		myElement.scrollTo(0, 0);
-		console.log(myElement);
-	}
-	console.log('test');
-}
+function IssuePage({
+	pageChange,
+	setPageChange,
+	setTop,
+	top,
+}: {
+	pageChange: boolean;
+	top: number;
+	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 
-function IssuePage({ setPageChange }: { setPageChange: React.Dispatch<React.SetStateAction<boolean>> }) {
+	setTop: React.Dispatch<React.SetStateAction<number>>;
+}) {
 	const [issues, setIssues] = useState(Dummyissues);
-
+	const [target, setTarget] = useState<(EventTarget & HTMLDivElement) | null>(null);
+	const [isLogin, setIsLogin] = useState(false);
+	useEffect(() => {
+		if (target !== null) {
+			target.scrollTo({ top });
+		}
+	}, [top, target]);
 	return (
-		<Frame id="scroll">
+		<Frame
+			onMouseOver={(e) => {
+				if (target === null) {
+					setTarget(e.currentTarget);
+				}
+			}}
+		>
 			<IssueNav />
+			{isLogin ? <Button2>글쓰기</Button2> : null}
+			{isLogin ? (
+				<Button
+					onClick={() => {
+						setIsLogin(false);
+					}}
+				>
+					로그아웃
+				</Button>
+			) : (
+				<Button
+					onClick={() => {
+						setIsLogin(true);
+					}}
+				>
+					로그인
+				</Button>
+			)}
 			<Context>
-				<IssueList issues={issues} setPageChange={setPageChange} />
+				<IssueList issues={issues} setPageChange={setPageChange} setTop={setTop} target={target} />
 			</Context>
-			<TopButton onClick={scroll}>
+			<TopButton
+				onClick={() => {
+					if (target !== null) {
+						target.scrollTo({ top: 0, behavior: 'smooth' });
+					}
+				}}
+			>
 				<TopImage src={TopImg} alt="" />
 				Top
 			</TopButton>
