@@ -17,8 +17,10 @@ const Box = styled.div`
 `;
 
 const Button = styled.button`
+	position: absolute;
 	width: 50px;
 	height: 50px;
+	user-select: none;
 `;
 
 const names: { [key: string]: string[] } = {
@@ -171,13 +173,22 @@ for (const name of ['전국', '서울']) {
 	}
 }
 
-function StaticPage({ setPageChange }: { setPageChange: React.Dispatch<React.SetStateAction<boolean>> }) {
+function StaticPage({
+	setPageChange,
+	setIsLoading,
+	isLoading,
+}: {
+	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
+	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+	isLoading: boolean;
+}) {
 	const [region, regionSel] = useState('');
 	const [map, mapSel] = useState('전국');
 	const [isClick, isClickF] = useState(-1);
 
 	return (
 		<InnerFrame>
+			<Box>{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} />}</Box>
 			<Button
 				onClick={() => {
 					setPageChange(true);
@@ -185,7 +196,6 @@ function StaticPage({ setPageChange }: { setPageChange: React.Dispatch<React.Set
 			>
 				돌아가기
 			</Button>
-			<Box>{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} />}</Box>
 			<Box>
 				<MapArea
 					map={map}
@@ -195,6 +205,8 @@ function StaticPage({ setPageChange }: { setPageChange: React.Dispatch<React.Set
 					mdata={dbinit[map]}
 					isClick={isClick}
 					isClickF={isClickF}
+					isLoading={isLoading}
+					setIsLoading={setIsLoading}
 				/>
 			</Box>
 		</InnerFrame>

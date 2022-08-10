@@ -14,10 +14,16 @@ const Frame = styled.div`
 
 function App() {
 	const [pageChange, setPageChange] = useState(true);
-
+	const [top, setTop] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
 	return (
 		<Frame>
-			{pageChange ? <IssuePage setPageChange={setPageChange} /> : <StaticPage setPageChange={setPageChange} />}
+			{pageChange ? (
+				<IssuePage setPageChange={setPageChange} top={top} setTop={setTop} pageChange={pageChange} />
+			) : (
+				<StaticPage setPageChange={setPageChange} isLoading={isLoading} setIsLoading={setIsLoading} />
+			)}
+			{isLoading ? <LoadingPage /> : null}
 		</Frame>
 	);
 }
