@@ -135,9 +135,13 @@ function scroll() {
 function Issues({
 	issues,
 	setPageChange,
+	target,
+	setTop,
 }: {
 	issues: DummyissuesProps[];
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
+	target: (EventTarget & HTMLDivElement) | null;
+	setTop: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	return (
 		<Div>
@@ -176,6 +180,12 @@ function Issues({
 						<ConfirmDiv>
 							<Confirm
 								onClick={() => {
+									if (target !== null) {
+										console.log(target);
+										console.log(target.scrollTop);
+										setTop(target.scrollTop);
+									}
+
 									setPageChange(false);
 								}}
 							>

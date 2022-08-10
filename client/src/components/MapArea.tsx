@@ -138,6 +138,8 @@ function MapArea({
 	mdata,
 	isClick,
 	isClickF,
+	setIsLoading,
+	isLoading,
 }: {
 	map: string;
 	mapSel: React.Dispatch<React.SetStateAction<string>>;
@@ -146,48 +148,56 @@ function MapArea({
 	mdata: MapData;
 	isClick: number;
 	isClickF: React.Dispatch<React.SetStateAction<number>>;
+	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+	isLoading: boolean;
 }) {
 	const [check, checkF] = useState(-1);
 	const [data, dataF] = useState<MapData | null>(null);
 
 	function mapUpdate(mapName: string) {
-		return axios.get(`${process.env.REACT_APP_SERVER_URI}stats/map/${mapName}`).then((x) => {
-			const mapdata: RegionData2[] = x.data;
-			const sub: MapData = {
-				name: '',
-				count: 0,
-				data: {},
-				min: 100,
-				max: 0,
-			};
-			sub.name = mapName;
-			sub.count = mapdata.reduce((acc, md) => acc + md.count, 0);
-			for (const { regionName, count } of mapdata) {
-				const [scount, rate] = [count, Number(((100 * count) / sub.count).toFixed(2))];
-				if (rate > sub.max) {
-					sub.max = rate;
-				}
-				if (rate < sub.min) {
-					sub.min = rate;
-				}
-				sub.data[`${regionName}`] = {
-					name: regionName,
-					count: scount,
-					rate,
-					color: '',
+		return axios
+			.get(`${process.env.REACT_APP_SERVER_URI}stats/map/${mapName}`)
+			.then((x) => {
+				const mapdata: RegionData2[] = x.data;
+				const sub: MapData = {
+					name: '',
+					count: 0,
+					data: {},
+					min: 100,
+					max: 0,
 				};
-			}
-			const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
-			for (const { regionName } of mapdata) {
-				const { rate } = sub.data[`${regionName}`];
-				let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
-				k = k < 0 ? 0 : k;
-				sub.data[`${regionName}`].color = colorSet[k];
-			}
-			dataF(sub);
-		});
+				sub.name = mapName;
+				sub.count = mapdata.reduce((acc, md) => acc + md.count, 0);
+				for (const { regionName, count } of mapdata) {
+					const [scount, rate] = [count, Number(((100 * count) / sub.count).toFixed(2))];
+					if (rate > sub.max) {
+						sub.max = rate;
+					}
+					if (rate < sub.min) {
+						sub.min = rate;
+					}
+					sub.data[`${regionName}`] = {
+						name: regionName,
+						count: scount,
+						rate,
+						color: '',
+					};
+				}
+				const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
+				for (const { regionName } of mapdata) {
+					const { rate } = sub.data[`${regionName}`];
+					let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
+					k = k < 0 ? 0 : k;
+					sub.data[`${regionName}`].color = colorSet[k];
+				}
+				dataF(sub);
+				setIsLoading(false);
+			})
+			.catch(() => {
+				setIsLoading(true);
+			});
 	}
-	if (data === null) {
+	if (data === null || isLoading) {
 		mapUpdate(map);
 	}
 	return (
@@ -245,7 +255,7 @@ function MapArea({
 					</ButtonArea>
 					<MainArea>
 						<MapBox>
-							{region.length > 0 ? (
+							{data !== null && region.length > 0 ? (
 								<SelRegionBox>
 									{region}
 									<br />
@@ -253,7 +263,8 @@ function MapArea({
 									<br />
 									{`${data.data[region].rate}%`}
 								</SelRegionBox>
-							) : (
+							) : null}
+							{data !== null && region.length === 0 ? (
 								<SelRegionBox>
 									{data.name}
 									<br />
@@ -261,7 +272,8 @@ function MapArea({
 									<br />
 									100%
 								</SelRegionBox>
-							)}
+							) : null}
+
 							{map === '전국' ? (
 								<Korea
 									width="100%"

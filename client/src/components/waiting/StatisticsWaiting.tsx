@@ -14,6 +14,7 @@ const Waiting = styled.div`
 	gap: 50px;
 	justify-content: center;
 	align-items: center;
+	user-select: none;
 `;
 
 // 이미지 애니메이션 효과
@@ -33,18 +34,21 @@ from {
 const ImgDiv = styled.div`
 	max-height: 100px;
 	margin: 0 auto;
+	user-select: none;
 `;
 
 // 이미지 적용 & 이미지 설정
 const Osori = styled.img`
 	height: 100%;
 	animation: alternate-reverse 1s ${rotate} infinite;
+	user-select: none;
 `;
 
 // 텍스트 설정
 const Text = styled.div`
 	font-size: 20px;
 	font-weight: 900;
+	user-select: none;
 `;
 
 function StatisticsWaiting() {
