@@ -156,6 +156,8 @@ export class IssueService {
 
   async createIssue(body: issueCreateDto) {
     let issue = new this.issueModel({ ...body, user: body.userId });
+    const user = await this.userModel.findOne({ _id: body.userId });
+    await this.userModel.updateOne({ issues: [...user.issues, issue._id] });
     issue = await issue.save();
     return issue !== null;
   }
@@ -171,7 +173,6 @@ export class IssueService {
         issue: body.issueId,
         user: body.userId,
       });
-      console.log(answer);
       answer = await answer.save();
       // 이슈 아이디와 유저아이디만으로 새로운 answerid를 answers 에 추가할 방법을 찾아보기 => 실패
       const issue = await this.issueModel.findOne({ _id: body.issueId });

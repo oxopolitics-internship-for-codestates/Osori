@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
-import { IsNumber, IsString } from 'class-validator';
-import { Document } from 'mongoose';
+import { IsMongoId, IsNumber, IsString } from 'class-validator';
+import mongoose, { Document } from 'mongoose';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -8,6 +8,12 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Stats extends Document {
+  @Prop({
+    required: true,
+  })
+  @IsMongoId()
+  issueId: mongoose.Schema.Types.ObjectId;
+
   @Prop({
     required: true,
     default: '',
