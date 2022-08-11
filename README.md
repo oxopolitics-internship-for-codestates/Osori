@@ -1,4 +1,5 @@
-# Osori
+# Osori![github badge](http://img.shields.io/badge/-Project-black?style=flat-square)![github badge](http://img.shields.io/badge/-Osori-lightgreen?style=flat-square)
+
 
 ### 개발이유
 사회 이슈에 따른 사람들의 관심도가 지역에 따라 어떻게 분포되는 지를 보여주기 위한 통계 서비스
