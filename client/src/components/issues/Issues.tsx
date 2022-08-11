@@ -184,10 +184,9 @@ function Issues({
 											backC="#9749B6"
 											marginL="50px"
 											pressed={issue.answer !== undefined ? issue.answer === '네' : false}
-											// pressed={pressed[issue.title][0]}
 											close={issue.answer !== undefined}
 											onClick={() => {
-												if (issue.answer === undefined) {
+												if (issue.answer === undefined && userInfo.id.length > 0) {
 													axios
 														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
 															userId: userInfo.id,
@@ -195,7 +194,7 @@ function Issues({
 															issueId: issue._id,
 															answer: '네',
 														})
-														.then((x) => {
+														.then(() => {
 															if (target !== null) {
 																setTop(target.scrollTop);
 															}
@@ -213,7 +212,7 @@ function Issues({
 											pressed={issue.answer !== undefined ? issue.answer === '글세요' : false}
 											close={issue.answer !== undefined}
 											onClick={() => {
-												if (issue.answer === undefined) {
+												if (issue.answer === undefined && userInfo.id.length > 0) {
 													axios
 														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
 															userId: userInfo.id,
@@ -239,7 +238,7 @@ function Issues({
 											pressed={issue.answer ? issue.answer === '아니요' : false}
 											close={issue.answer !== undefined}
 											onClick={() => {
-												if (issue.answer === undefined) {
+												if (issue.answer === undefined && userInfo.id.length > 0) {
 													axios
 														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
 															userId: userInfo.id,
