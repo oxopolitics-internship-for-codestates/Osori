@@ -193,52 +193,54 @@ function Editor({ onConfirm, onCancel }: Props) {
 						<Subject>이슈를 작성해주세요</Subject>
 						<Label LabelFontS="18px">제목</Label>
 						<ResponseInput
-              EditorMarginB="50px"
-              EditorBorder="1px solid #EEA3BF" 
-              type="text"
-              value={data.title}
+							EditorMarginB="50px"
+							EditorBorder="1px solid #EEA3BF"
+							type="text"
+							value={data.title}
 							onChange={(e) => {
 								setData({ ...data, title: e.target.value });
 							}}
-             />
+						/>
 						<Label LabelFontS="18px">응답</Label>
 						<ResponseInputFrame>
 							<Label>네</Label>
 							<ResponseInput
-                type="text"
-                value={data.answerTextO}
-							onChange={(e) => {
-								setData({ ...data, answerTextO: e.target.value });
-							}}
-              />
+								type="text"
+								value={data.answerTextO}
+								onChange={(e) => {
+									setData({ ...data, answerTextO: e.target.value });
+								}}
+							/>
 							<Label>글쎄요</Label>
 							<ResponseInput
-                type="text"
-                value={data.answerTextS}
-							  onChange={(e) => {
-								setData({ ...data, answerTextS: e.target.value });
-							}}
-              />
+								type="text"
+								value={data.answerTextS}
+								onChange={(e) => {
+									setData({ ...data, answerTextS: e.target.value });
+								}}
+							/>
 							<Label>아니요</Label>
 							<ResponseInput
-                type="text"
-                value={data.answerTextX}
-							  onChange={(e) => {
-								setData({ ...data, answerTextX: e.target.value });
-							}}
-              />
+								type="text"
+								value={data.answerTextX}
+								onChange={(e) => {
+									setData({ ...data, answerTextX: e.target.value });
+								}}
+							/>
 						</ResponseInputFrame>
 						<ConfirmDiv>
 							<ConfirmButton
-                onClick={() => {
-								if (Checker(data)) {
-									onConfirm(data);
-								} else {
-									setInputError(true);
-									setData(dataInit);
-								}
-							}}
-              >저장</ConfirmButton>
+								onClick={() => {
+									if (Checker(data)) {
+										onConfirm(data);
+									} else {
+										setInputError(true);
+										setData(dataInit);
+									}
+								}}
+							>
+								저장
+							</ConfirmButton>
 							<ConfirmButton onClick={onCancel} buttonColor="#EEA3BF" buttonBackColor="#ffffff" buttonLeft="72%">
 								취소
 							</ConfirmButton>
