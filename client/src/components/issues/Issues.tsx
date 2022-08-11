@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const WholeFrame = styled.div`
@@ -13,7 +13,6 @@ const Frame = styled.div`
 	display: flex;
 	flex-direction: column;
 	border: 1px solid #bfbfbf;
-	/* border-radius: 20px; */
 	padding: 20px 0px;
 	width: 600px;
 	justify-content: center;
@@ -101,7 +100,6 @@ const Ans = styled.button<{
 
 const Examples = styled.div`
 	background-color: rgb(230, 230, 230);
-	/* border-radius: 20px; */
 	width: 450px;
 	margin: 20px 45px;
 	padding: 10px;
