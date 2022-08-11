@@ -74,6 +74,7 @@ const ResponseInput = styled.input<{ EditorBorder?: string; EditorMarginB?: stri
 
 const ResponseInputFrame = styled.div`
 	border: 1px solid #eea3bf;
+	border-radius: 10px;
 	padding: 5px 10px 20px 10px;
 `;
 
@@ -83,7 +84,7 @@ const ConfirmDiv = styled.div`
 `;
 
 const ConfirmButton = styled.button<{ buttonColor?: string; buttonBackColor?: string; buttonLeft?: string }>`
-	width: 300px;
+	width: 295px;
 	height: 45px;
 	color: ${({ buttonColor }) => buttonColor || '#fff'};
 	font-size: 19px;
@@ -265,7 +266,7 @@ function Editor({ onConfirm, onCancel }: Props) {
 							>
 								저장
 							</ConfirmButton>
-							<ConfirmButton onClick={onCancel} buttonColor="#EEA3BF" buttonBackColor="#ffffff" buttonLeft="72%">
+							<ConfirmButton onClick={onCancel} buttonColor="#EEA3BF" buttonBackColor="#ffffff" buttonLeft="71.7%">
 								취소
 							</ConfirmButton>
 						</ConfirmDiv>
