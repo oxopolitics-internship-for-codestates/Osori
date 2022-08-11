@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const Frame = styled.section`
@@ -89,7 +89,13 @@ const ConfirmButton = styled.button<{ buttonColor?: string; buttonBackColor?: st
 	}
 `;
 
-function Editor() {
+// ---- code
+interface Props {
+	onConfirm: () => void;
+	onCancel: () => void;
+}
+
+function Editor({ onConfirm, onCancel }: Props) {
 	return (
 		<Frame>
 			<Inner>
@@ -104,6 +110,10 @@ function Editor() {
 						<EditorTitleInput type="text" />
 						<EditorTitle>아니요</EditorTitle>
 						<EditorTitleInput type="text" />
+						<ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
+						<ConfirmButton onClick={onCancel} buttonColor="#000" buttonBackColor="#ffffff" buttonLeft="58%">
+							취소
+						</ConfirmButton>
 					</RowGroup>
 				</RegisterFormBlock>
 			</Inner>
