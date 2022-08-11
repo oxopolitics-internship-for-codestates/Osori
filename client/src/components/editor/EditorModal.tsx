@@ -92,9 +92,14 @@ const ConfirmButton = styled.button<{ buttonColor?: string; buttonBackColor?: st
 		opacity: 1;
 	}
 `;
-
+interface DataType {
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+}
 interface Props {
-	onConfirm: () => void;
+	onConfirm: (data: DataType) => void;
 	onCancel: () => void;
 	visible: boolean;
 }

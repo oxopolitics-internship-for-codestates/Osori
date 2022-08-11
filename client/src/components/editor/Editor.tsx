@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Frame = styled.section`
@@ -88,14 +88,89 @@ const ConfirmButton = styled.button<{ buttonColor?: string; buttonBackColor?: st
 		opacity: 1;
 	}
 `;
+const MessageBoxArea = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	display: flex;
+
+	justify-content: center;
+	align-items: center;
+`;
+
+const MessageBox = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100px;
+	width: 60%;
+	flex-direction: column;
+	min-width: 500px;
+	opacity: 1;
+	border: solid 1px black;
+	border-radius: 10px;
+	background-color: white;
+	box-shadow: 5px 5px 10px black;
+`;
+const MessageInnerBox = styled.div`
+	flex: 1 0 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
+const MessageBoxButton = styled.button`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
 
 // ---- code
 interface Props {
-	onConfirm: () => void;
+	onConfirm: (data: DataType) => void;
 	onCancel: () => void;
 }
 
+interface DataType {
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+}
+const dataInit: DataType = {
+	title: '',
+	answerTextO: '',
+	answerTextX: '',
+	answerTextS: '',
+};
+
 function Editor({ onConfirm, onCancel }: Props) {
+	const [data, setData] = useState<DataType>(dataInit);
+	const [inputError, setInputError] = useState(false);
+	function Checker(checkData: DataType) {
+		let ans = true;
+		const f = (s: string) => s.replaceAll(' ', '').length === 0;
+		if (f(checkData.title)) {
+			ans = false;
+		}
+
+		if (f(checkData.answerTextO)) {
+			ans = false;
+		}
+
+		if (f(checkData.answerTextS)) {
+			ans = false;
+		}
+
+		if (f(checkData.answerTextX)) {
+			ans = false;
+		}
+
+		return ans;
+	}
+
 	return (
 		<Frame>
 			<Inner>
@@ -103,20 +178,72 @@ function Editor({ onConfirm, onCancel }: Props) {
 				<RegisterFormBlock>
 					<RowGroup>
 						<EditorTitle>제목</EditorTitle>
-						<EditorTitleInput type="text" />
+						<EditorTitleInput
+							type="text"
+							value={data.title}
+							onChange={(e) => {
+								setData({ ...data, title: e.target.value });
+							}}
+						/>
 						<EditorTitle>네</EditorTitle>
-						<EditorTitleInput type="text" />
+						<EditorTitleInput
+							type="text"
+							value={data.answerTextO}
+							onChange={(e) => {
+								setData({ ...data, answerTextO: e.target.value });
+							}}
+						/>
 						<EditorTitle>글쎄요</EditorTitle>
-						<EditorTitleInput type="text" />
+						<EditorTitleInput
+							type="text"
+							value={data.answerTextS}
+							onChange={(e) => {
+								setData({ ...data, answerTextS: e.target.value });
+							}}
+						/>
 						<EditorTitle>아니요</EditorTitle>
-						<EditorTitleInput type="text" />
-						<ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
+						<EditorTitleInput
+							type="text"
+							value={data.answerTextX}
+							onChange={(e) => {
+								setData({ ...data, answerTextX: e.target.value });
+							}}
+						/>
+						<ConfirmButton
+							onClick={() => {
+								console.log(Checker(data));
+								if (Checker(data)) {
+									onConfirm(data);
+								} else {
+									setInputError(true);
+									setData(dataInit);
+								}
+							}}
+						>
+							확인
+						</ConfirmButton>
 						<ConfirmButton onClick={onCancel} buttonColor="#000" buttonBackColor="#ffffff" buttonLeft="58%">
 							취소
 						</ConfirmButton>
 					</RowGroup>
 				</RegisterFormBlock>
 			</Inner>
+			{inputError ? (
+				<MessageBoxArea>
+					<MessageBox>
+						<MessageInnerBox>다시 입력 해주세요.</MessageInnerBox>
+						<MessageInnerBox>
+							<MessageBoxButton
+								onClick={() => {
+									setInputError(false);
+								}}
+							>
+								돌아가기
+							</MessageBoxButton>
+						</MessageInnerBox>
+					</MessageBox>
+				</MessageBoxArea>
+			) : null}
 		</Frame>
 	);
 }

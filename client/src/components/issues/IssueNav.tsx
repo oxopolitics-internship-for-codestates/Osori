@@ -102,6 +102,7 @@ const Button = styled.button<{ color?: string; animate?: string }>`
 		color: #fff;
 	}
 `;
+
 interface IssuesData {
 	_id: string;
 	title: string;
@@ -110,6 +111,14 @@ interface IssuesData {
 	answerTextS: string;
 	answer: string;
 }
+
+interface DataType {
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+}
+
 function IssueNav({
 	userInfo,
 	isLogin,
@@ -137,13 +146,17 @@ function IssueNav({
 		setEditor(true);
 	};
 
-	const onConfirm = () => {
-		console.log('확인');
-		setEditor(false);
+	const onConfirm = (data: DataType) => {
+		axios.post(`${process.env.REACT_APP_SERVER_URI}issue/`, { ...data, userId: userInfo.id }).then(() => {
+			return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((issues) => {
+				setIssues(issues.data);
+				setEditor(false);
+				setTop(0);
+			});
+		});
 	};
 
 	const onCancel = () => {
-		console.log('취소');
 		setEditor(false);
 	};
 
