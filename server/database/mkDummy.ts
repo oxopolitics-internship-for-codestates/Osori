@@ -411,7 +411,7 @@ async function Run() {
       title: '청와대로의 회귀, 어떻게 생각하세요?',
       answerTextO: '청와대 회귀돼야 해요.',
       answerTextS: '잘 모르겠어요.',
-      answerTextX: '청와대 회기 하면 안 돼요.',
+      answerTextX: '청와대 회귀 하면 안 돼요.',
     },
     {
       title: '여러분들은 학제 개편이 필요하다고 생각하시나요?',
