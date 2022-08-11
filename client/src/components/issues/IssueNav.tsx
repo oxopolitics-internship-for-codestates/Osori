@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import HomeImg from '../../assets/images/IssueImage.png';
+import axios from 'axios';
+import IssueImg from '../../assets/images/IssueImage.png';
 import osoriLogo from '../../assets/images/osori-logo.png';
 import EditorModal from '../editor/EditorModal';
 
@@ -52,7 +52,7 @@ const Title = styled.span`
 	width: 150px;
 `;
 
-const NewsImg = styled.img`
+const IssueImg = styled.img`
 	height: 50px;
 `;
 
@@ -123,6 +123,14 @@ interface IssuesData {
 	answerTextS: string;
 	answer: string;
 }
+
+interface DataType {
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+}
+
 function IssueNav({
 	userInfo,
 	isLogin,
@@ -150,8 +158,15 @@ function IssueNav({
 		setEditor(true);
 	};
 
-	const onConfirm = () => {
-		setEditor(false);
+	const onConfirm = (data: DataType) => {
+		axios.post(`${process.env.REACT_APP_SERVER_URI}issue/`, { ...data, userId: userInfo.id }).then(() => {
+			return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((issues) => {
+				setIssues(issues.data);
+				setEditor(false);
+				setTop(0);
+			});
+		});
+
 	};
 
 	const onCancel = () => {
@@ -209,7 +224,7 @@ function IssueNav({
 			</UpperFrame>
 			<LowerFrame>
 				<Title>
-					<NewsImg src={HomeImg} />
+					<IssueImg src={IssueImg} />
 				</Title>
 			</LowerFrame>
 		</Frame>
