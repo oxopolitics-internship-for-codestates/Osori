@@ -3,23 +3,7 @@ interface dataForm {
   birthYear: number;
   email: string;
   address: string;
-  answer: string;
   gender: string;
-}
-
-function answerF() {
-  const data = ['네', '아니요', '글세요'];
-  let k = Math.random();
-  const q = 0.1 * Math.random() - 0.05;
-  if (k <= 0.33 + q) {
-    k = 0;
-  } else if (k <= 0.66 + q) {
-    k = 1;
-  } else {
-    k = 2;
-  }
-
-  return data[k];
 }
 
 function addressF() {
@@ -121,7 +105,6 @@ export default function randomPick(n: number, n0: number) {
       birthYear: birthYearF(),
       email: 'email' + p + '@gmail.com',
       address: addressF(),
-      answer: answerF(),
     });
   }
   return data;
