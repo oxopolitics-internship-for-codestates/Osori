@@ -92,6 +92,7 @@ const ConfirmButton = styled.button<{ buttonColor?: string; buttonBackColor?: st
 		opacity: 1;
 	}
 `;
+
 interface DataType {
 	title: string;
 	answerTextO: string;

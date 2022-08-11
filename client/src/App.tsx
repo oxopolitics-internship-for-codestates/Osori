@@ -20,13 +20,7 @@ function App() {
 	return (
 		<Frame>
 			{pageChange ? (
-				<IssuePage
-					setPageChange={setPageChange}
-					top={top}
-					setTop={setTop}
-					pageChange={pageChange}
-					setSelectIssue={setSelectIssue}
-				/>
+				<IssuePage setPageChange={setPageChange} top={top} setTop={setTop} setSelectIssue={setSelectIssue} />
 			) : (
 				<StaticPage
 					setPageChange={setPageChange}
