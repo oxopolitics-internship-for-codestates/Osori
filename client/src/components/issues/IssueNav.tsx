@@ -86,7 +86,16 @@ const fadeinAni = keyframes`
 		}
 `;
 
-const Button = styled.button<{ color?: string; animate?: string }>`
+const fadeoutAni = keyframes`
+  from {
+			opacity: 1;
+		}
+		to {
+			opacity: 0;
+		}
+`;
+
+const Button = styled.button<{ color?: string }>`
 	margin-left: 5px;
 	width: 70px;
 	height: 50px;
@@ -102,8 +111,34 @@ const Button = styled.button<{ color?: string; animate?: string }>`
 	font-size: 14px;
 	font-weight: 600;
 	letter-spacing: normal;
-	animation: ${({ animate }) => animate || ''};
-	animation-fill-mode: backwards;
+
+	&:hover {
+		background-color: ${({ color }) => color || '#feddd5'};
+		opacity: 1;
+		transform: translateY(0);
+		transition-duration: 0.35s;
+		color: #fff;
+	}
+`;
+
+const WriteBtn = styled.button<{ ani?: string | undefined }>`
+	margin-left: 5px;
+	width: 70px;
+	height: 50px;
+	background-color: #fff;
+	opacity: 1;
+	border-radius: 8px;
+	border: 2px solid ${({ color }) => color || '#feddd5'};
+	box-shadow: rgba(150, 143, 152, 0.15) 0 4px 9px;
+	box-sizing: border-box;
+	color: #666666;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: normal;
+	animation: ${fadeinAni} 0.5s;
+	animation-fill-mode: forwards;
 
 	&:hover {
 		background-color: ${({ color }) => color || '#feddd5'};
@@ -213,9 +248,9 @@ function IssueNav({
 						</Button>
 					)}
 					{isLogin ? (
-						<Button onClick={editorOnOff} color="#C1ADD1" animate="fadeinAni 0.5s">
+						<WriteBtn onClick={editorOnOff} color="#C1ADD1">
 							글쓰기
-						</Button>
+						</WriteBtn>
 					) : null}
 					{isLogin ? <Label>{`${userInfo.userName} 님`}</Label> : null}
 					<EditorModal visible={editor} onConfirm={onConfirm} onCancel={onCancel} />
