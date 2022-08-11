@@ -26,13 +26,13 @@ function OverallResponseRate({ overallResData }: { overallResData: OverallResDat
 
 	useEffect(() => {
 		// 전체 응답 데이터 추출
-		const yes = `${((100 * overallResData.yes) / overallResData.total).toFixed(2)}%`;
-		const no = `${((100 * overallResData.no) / overallResData.total).toFixed(2)}%`;
-		const so = `${((100 * overallResData.so) / overallResData.total).toFixed(2)}%`;
+		const yes = overallResData.total ? `${((100 * overallResData.yes) / overallResData.total).toFixed(2)}%` : '0%';
+		const no = overallResData.total ? `${((100 * overallResData.no) / overallResData.total).toFixed(2)}%` : '0%';
+		const so = overallResData.total ? `${((100 * overallResData.so) / overallResData.total).toFixed(2)}%` : '0%';
 		const overallResponseData = [
-			{ x: yes, y: overallResData.yes },
-			{ x: so, y: overallResData.so },
-			{ x: no, y: overallResData.no },
+			{ x: yes, y: overallResData.yes || 0 },
+			{ x: so, y: overallResData.so || 0 },
+			{ x: no, y: overallResData.no || 100 },
 		];
 		setCount(overallResData.total);
 		setOverallResponse(overallResponseData);
