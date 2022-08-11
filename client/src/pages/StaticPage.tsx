@@ -11,6 +11,7 @@ const InnerFrame = styled.div`
 	max-width: 1200px;
 	width: 100%;
 	display: flex;
+	user-select: none;
 `;
 const Box = styled.div`
 	width: 50%;
@@ -20,12 +21,6 @@ const BackFrame = styled.div`
 	margin-top: 50px;
 	z-index: 3;
 `;
-// const Button = styled.button`
-// 	position: absolute;
-// 	width: 50px;
-// 	height: 50px;
-// 	user-select: none;
-// `;
 const Button = styled.button<{ color?: string; animate?: string }>`
 	position: absolute;
 	margin-left: 5px;
@@ -58,6 +53,7 @@ const BackImg = styled.img`
 	width: 30px;
 `;
 
+// ---- code ----
 const names: { [key: string]: string[] } = {
 	전국: [
 		'서울특별시',

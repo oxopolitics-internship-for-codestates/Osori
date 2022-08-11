@@ -114,11 +114,7 @@ function EditorModal({ onConfirm, onCancel, visible }: Props) {
 	return (
 		<ModalBackdrop disappear={!visible}>
 			<ModalView>
-				<Editor />
-				<ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
-				<ConfirmButton onClick={onCancel} buttonColor="#000" buttonBackColor="#ffffff" buttonLeft="58%">
-					취소
-				</ConfirmButton>
+				<Editor onConfirm={onConfirm} onCancel={onCancel} />
 			</ModalView>
 		</ModalBackdrop>
 	);

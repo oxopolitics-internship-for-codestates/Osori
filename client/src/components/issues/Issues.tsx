@@ -52,7 +52,7 @@ const Ans = styled.button<{
 				: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);';
 		}
 		return pressed ? 'inset 2px 2px 5px black;' : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);';
-	}}
+	}};
 	box-sizing: border-box;
 	color: #1a202c;
 	display: inline-flex;
@@ -79,8 +79,6 @@ const Ans = styled.button<{
 		}};
 	}
 	&:active {
-
-		
 		${({ pressed, close }) => {
 			if (close) {
 				return pressed

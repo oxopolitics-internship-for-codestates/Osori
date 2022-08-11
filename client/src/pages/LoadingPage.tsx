@@ -26,7 +26,7 @@ from {
 `;
 
 const lightSpeedInRight = keyframes`
-   from {
+  from {
     -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
     transform: translate3d(100%, 0, 0) skewX(-30deg);
     opacity: 0;
