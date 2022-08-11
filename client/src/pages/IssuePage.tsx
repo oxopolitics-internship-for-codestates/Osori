@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
-import IssueList from '../components/issues/Issues';
+import Issues from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
 import TopImg from '../assets/images/up-arrow.png';
 
@@ -72,7 +72,7 @@ interface IssuesData {
 	answerTextO: string;
 	answerTextX: string;
 	answerTextS: string;
-	answers?: { _id: string; answer: string }[];
+	answer: string;
 }
 function IssuePage({
 	pageChange,
@@ -91,16 +91,30 @@ function IssuePage({
 	const [target, setTarget] = useState<(EventTarget & HTMLDivElement) | null>(null);
 	const [isLogin, setIsLogin] = useState(false);
 	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
+	const [request, setRequest] = useState(false);
 	useEffect(() => {
 		if (target !== null) {
 			target.scrollTo({ top });
 		}
-		if (issues.length === 0) {
-			axios.get(`${process.env.REACT_APP_SERVER_URI}issue`).then((x) => {
+		if (issues.length === 0 || request) {
+			// if (isLogin) {
+			// 	axios.get(`${process.env.REACT_APP_SERVER_URI}issue/62f38e8613648b27864cb8bc`).then((x) => {
+			// 		// 62f38e8613648b27864cb8bb
+			// 		setIssues(x.data);
+			// 	});
+			// } else {
+			// 	axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((x) => {
+			// 		// 62f38e8613648b27864cb8bb
+			// 		setIssues(x.data);
+			// 	});
+			// }
+			axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((x) => {
+				// 62f38e8613648b27864cb8bb
 				setIssues(x.data);
+				setRequest(false);
 			});
 		}
-	}, [top, target, issues, setIssues]);
+	}, [top, target, issues, setIssues, userInfo, request]);
 	return (
 		<Frame
 			onMouseOver={(e) => {
@@ -109,13 +123,22 @@ function IssuePage({
 				}
 			}}
 		>
-			<IssueNav />
+			<IssueNav
+				userInfo={userInfo}
+				isLogin={isLogin}
+				setIsLogin={setIsLogin}
+				setUserInfo={setUserInfo}
+				setIssues={setIssues}
+				setTop={setTop}
+			/>
 			<Context>
-				<IssueList
+				<Issues
 					issues={issues}
 					setPageChange={setPageChange}
 					setTop={setTop}
 					target={target}
+					userInfo={userInfo}
+					setRequest={setRequest}
 					setSelectIssue={setSelectIssue}
 				/>
 			</Context>

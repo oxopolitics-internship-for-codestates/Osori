@@ -191,12 +191,24 @@ export class IssueService {
 
   async issueinfo(userId: issueInfoDto) {
     if (userId) {
-      const res = await this.issueModel.find().populate({
-        path: 'answers',
-        match: { user: userId },
-        select: 'answer',
-      });
-      return res;
+      const res = await this.issueModel.find().select({ answers: 0 });
+      const data = [];
+      for (const { _id, title, answerTextO, answerTextS, answerTextX } of res) {
+        const answer = await this.answerModel.findOne({
+          issue: _id,
+          user: userId,
+        });
+        data.push({
+          _id,
+          title,
+          answerTextO,
+          answerTextS,
+          answerTextX,
+          answer: answer ? answer.answer : undefined,
+        });
+      }
+
+      return data;
     } else {
       const res = await this.issueModel.find().select({ answers: 0 });
       return res;
