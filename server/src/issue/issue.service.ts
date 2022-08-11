@@ -252,7 +252,6 @@ export class IssueService {
         user: body.userId,
       });
       answer = await answer.save();
-      // 이슈 아이디와 유저아이디만으로 새로운 answerid를 answers 에 추가할 방법을 찾아보기 => 실패
       const issue = await this.issueModel.findOne({ _id: body.issueId });
       await issue.updateOne({ answers: [...issue.answers, answer._id] });
       const user = await this.userModel.findOne({ _id: body.userId });
