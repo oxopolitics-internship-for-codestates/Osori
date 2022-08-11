@@ -14,6 +14,25 @@ const Frame = styled.div`
 	align-items: center;
 	border-bottom: 1px solid #dedede;
 `;
+const UpperFrame = styled.div`
+	position: fixed;
+	width: 100%;
+	height: 100px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	z-index: 3;
+`;
+const LowerFrame = styled.div`
+	position: fixed;
+	width: 100%;
+	height: 100px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: -3;
+`;
+
 const LogoFrame = styled.div`
 	width: 150px;
 `;
@@ -33,7 +52,7 @@ const NewsImg = styled.img`
 const InOutFrame = styled.div`
 	display: flex;
 	flex-direction: row-reverse;
-	width: 200px;
+	width: 400px;
 	align-items: center;
 	justify-content: flex-start;
 `;
@@ -44,6 +63,16 @@ const fadeinAni = keyframes`
 		to {
 			opacity: 1;
 		}
+`;
+
+const Label = styled.div`
+	margin-left: 5px;
+	width: 150px;
+	height: 50px;
+	background-color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `;
 const Button = styled.button<{ color?: string; animate?: string }>`
 	margin-left: 5px;
@@ -72,11 +101,30 @@ const Button = styled.button<{ color?: string; animate?: string }>`
 		color: #fff;
 	}
 `;
-
-function IssueNav() {
-	const [isLogin, setIsLogin] = useState(false);
+interface IssuesData {
+	_id: string;
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answer: string;
+}
+function IssueNav({
+	userInfo,
+	isLogin,
+	setIsLogin,
+	setUserInfo,
+	setIssues,
+	setTop,
+}: {
+	userInfo: { id: string; userName: string };
+	isLogin: boolean;
+	setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
+	setUserInfo: React.Dispatch<React.SetStateAction<{ id: string; userName: string }>>;
+	setIssues: React.Dispatch<React.SetStateAction<IssuesData[]>>;
+	setTop: React.Dispatch<React.SetStateAction<number>>;
+}) {
 	const [fadein, setFadein] = useState<boolean>(false);
-	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
 	const [issues, setIssues] = useState('');
 
 	const fadeinAnimate = () => {
@@ -86,51 +134,58 @@ function IssueNav() {
 
 	return (
 		<Frame>
-			<LogoFrame>
-				<Logo src={osoriLogo} />
-			</LogoFrame>
-			<Title>
-				<NewsImg src={HomeImg} />
-			</Title>
-			<InOutFrame>
-				{isLogin ? (
-					<Button
-						onClick={() => {
-							axios.get(`${process.env.REACT_APP_SERVER_URI}issue`).then((x) => {
-								setIssues(x.data);
-								setIsLogin(false);
-							});
-						}}
-					>
-						로그아웃
-					</Button>
-				) : (
-					<Button
-						onClick={() => {
-							axios.get(`${process.env.REACT_APP_SERVER_URI}user`).then((x) => {
-								// eslint-disable-next-line no-underscore-dangle
-								const data = { userName: x.data.userName, id: x.data._id };
-
-								setUserInfo(data);
-								return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${data.id}`).then((reIssueData) => {
-									setIssues(reIssueData.data);
-									setIsLogin(true);
+			<UpperFrame>
+				<LogoFrame>
+					<Logo src={osoriLogo} />
+				</LogoFrame>
+				<InOutFrame>
+					{isLogin ? (
+						<Button
+							onClick={() => {
+								return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/`).then((issues) => {
+									setIssues(issues.data);
+									setUserInfo({ id: '', userName: '' });
+									setIsLogin(false);
+									setTop(0);
 								});
-							});
+							}}
+						>
+							로그아웃
+						</Button>
+					) : (
+						<Button
+							onClick={() => {
+								axios.get(`${process.env.REACT_APP_SERVER_URI}user/`).then((user) => {
+									//  eslint-disable-next-line no-underscore-dangle
+									const userInfos = { id: user.data._id, userName: user.data.userName };
+									return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfos.id}`).then((issues) => {
+										setIssues(issues.data);
+										setUserInfo(userInfos);
+										setIsLogin(true);
+										fadeinAnimate();
+										setTop(0);
+									});
+								});
+							}}
+							className={fadein ? 'fadein' : ''}
+						>
+							로그인
+						</Button>
+					)}
+					{isLogin ? (
+						<Button color="#C1ADD1" animate="fadeinAni 0.5s">
+							글쓰기
+						</Button>
+					) : null}
+					{isLogin ? <Label>{`${userInfo.userName} 님`}</Label> : null}
+				</InOutFrame>
+			</UpperFrame>
+			<LowerFrame>
+				<Title>
+					<NewsImg src={HomeImg} />
+				</Title>
+			</LowerFrame>
 
-							fadeinAnimate();
-						}}
-						className={fadein ? 'fadein' : ''}
-					>
-						로그인
-					</Button>
-				)}
-				{isLogin ? (
-					<Button color="#C1ADD1" animate="fadeinAni 0.5s">
-						글쓰기
-					</Button>
-				) : null}
-			</InOutFrame>
 		</Frame>
 	);
 }

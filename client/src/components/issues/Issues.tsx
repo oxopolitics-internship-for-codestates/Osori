@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const Frame = styled.div`
@@ -8,7 +8,7 @@ const Frame = styled.div`
 	border: 1px solid #878787;
 	border-radius: 20px;
 	padding: 20px 0px;
-	width: 700px;
+	width: 600px;
 	justify-content: center;
 	align-items: center;
 	margin-top: 30px;
@@ -38,16 +38,21 @@ const Ans = styled.button<{
 	hoverColor?: string;
 	backC?: string;
 	pressed: boolean;
+	close: boolean;
 }>`
 	align-items: center;
-	background: ${({ backC, pressed }) => {
-		if (!pressed) {
-			return backC || '#eeeeee';
-		}
-		return 'black';
+	background: ${({ backC }) => {
+		return backC || '#eeeeee';
 	}};
 	border: 0 solid #e2e8f0;
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);
+	box-shadow: ${({ pressed, close }) => {
+		if (close) {
+			return pressed
+				? 'inset 2px 2px 5px black;'
+				: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);';
+		}
+		return pressed ? 'inset 2px 2px 5px black;' : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);';
+	}}
 	box-sizing: border-box;
 	color: #1a202c;
 	display: inline-flex;
@@ -69,19 +74,28 @@ const Ans = styled.button<{
 	-webkit-user-select: none;
 	touch-action: manipulation;
 	&:hover {
-		background-color: ${({ hoverColor, pressed }) => {
-			if (!pressed) {
-				return hoverColor || 'rgba(81, 155, 122, 0.80)';
-			}
-			return 'black';
+		background-color: ${({ hoverColor }) => {
+			return hoverColor || 'rgba(81, 155, 122, 0.80)';
 		}};
+	}
+	&:active {
+
+		
+		${({ pressed, close }) => {
+			if (close) {
+				return pressed
+					? 'box-shadow: inset 2px 2px 5px black;'
+					: 'box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);';
+			}
+			return !pressed ? 'box-shadow: inset 2px 2px 5px black;' : '';
+		}}
 	}
 `;
 
 const Examples = styled.div`
 	background-color: rgb(230, 230, 230);
 	border-radius: 20px;
-	width: 500px;
+	width: 450px;
 	margin: 20px 45px;
 	padding: 10px;
 	box-shadow: inset 0px 0px 10px #7c7c7c;
@@ -129,7 +143,7 @@ interface IssuesData {
 	answerTextO: string;
 	answerTextX: string;
 	answerTextS: string;
-	answers?: { _id: string; answer: string }[];
+	answer: string;
 }
 
 function Issues({
@@ -138,42 +152,23 @@ function Issues({
 	target,
 	setTop,
 	setSelectIssue,
+	userInfo,
+	setRequest,
 }: {
 	issues: IssuesData[];
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	target: (EventTarget & HTMLDivElement) | null;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
 	setSelectIssue: React.Dispatch<React.SetStateAction<string>>;
+	userInfo: { userName: string; id: string };
+	setRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-	const [check, setCheck] = useState(false);
-	const [pressed, setPressed] = useState<{ [key: string]: boolean[] }>({});
-	if (!check) {
-		const data: { [key: string]: boolean[] } = {};
-		for (const i of issues) {
-			const base = [false, false, false];
-			if (i.answers === undefined) {
-				data[i.title] = base;
-			} else {
-				const { answer } = i.answers[0];
-				if (answer === '네') {
-					base[0] = true;
-				} else if (answer === '아니요') {
-					base[2] = true;
-				} else {
-					base[1] = true;
-				}
-				data[i.title] = base;
-			}
-		}
-		setPressed(data);
-		setCheck(true);
-	}
-
 	return (
 		<Div>
 			{issues.length > 0
 				? issues.map((issue, idx) => {
 						const key = `isssue${idx}`;
+
 						return (
 							<Frame key={key}>
 								<Issue>
@@ -183,12 +178,25 @@ function Issues({
 											padValue="8px 25px"
 											backC="#519b7a"
 											marginL="50px"
-											pressed={pressed[issue.title] ? pressed[issue.title][0] : false}
+											pressed={issue.answer !== undefined ? issue.answer === '네' : false}
+											// pressed={pressed[issue.title][0]}
+											close={issue.answer !== undefined}
 											onClick={() => {
-												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
-													console.log('yes');
-													setPressed({ ...pressed, [issue.title]: [true, false, false] });
-												});
+												if (issue.answer === undefined) {
+													axios
+														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
+															userId: userInfo.id,
+															// eslint-disable-next-line no-underscore-dangle
+															issueId: issue._id,
+															answer: '네',
+														})
+														.then((x) => {
+															if (target !== null) {
+																setTop(target.scrollTop);
+															}
+															setRequest(true);
+														});
+												}
 											}}
 										>
 											네
@@ -197,13 +205,24 @@ function Issues({
 											padValue="8px 10px"
 											backC="#fbcd57"
 											hoverColor="rgba(251, 205, 87, 0.80)"
-											pressed={pressed[issue.title] ? pressed[issue.title][1] : false}
+											pressed={issue.answer !== undefined ? issue.answer === '글세요' : false}
+											close={issue.answer !== undefined}
 											onClick={() => {
-												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
-													console.log('so');
-
-													setPressed({ ...pressed, [issue.title]: [false, true, false] });
-												});
+												if (issue.answer === undefined) {
+													axios
+														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
+															userId: userInfo.id,
+															// eslint-disable-next-line no-underscore-dangle
+															issueId: issue._id,
+															answer: '글세요',
+														})
+														.then(() => {
+															if (target !== null) {
+																setTop(target.scrollTop);
+															}
+															setRequest(true);
+														});
+												}
 											}}
 										>
 											글쎄요
@@ -212,11 +231,24 @@ function Issues({
 											padValue="8px 10px"
 											backC="#fb7b77"
 											hoverColor="rgba(251, 123, 119, 0.80)"
-											pressed={pressed[issue.title] ? pressed[issue.title][2] : false}
+											pressed={issue.answer ? issue.answer === '아니요' : false}
+											close={issue.answer !== undefined}
 											onClick={() => {
-												axios.get(`${process.env.REACT_APP_SERVER_URI}`).then((x) => {
-													setPressed({ ...pressed, [issue.title]: [false, false, true] });
-												});
+												if (issue.answer === undefined) {
+													axios
+														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
+															userId: userInfo.id,
+															// eslint-disable-next-line no-underscore-dangle
+															issueId: issue._id,
+															answer: '아니요',
+														})
+														.then(() => {
+															if (target !== null) {
+																setTop(target.scrollTop);
+															}
+															setRequest(true);
+														});
+												}
 											}}
 										>
 											아니요
