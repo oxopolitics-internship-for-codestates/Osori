@@ -125,6 +125,8 @@ function IssueNav({
 	setTop: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	const [fadein, setFadein] = useState<boolean>(false);
+	const [issues, setIssues] = useState('');
+
 	const fadeinAnimate = () => {
 		setFadein(true);
 		setTimeout(() => setFadein(false), 2000);
@@ -183,6 +185,7 @@ function IssueNav({
 					<NewsImg src={HomeImg} />
 				</Title>
 			</LowerFrame>
+
 		</Frame>
 	);
 }
