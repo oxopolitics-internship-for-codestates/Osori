@@ -108,7 +108,7 @@ function Chart({ region, selectIssue }: { region: string; selectIssue: string })
 	// 여성 세부 데이터 추출
 	const femaleAge = responseData.female.age;
 	let femaleMaxAge = 0;
-	let femaleAgeLabel = '';
+	let femaleAgeLabel = '없음';
 	for (const i in femaleAge) {
 		if (femaleAge[i] > femaleMaxAge) {
 			femaleMaxAge = femaleAge[i];
@@ -118,13 +118,14 @@ function Chart({ region, selectIssue }: { region: string; selectIssue: string })
 	// 남성 세부 데이터 추출
 	const maleAge = responseData.male.age;
 	let maleMaxAge = 0;
-	let maleAgeLabel = '';
+	let maleAgeLabel = '없음';
 	for (const i in maleAge) {
 		if (maleAge[i] > maleMaxAge) {
 			maleMaxAge = maleAge[i];
 			maleAgeLabel = i;
 		}
 	}
+
 	// 남녀 전체 응답 데이터(최다연령대 포함)
 	const genderResData = {
 		female: responseData.female.count,

@@ -34,23 +34,24 @@ function GenderResponseRate({ genderData }: { genderData: GenderData }) {
 
 	useEffect(() => {
 		// 남성 응답 데이터 추출
-		let yes = `${((100 * genderData.male.yes) / genderData.male.count).toFixed(2)}%`;
-		let no = `${((100 * genderData.male.no) / genderData.male.count).toFixed(2)}%`;
-		let so = `${((100 * genderData.male.so) / genderData.male.count).toFixed(2)}%`;
+		let yes = genderData.male.count > 0 ? `${((100 * genderData.male.yes) / genderData.male.count).toFixed(2)}%` : '0%';
+		let no = genderData.male.count > 0 ? `${((100 * genderData.male.no) / genderData.male.count).toFixed(2)}%` : '0%';
+		let so = genderData.male.count > 0 ? `${((100 * genderData.male.so) / genderData.male.count).toFixed(2)}%` : '0%';
 		const maleResponseData = [
-			{ x: yes, y: genderData.male.yes },
-			{ x: so, y: genderData.male.so },
-			{ x: no, y: genderData.male.no },
+			{ x: yes, y: genderData.male.yes || 0 },
+			{ x: so, y: genderData.male.so || 0 },
+			{ x: no, y: genderData.male.no || 100 },
 		];
 
 		// 여성 응답 데이터 추출
-		yes = `${((100 * genderData.female.yes) / genderData.female.count).toFixed(2)}%`;
-		no = `${((100 * genderData.female.no) / genderData.female.count).toFixed(2)}%`;
-		so = `${((100 * genderData.female.so) / genderData.female.count).toFixed(2)}%`;
+		yes =
+			genderData.female.count > 0 ? `${((100 * genderData.female.yes) / genderData.female.count).toFixed(2)}%` : '0%';
+		no = genderData.female.count > 0 ? `${((100 * genderData.female.no) / genderData.female.count).toFixed(2)}%` : '0%';
+		so = genderData.female.count > 0 ? `${((100 * genderData.female.so) / genderData.female.count).toFixed(2)}%` : '0%';
 		const femaleResponseData = [
-			{ x: yes, y: genderData.female.yes },
-			{ x: so, y: genderData.female.so },
-			{ x: no, y: genderData.female.no },
+			{ x: yes, y: genderData.female.yes || 0 },
+			{ x: so, y: genderData.female.so || 0 },
+			{ x: no, y: genderData.female.no || 100 },
 		];
 		setMaCount(genderData.male.count);
 		setFeCount(genderData.female.count);
