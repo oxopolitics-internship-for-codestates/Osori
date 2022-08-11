@@ -19,7 +19,6 @@ const InnerFrame = styled.div`
 	display: flex;
 	flex-direction: column;
 `;
-
 const ButtonArea = styled.div`
 	height: 80px;
 	width: 100%;
@@ -65,7 +64,6 @@ const Button = styled.button<{ direc: string; check: boolean }>`
       `;
 	}}
 `;
-
 const MainArea = styled.div`
 	height: 90%;
 	width: 100%;
@@ -81,7 +79,6 @@ const MapBox = styled.div`
 	align-items: flex-end;
 	padding: 5px;
 `;
-
 const SelRegionBox = styled.div`
 	position: absolute;
 	height: 100px;
@@ -98,7 +95,6 @@ const SelRegionBox = styled.div`
 	background-color: white;
 	user-select: none;
 `;
-
 const ColorBarBox = styled.div`
 	height: 300px;
 	top: calc(90% - 300px);
@@ -108,6 +104,7 @@ const ColorBarBox = styled.div`
 	user-select: none;
 `;
 
+// ---- code ----
 const colorSet = ['#9749B6', '#C181DB', '#C1ADD1', '#EEA3BF', '#FEDDD5', '#EAEAEA'];
 
 interface RegionData {
@@ -135,7 +132,6 @@ function MapArea({
 	mapSel,
 	region,
 	regionSel,
-	mdata,
 	isClick,
 	isClickF,
 	setIsLoading,
@@ -146,7 +142,6 @@ function MapArea({
 	mapSel: React.Dispatch<React.SetStateAction<string>>;
 	region: string;
 	regionSel: React.Dispatch<React.SetStateAction<string>>;
-	mdata: MapData;
 	isClick: number;
 	isClickF: React.Dispatch<React.SetStateAction<number>>;
 	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -231,13 +226,10 @@ function MapArea({
 											regionSel('');
 											isClickF(-1);
 										});
-										// dataF(null);
 									} else if (isClick < 0) {
 										mapUpdate('전국').then(() => {
 											mapSel('전국');
 										});
-										// mapSel("전국");
-										// dataF(null);
 									}
 								}}
 							>
@@ -254,13 +246,10 @@ function MapArea({
 											regionSel('');
 											isClickF(-1);
 										});
-										// dataF(null);
 									} else if (isClick < 0) {
 										mapUpdate('서울특별시').then(() => {
 											mapSel('서울특별시');
 										});
-										// mapSel("서울특별시");
-										// dataF(null);
 									}
 								}}
 							>

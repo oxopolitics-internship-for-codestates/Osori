@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip, LineSegment } from 'victory';
+import { VictoryPie, VictoryLegend, VictoryLabel, VictoryTooltip } from 'victory';
 
 const Svg = styled.svg``;
 
@@ -50,7 +50,6 @@ function GenderResponseRate({ genderData }: { genderData: GenderData }) {
 
 		// 여성 응답 데이터 추출
 		yes = Number(((100 * genderData.female.yes) / genderData.female.count).toFixed(2));
-
 		no = Number(((100 * genderData.female.no) / genderData.female.count).toFixed(2));
 		so = Number(((100 * genderData.female.so) / genderData.female.count).toFixed(2));
 		if (genderData.female.count === 0) {
