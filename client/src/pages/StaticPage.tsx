@@ -239,7 +239,6 @@ function StaticPage({
 					mapSel={mapSel}
 					region={region}
 					regionSel={regionSel}
-					mdata={dbinit[map]}
 					isClick={isClick}
 					isClickF={isClickF}
 					isLoading={isLoading}
