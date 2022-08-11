@@ -2,10 +2,9 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import randomPick from '../etc/randomPick';
 import mongoose, { Schema, model } from 'mongoose';
-// 1. Create an interface representing a document in MongoDB.
 interface User {
   userName: string;
-  //   nickName: string;
+
   email: string;
   address: string;
   gender: string;
@@ -87,11 +86,9 @@ interface Stats {
   };
 }
 
-// 2. Create a Schema corresponding to the document interface.
 const userSchema = new Schema<User>(
   {
     userName: { type: String, required: true },
-    //   nickName: { type: String, required: true },
     email: { type: String, required: true },
     address: { type: String, required: true },
     gender: { type: String, required: true },
@@ -188,7 +185,6 @@ mongoose.connect(process.env.MONGODB_URI, {
   dbName: process.env.MONGODB_DUMMY_DBNAME,
 });
 
-// 3. Create a Model.
 const User = model<User>('User', userSchema);
 const Issue = model<Issue>('Issue', issueSchema);
 const Answer = model<Answer>('Answer', answerSchema);
@@ -446,7 +442,6 @@ async function Run() {
 
   const dataNumber = Number(process.env.DUMMYDATANUMER) || 10;
 
-  // 이슈 생성
   const issueCount = await Issue.countDocuments();
   if (issueCount === 0) {
     const editer = await User.findOne({ userName: 'editer' });
@@ -532,19 +527,15 @@ async function Run() {
     }
   }
 
-  // 유저 생성
   if (startNumber < dataNumber) {
     const data = randomPick(dataNumber, startNumber);
-    console.log(data.length);
     await User.insertMany(data);
 
-    //이슈별 응답 데이터 생성
     for (const issue of issueLibrary) {
       await test(issue, data);
     }
   }
 
-  console.log('end');
   await mongoose.disconnect();
 }
 
