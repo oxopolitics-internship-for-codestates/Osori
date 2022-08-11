@@ -127,7 +127,6 @@ function IssueNav({
 }) {
 	const [fadein, setFadein] = useState<boolean>(false);
 	const [editor, setEditor] = useState(false);
-	const [issues, setIssues] = useState('');
 
 	const fadeinAnimate = () => {
 		setFadein(true);
@@ -194,7 +193,7 @@ function IssueNav({
 						</Button>
 					) : null}
 					{isLogin ? <Label>{`${userInfo.userName} 님`}</Label> : null}
-          <EditorModal visible={editor} onConfirm={onConfirm} onCancel={onCancel} />
+					<EditorModal visible={editor} onConfirm={onConfirm} onCancel={onCancel} />
 				</InOutFrame>
 			</UpperFrame>
 			<LowerFrame>
