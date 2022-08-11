@@ -118,15 +118,16 @@ const MessageBox = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 100px;
-	width: 60%;
+	height: 150px;
+	width: 40%;
+	padding: 20px;
 	flex-direction: column;
-	min-width: 500px;
+	min-width: 200px;
 	opacity: 1;
-	border: solid 1px black;
+	border: solid 1px #bfbfbf;
 	border-radius: 10px;
 	background-color: white;
-	box-shadow: 5px 5px 10px black;
+	box-shadow: 1px 2px 5px #7c7c7c;
 `;
 const MessageInnerBox = styled.div`
 	flex: 1 0 0;
@@ -139,6 +140,29 @@ const MessageBoxButton = styled.button`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	width: 70px;
+	height: 30px;
+	background-color: #fff;
+	opacity: 1;
+	border-radius: 8px;
+	border: 1.5px solid #eea3bf;
+	box-shadow: rgba(150, 143, 152, 0.15) 0 4px 9px;
+	box-sizing: border-box;
+	color: #666666;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: normal;
+
+	&:hover {
+		border: none;
+		background-color: rgba(238, 163, 191, 0.8);
+		opacity: 1;
+		transform: translateY(0);
+		transition-duration: 0.35s;
+		color: #fff;
+	}
 `;
 
 // ---- code
@@ -251,7 +275,7 @@ function Editor({ onConfirm, onCancel }: Props) {
 			{inputError ? (
 				<MessageBoxArea>
 					<MessageBox>
-						<MessageInnerBox>다시 입력 해주세요.</MessageInnerBox>
+						<MessageInnerBox>빈 칸을 채워주세요</MessageInnerBox>
 						<MessageInnerBox>
 							<MessageBoxButton
 								onClick={() => {
