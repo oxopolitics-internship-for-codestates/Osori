@@ -1,4 +1,4 @@
-# Osori!   [github badge](http://img.shields.io/badge/-Project-black?style=flat-square)![github badge](http://img.shields.io/badge/-Osori-lightgreen?style=flat-square)
+# Osori   ![github badge](http://img.shields.io/badge/-Project-black?style=flat-square)![github badge](http://img.shields.io/badge/-Osori-lightgreen?style=flat-square)
 
 
 ### 개발이유
