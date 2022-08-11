@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
-import IssueImg from '../../assets/images/IssueImage.png';
+import IssueImage from '../../assets/images/IssueImage.png';
 import osoriLogo from '../../assets/images/osori-logo.png';
 import EditorModal from '../editor/EditorModal';
 
@@ -166,7 +166,6 @@ function IssueNav({
 				setTop(0);
 			});
 		});
-
 	};
 
 	const onCancel = () => {
@@ -224,7 +223,7 @@ function IssueNav({
 			</UpperFrame>
 			<LowerFrame>
 				<Title>
-					<IssueImg src={IssueImg} />
+					<IssueImg src={IssueImage} />
 				</Title>
 			</LowerFrame>
 		</Frame>
