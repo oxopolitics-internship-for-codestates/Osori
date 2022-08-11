@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import Editor from './Editor';
 
@@ -116,7 +116,7 @@ function EditorModal({ onConfirm, onCancel, visible }: Props) {
 			<ModalView>
 				<Editor />
 				<ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
-				<ConfirmButton onClick={onConfirm} buttonColor="#000" buttonBackColor="#ffffff" buttonLeft="58%">
+				<ConfirmButton onClick={onCancel} buttonColor="#000" buttonBackColor="#ffffff" buttonLeft="58%">
 					취소
 				</ConfirmButton>
 			</ModalView>

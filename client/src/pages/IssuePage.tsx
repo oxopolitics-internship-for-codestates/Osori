@@ -1,34 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import axios from 'axios';
 import IssueList from '../components/issues/Issues';
 import IssueNav from '../components/issues/IssueNav';
 import TopImg from '../assets/images/up-arrow.png';
-
-const fadeOut = keyframes`
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-	}
-`;
-
-const fadeIn = keyframes`
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-`;
 
 const Frame = styled.div`
 	display: flex;
 	width: 100%;
 	height: 100%;
 	flex-direction: column;
-	/* justify-content: center; */
 	align-items: center;
 	overflow-y: scroll;
 	&::-webkit-scrollbar {
@@ -42,20 +23,19 @@ const Context = styled.div`
 
 const TopButton = styled.div`
 	position: fixed;
-	bottom: 20px; /* Place the button at the bottom of the page */
-	right: 200px; /* Place the button 30px from the right */
-	z-index: 99; /* Make sure it does not overlap */
-	border: none; /* Remove borders */
-	cursor: pointer; /* Add a mouse pointer on hover */
-	padding: 15px; /* Some padding */
-	border-radius: 10px; /* Rounded corners */
-	font-size: 18px; /* Increase font size */
+	bottom: 20px;
+	right: 200px;
+	z-index: 99;
+	border: none;
+	cursor: pointer;
+	padding: 15px;
+	border-radius: 10px;
+	font-size: 18px;
 	width: 50px;
 	height: 50px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/* background-color: white; */
 	flex-direction: column;
 	margin-bottom: 30px;
 	padding: 5px;
