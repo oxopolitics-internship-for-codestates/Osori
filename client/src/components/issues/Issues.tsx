@@ -17,7 +17,7 @@ const Frame = styled.div`
 	width: 600px;
 	justify-content: center;
 	align-items: center;
-	margin-top: 30px;
+	margin: 30px 0;
 	box-shadow: 1px 2px 5px #7c7c7c;
 `;
 
