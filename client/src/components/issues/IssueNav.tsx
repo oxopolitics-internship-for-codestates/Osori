@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import HomeImg from '../../assets/images/IssueImage.png';
+import axios from 'axios';
+import IssueImg from '../../assets/images/IssueImage.png';
 import osoriLogo from '../../assets/images/osori-logo.png';
 import EditorModal from '../editor/EditorModal';
 
@@ -15,6 +15,7 @@ const Frame = styled.div`
 	align-items: center;
 	border-bottom: 1px solid #dedede;
 `;
+
 const UpperFrame = styled.div`
 	position: fixed;
 	width: 100%;
@@ -24,6 +25,7 @@ const UpperFrame = styled.div`
 	align-items: center;
 	z-index: 3;
 `;
+
 const LowerFrame = styled.div`
 	position: fixed;
 	width: 100%;
@@ -37,33 +39,29 @@ const LowerFrame = styled.div`
 const LogoFrame = styled.div`
 	width: 150px;
 `;
+
 const Logo = styled.img`
 	width: 100%;
 	height: 50px;
 `;
+
 const Title = styled.span`
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 150px;
 `;
-const NewsImg = styled.img`
+
+const IssueImg = styled.img`
 	height: 50px;
 `;
+
 const InOutFrame = styled.div`
 	display: flex;
 	flex-direction: row-reverse;
 	width: 400px;
 	align-items: center;
 	justify-content: flex-start;
-`;
-const fadeinAni = keyframes`
-  from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
 `;
 
 const Label = styled.div`
@@ -74,7 +72,20 @@ const Label = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	color: #878787;
+	font-size: 15px;
+	font-weight: 600;
 `;
+
+const fadeinAni = keyframes`
+  from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+`;
+
 const Button = styled.button<{ color?: string; animate?: string }>`
 	margin-left: 5px;
 	width: 70px;
@@ -103,6 +114,7 @@ const Button = styled.button<{ color?: string; animate?: string }>`
 	}
 `;
 
+// ---- code ----
 interface IssuesData {
 	_id: string;
 	title: string;
@@ -154,6 +166,7 @@ function IssueNav({
 				setTop(0);
 			});
 		});
+
 	};
 
 	const onCancel = () => {
@@ -211,7 +224,7 @@ function IssueNav({
 			</UpperFrame>
 			<LowerFrame>
 				<Title>
-					<NewsImg src={HomeImg} />
+					<IssueImg src={IssueImg} />
 				</Title>
 			</LowerFrame>
 		</Frame>
