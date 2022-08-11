@@ -15,20 +15,22 @@ const Inner = styled.div`
 
 const Subject = styled.div`
 	text-align: center;
-	color: #c6c1c1;
-	max-width: 220px;
+	color: #3f3c3c;
+	max-width: 300px;
 	margin: 0 auto;
 	margin-top: 30px;
+	margin-bottom: 30px;
 	font-size: 32px;
+	font-weight: 900;
 `;
 
 const RegisterFormBlock = styled.div`
 	width: 700px;
-	height: 500px;
+	height: 700px;
 	background: #fff;
 	border-radius: 16px;
 	box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
-	margin-top: 30px;
+	margin-top: 180px;
 	margin-bottom: 32px;
 	padding: 30px;
 	display: flex;
@@ -36,53 +38,65 @@ const RegisterFormBlock = styled.div`
 `;
 
 const RowGroup = styled.div`
-	font-family: Dotum, '돋움', Helvetica, sans-serif;
 	font-size: 12px;
 	min-width: 600px;
 	max-width: 50%;
 	margin: 0 auto;
 `;
 
-const EditorTitle = styled.h3`
-	margin: 19px 8px 8px;
-	font-size: 14px;
+const Label = styled.h3<{ LabelFontS?: string }>`
+	margin: 8px 8px 8px;
+	height: 20px;
+	font-size: ${({ LabelFontS }) => LabelFontS || '14px'};
 	font-weight: 700;
 `;
 
-const EditorTitleInput = styled.input`
+const ResponseInput = styled.input<{ EditorBorder?: string; EditorMarginB?: string; EditorShadow?: string }>`
 	display: block;
 	position: relative;
 	width: 100%;
-	height: 51px;
-	border: solid 1px #dadada;
+	height: 48px;
+	border: ${({ EditorBorder }) => EditorBorder || '1px solid #dadada'};
+	border-radius: 10px;
+	margin-bottom: ${({ EditorMarginB }) => EditorMarginB || '0px'};
 	padding: 10px 110px 10px 14px;
 	box-sizing: border-box;
 	&:disabled {
-		background: #ffffff;
+		background: #ffffffa6;
 	}
 	& + & {
 		margin-left: 20px;
 	}
+	&:focus {
+		outline: none;
+	}
+`;
+
+const ResponseInputFrame = styled.div`
+	border: 1px solid #eea3bf;
+	padding: 5px 10px 20px 10px;
 `;
 
 const ConfirmDiv = styled.div`
 	display: flex;
+	margin-top: 15px;
 `;
 
 const ConfirmButton = styled.button<{ buttonColor?: string; buttonBackColor?: string; buttonLeft?: string }>`
-	width: 80px;
-	height: 30px;
+	width: 300px;
+	height: 45px;
 	color: ${({ buttonColor }) => buttonColor || '#fff'};
-	background: ${({ buttonBackColor }) => buttonBackColor || '#00000069'};
-	border: 1px solid #000;
+	font-size: 19px;
+	font-weight: 900;
+	background: ${({ buttonBackColor }) => buttonBackColor || '#EEA3BF'};
+	border: 1px solid #eea3bf;
 	border-radius: 8px;
 	position: absolute;
-	left: ${({ buttonLeft }) => buttonLeft || '43%'};
+	left: ${({ buttonLeft }) => buttonLeft || '28%'};
 	transform: translate(-50%, 50%);
 	text-align: center;
 	&:hover {
 		opacity: 0.8;
-		text-decoration: underline;
 	}
 	&:active {
 		opacity: 1;
@@ -174,44 +188,49 @@ function Editor({ onConfirm, onCancel }: Props) {
 	return (
 		<Frame>
 			<Inner>
-				<Subject>작성 하기</Subject>
 				<RegisterFormBlock>
 					<RowGroup>
-						<EditorTitle>제목</EditorTitle>
-						<EditorTitleInput
-							type="text"
-							value={data.title}
+						<Subject>이슈를 작성해주세요</Subject>
+						<Label LabelFontS="18px">제목</Label>
+						<ResponseInput
+              EditorMarginB="50px"
+              EditorBorder="1px solid #EEA3BF" 
+              type="text"
+              value={data.title}
 							onChange={(e) => {
 								setData({ ...data, title: e.target.value });
 							}}
-						/>
-						<EditorTitle>네</EditorTitle>
-						<EditorTitleInput
-							type="text"
-							value={data.answerTextO}
+             />
+						<Label LabelFontS="18px">응답</Label>
+						<ResponseInputFrame>
+							<Label>네</Label>
+							<ResponseInput
+                type="text"
+                value={data.answerTextO}
 							onChange={(e) => {
 								setData({ ...data, answerTextO: e.target.value });
 							}}
-						/>
-						<EditorTitle>글쎄요</EditorTitle>
-						<EditorTitleInput
-							type="text"
-							value={data.answerTextS}
-							onChange={(e) => {
+              />
+							<Label>글쎄요</Label>
+							<ResponseInput
+                type="text"
+                value={data.answerTextS}
+							  onChange={(e) => {
 								setData({ ...data, answerTextS: e.target.value });
 							}}
-						/>
-						<EditorTitle>아니요</EditorTitle>
-						<EditorTitleInput
-							type="text"
-							value={data.answerTextX}
-							onChange={(e) => {
+              />
+							<Label>아니요</Label>
+							<ResponseInput
+                type="text"
+                value={data.answerTextX}
+							  onChange={(e) => {
 								setData({ ...data, answerTextX: e.target.value });
 							}}
-						/>
-						<ConfirmButton
-							onClick={() => {
-								console.log(Checker(data));
+              />
+						</ResponseInputFrame>
+						<ConfirmDiv>
+							<ConfirmButton
+                onClick={() => {
 								if (Checker(data)) {
 									onConfirm(data);
 								} else {
@@ -219,12 +238,11 @@ function Editor({ onConfirm, onCancel }: Props) {
 									setData(dataInit);
 								}
 							}}
-						>
-							확인
-						</ConfirmButton>
-						<ConfirmButton onClick={onCancel} buttonColor="#000" buttonBackColor="#ffffff" buttonLeft="58%">
-							취소
-						</ConfirmButton>
+              >저장</ConfirmButton>
+							<ConfirmButton onClick={onCancel} buttonColor="#EEA3BF" buttonBackColor="#ffffff" buttonLeft="72%">
+								취소
+							</ConfirmButton>
+						</ConfirmDiv>
 					</RowGroup>
 				</RegisterFormBlock>
 			</Inner>
