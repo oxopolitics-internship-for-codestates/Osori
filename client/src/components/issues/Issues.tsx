@@ -1,17 +1,24 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+
+const WholeFrame = styled.div`
+	display: flex;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+`;
 
 const Frame = styled.div`
 	display: flex;
 	flex-direction: column;
-	border: 1px solid #878787;
-	border-radius: 20px;
+	border: 1px solid #bfbfbf;
 	padding: 20px 0px;
 	width: 600px;
 	justify-content: center;
 	align-items: center;
-	margin-top: 30px;
+	margin: 30px 0;
+	box-shadow: 1px 2px 5px #7c7c7c;
 `;
 
 const Issue = styled.div`
@@ -25,11 +32,12 @@ const Topic = styled.div`
 	text-align: center;
 	font-size: 20px;
 	font-weight: 900;
+	margin-top: 10px;
 `;
 
 const Answer = styled.div`
 	display: flex;
-	border-bottom: 1px solid #878787;
+	border-bottom: 1px solid #bfbfbf;
 `;
 
 const Ans = styled.button<{
@@ -54,7 +62,7 @@ const Ans = styled.button<{
 		return pressed ? 'inset 2px 2px 5px black;' : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 1);';
 	}};
 	box-sizing: border-box;
-	color: #1a202c;
+	color: whitesmoke;
 	display: inline-flex;
 	font-family: Inter, sans-serif;
 	font-size: 1rem;
@@ -75,7 +83,7 @@ const Ans = styled.button<{
 	touch-action: manipulation;
 	&:hover {
 		background-color: ${({ hoverColor }) => {
-			return hoverColor || 'rgba(81, 155, 122, 0.80)';
+			return hoverColor || 'rgba(151, 73, 182, 0.80)';
 		}};
 	}
 	&:active {
@@ -92,38 +100,33 @@ const Ans = styled.button<{
 
 const Examples = styled.div`
 	background-color: rgb(230, 230, 230);
-	border-radius: 20px;
 	width: 450px;
 	margin: 20px 45px;
 	padding: 10px;
-	box-shadow: inset 0px 0px 10px #7c7c7c;
+	box-shadow: 2px 1px 5px #7c7c7c;
 `;
 
 const Example = styled.div`
-	margin: 10px 0px 10px;
+	margin: 10px;
 `;
 
 const ExampleList1 = styled.span<{ examplListLS?: string }>`
 	letter-spacing: ${({ examplListLS }) => examplListLS || '0px'};
-	text-align: center;
 	font-weight: 900;
-	margin-left: 20px;
+	margin-right: 10px;
 `;
 
-const ExampleList2 = styled.span``;
+const ExampleList2 = styled.span`
+	border-left: 1px solid #878787;
+	padding-left: 5px;
+`;
 
-const ConfirmDiv = styled.div`
+const CheckBtnFrame = styled.div`
 	display: flex;
 	width: 100%;
 `;
 
-const Div = styled.div`
-	display: flex;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-`;
-const Confirm = styled.button`
+const CheckBtn = styled.button`
 	font-size: 17px;
 	font-weight: 500;
 	border: 1px solid white;
@@ -132,7 +135,11 @@ const Confirm = styled.button`
 	margin: auto 0 0 auto;
 	margin-right: 25px;
 	padding: 2px;
+	color: #878787;
 	cursor: pointer;
+	&:hover {
+		color: #9749b6;
+	}
 `;
 
 interface IssuesData {
@@ -162,7 +169,7 @@ function Issues({
 	setRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
 	return (
-		<Div>
+		<WholeFrame>
 			{issues.length > 0
 				? issues.map((issue, idx) => {
 						const key = `isssue${idx}`;
@@ -174,7 +181,7 @@ function Issues({
 									<Answer>
 										<Ans
 											padValue="8px 25px"
-											backC="#519b7a"
+											backC="#9749B6"
 											marginL="50px"
 											pressed={issue.answer !== undefined ? issue.answer === '네' : false}
 											// pressed={pressed[issue.title][0]}
@@ -201,8 +208,8 @@ function Issues({
 										</Ans>
 										<Ans
 											padValue="8px 10px"
-											backC="#fbcd57"
-											hoverColor="rgba(251, 205, 87, 0.80)"
+											backC="#EEA3BF"
+											hoverColor="rgba(238, 163, 191, 0.80)"
 											pressed={issue.answer !== undefined ? issue.answer === '글세요' : false}
 											close={issue.answer !== undefined}
 											onClick={() => {
@@ -227,8 +234,8 @@ function Issues({
 										</Ans>
 										<Ans
 											padValue="8px 10px"
-											backC="#fb7b77"
-											hoverColor="rgba(251, 123, 119, 0.80)"
+											backC="#C1ADD1"
+											hoverColor="rgba(193, 173, 209, 0.80)"
 											pressed={issue.answer ? issue.answer === '아니요' : false}
 											close={issue.answer !== undefined}
 											onClick={() => {
@@ -254,7 +261,7 @@ function Issues({
 									</Answer>
 									<Examples>
 										<Example>
-											<ExampleList1 examplListLS="30px">네</ExampleList1>
+											<ExampleList1 examplListLS="28px">네</ExampleList1>
 											<ExampleList2> {issue.answerTextO}</ExampleList2>
 										</Example>
 										<Example>
@@ -267,8 +274,8 @@ function Issues({
 										</Example>
 									</Examples>
 								</Issue>
-								<ConfirmDiv>
-									<Confirm
+								<CheckBtnFrame>
+									<CheckBtn
 										onClick={() => {
 											if (target !== null) {
 												setTop(target.scrollTop);
@@ -279,13 +286,13 @@ function Issues({
 										}}
 									>
 										통계보기
-									</Confirm>
-								</ConfirmDiv>
+									</CheckBtn>
+								</CheckBtnFrame>
 							</Frame>
 						);
 				  })
 				: null}
-		</Div>
+		</WholeFrame>
 	);
 }
 
