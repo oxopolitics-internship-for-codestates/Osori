@@ -54,13 +54,11 @@ interface IssuesData {
 	answer: string;
 }
 function IssuePage({
-	pageChange,
 	setPageChange,
 	setTop,
 	top,
 	setSelectIssue,
 }: {
-	pageChange: boolean;
 	top: number;
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
@@ -76,19 +74,7 @@ function IssuePage({
 			target.scrollTo({ top });
 		}
 		if (issues.length === 0 || request) {
-			// if (isLogin) {
-			// 	axios.get(`${process.env.REACT_APP_SERVER_URI}issue/62f38e8613648b27864cb8bc`).then((x) => {
-			// 		// 62f38e8613648b27864cb8bb
-			// 		setIssues(x.data);
-			// 	});
-			// } else {
-			// 	axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((x) => {
-			// 		// 62f38e8613648b27864cb8bb
-			// 		setIssues(x.data);
-			// 	});
-			// }
 			axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((x) => {
-				// 62f38e8613648b27864cb8bb
 				setIssues(x.data);
 				setRequest(false);
 			});

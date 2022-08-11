@@ -103,6 +103,7 @@ const ConfirmButton = styled.button<{ buttonColor?: string; buttonBackColor?: st
 		opacity: 1;
 	}
 `;
+
 const MessageBoxArea = styled.div`
 	position: absolute;
 	top: 0;
