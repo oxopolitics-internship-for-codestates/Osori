@@ -185,17 +185,26 @@ function MapArea({
 						color: '',
 					};
 				}
-				if (sub.min === 0) {
-					sub.min = 1;
+				if (sub.max > 1) {
+					if (sub.min === 0) {
+						sub.min = 1;
+					}
+					const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
+					for (const { regionName } of mapdata) {
+						const { rate } = sub.data[`${regionName}`];
+						let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
+						k = k < 0 ? 0 : k;
+						k = k > 5 ? 5 : k;
+
+						sub.data[`${regionName}`].color = colorSet[k];
+					}
+				} else {
+					for (const { regionName } of mapdata) {
+						sub.data[`${regionName}`].rate = 0;
+						sub.data[`${regionName}`].color = '#EAEAEA';
+					}
 				}
-				const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
-				for (const { regionName } of mapdata) {
-					const { rate } = sub.data[`${regionName}`];
-					let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
-					k = k < 0 ? 0 : k;
-					k = k > 5 ? 5 : k;
-					sub.data[`${regionName}`].color = colorSet[k];
-				}
+
 				dataF(sub);
 				setIsLoading(false);
 			})
