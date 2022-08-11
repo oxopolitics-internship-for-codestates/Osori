@@ -24,8 +24,7 @@ const Context = styled.div`
 const TopButton = styled.div`
 	position: fixed;
 	bottom: 20px;
-	right: 200px;
-	z-index: 99;
+	left: calc(50% + 320px);
 	border: none;
 	cursor: pointer;
 	padding: 15px;
@@ -103,6 +102,16 @@ function IssuePage({
 				}
 			}}
 		>
+			<TopButton
+				onClick={() => {
+					if (target !== null) {
+						target.scrollTo({ top: 0, behavior: 'smooth' });
+					}
+				}}
+			>
+				<TopImage src={TopImg} alt="" />
+				Top
+			</TopButton>
 			<IssueNav
 				userInfo={userInfo}
 				isLogin={isLogin}
@@ -122,16 +131,6 @@ function IssuePage({
 					setSelectIssue={setSelectIssue}
 				/>
 			</Context>
-			<TopButton
-				onClick={() => {
-					if (target !== null) {
-						target.scrollTo({ top: 0, behavior: 'smooth' });
-					}
-				}}
-			>
-				<TopImage src={TopImg} alt="" />
-				Top
-			</TopButton>
 		</Frame>
 	);
 }
