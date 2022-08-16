@@ -45,6 +45,8 @@
  ### Server
 > ```js
 > npm install
+>  // .env_example 파일을 보고 .env 파일 생성및 기입
+> npm run start:db // 설정한 mongodb에 더미데이터 생성시 
 > npm start
 > ```
 
