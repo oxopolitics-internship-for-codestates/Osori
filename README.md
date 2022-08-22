@@ -49,13 +49,6 @@
 > npm run start:db // 설정한 mongodb에 더미데이터 생성시 
 > npm start
 > ```
-## Deploy(codesandbox + gh-pages)
-<iframe src="https://codesandbox.io/embed/osori-server-9ju8p4?fontsize=14&hidenavigation=1&theme=dark"
-     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-     title="Osori-server"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
 
 ## Wiki
 [Wiki 바로가기](https://github.com/oxopolitics-internship-for-codestates/Osori/wiki)
