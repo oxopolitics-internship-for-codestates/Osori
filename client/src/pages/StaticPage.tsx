@@ -74,7 +74,7 @@ const names: { [key: string]: string[] } = {
 		'제주특별자치도',
 		'세종특별자치시',
 	],
-	서울: [
+	서울특별시: [
 		'종로구',
 		'중구',
 		'용산구',
@@ -161,16 +161,16 @@ const dbinit: DbData = {
 		max: 0,
 		odata: { ...sdata['전국'].data },
 	},
-	서울: {
+	서울특별시: {
 		name: '',
 		count: 0,
 		data: {},
 		min: 100,
 		max: 0,
-		odata: { ...sdata['서울'].data },
+		odata: { ...sdata['서울특별시'].data },
 	},
 };
-for (const name of ['전국', '서울']) {
+for (const name of ['전국', '서울특별시']) {
 	const sub = dbinit[name];
 
 	sub.name = name;
@@ -209,11 +209,13 @@ function StaticPage({
 	setIsLoading,
 	isLoading,
 	selectIssue,
+	statsData,
 }: {
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 	isLoading: boolean;
 	selectIssue: string;
+	statsData: DbData;
 }) {
 	const [region, regionSel] = useState('');
 	const [map, mapSel] = useState('전국');
@@ -231,7 +233,11 @@ function StaticPage({
 				</Button>
 			</BackFrame>
 			<Box>
-				{region.length === 0 || isClick < 0 ? <Waiting /> : <Chart region={region} selectIssue={selectIssue} />}
+				{region.length === 0 || isClick < 0 ? (
+					<Waiting />
+				) : (
+					<Chart region={region} selectIssue={selectIssue} chartData={statsData[map].odata[region]} />
+				)}
 			</Box>
 			<Box>
 				<MapArea
@@ -241,6 +247,7 @@ function StaticPage({
 					regionSel={regionSel}
 					isClick={isClick}
 					isClickF={isClickF}
+					mdata={statsData[map]}
 					isLoading={isLoading}
 					selectIssue={selectIssue}
 					setIsLoading={setIsLoading}

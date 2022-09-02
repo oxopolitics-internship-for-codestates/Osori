@@ -53,18 +53,75 @@ interface IssuesData {
 	answerTextS: string;
 	answer: string;
 }
+interface Answer {
+	yes: number;
+	no: number;
+	so: number;
+}
+
+interface Gender {
+	count: number;
+	answer: Answer;
+	age: Age;
+}
+interface Age {
+	count: number;
+	[key: string]: number;
+}
+
+interface SubData {
+	name: string;
+	count: number;
+	male: Gender;
+	female: Gender;
+}
+interface SmData {
+	[key: string]: SubData;
+}
+
+interface RegionData {
+	name: string;
+	count: number;
+	rate: number;
+	color: string;
+}
+
+interface MapData {
+	name: string;
+	count: number;
+	min: number;
+	max: number;
+	data: { [regionName: string]: RegionData };
+	odata: SmData;
+}
+
+interface DbData {
+	[key: string]: MapData;
+}
+interface DataForm {
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answer?: string;
+	statsdata: DbData;
+}
 function IssuePage({
 	setPageChange,
 	setTop,
 	top,
 	setSelectIssue,
+	setSelectIssueNumber,
+	issuesData,
 }: {
 	top: number;
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
 	setSelectIssue: React.Dispatch<React.SetStateAction<string>>;
+	setSelectIssueNumber: React.Dispatch<React.SetStateAction<number>>;
+	issuesData: DataForm[];
 }) {
-	const [issues, setIssues] = useState<IssuesData[]>([]);
+	const [issues, setIssues] = useState<DataForm[]>([]);
 	const [target, setTarget] = useState<(EventTarget & HTMLDivElement) | null>(null);
 	const [isLogin, setIsLogin] = useState(false);
 	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
@@ -74,12 +131,14 @@ function IssuePage({
 			target.scrollTo({ top });
 		}
 		if (issues.length === 0 || request) {
-			axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((x) => {
-				setIssues(x.data);
-				setRequest(false);
-			});
+			setIssues(issuesData);
+			setRequest(false);
+			// axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((x) => {
+			// 	setIssues(x.data);
+			// 	setRequest(false);
+			// });
 		}
-	}, [top, target, issues, setIssues, userInfo, request]);
+	}, [top, target, issues, setIssues, userInfo, request, issuesData]);
 	return (
 		<Frame
 			onMouseOver={(e) => {
@@ -115,6 +174,7 @@ function IssuePage({
 					userInfo={userInfo}
 					setRequest={setRequest}
 					setSelectIssue={setSelectIssue}
+					setSelectIssueNumber={setSelectIssueNumber}
 				/>
 			</Context>
 		</Frame>

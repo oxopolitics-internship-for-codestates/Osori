@@ -148,10 +148,10 @@ export default function randomPick(n: number) {
 	const l = `${n}`.length;
 	const sdata: Sdata = {
 		전국: { name: '전국', count: 0, data: {} },
-		서울: { name: '서울', count: 0, data: {} },
+		서울특별시: { name: '서울특별시', count: 0, data: {} },
 	};
 	const s1 = sdata['전국'];
-	const s2 = sdata['서울'];
+	const s2 = sdata['서울특별시'];
 	for (let i = 0; i < n; i += 1) {
 		const p = String(i).padStart(l + 1, '0');
 		data[i] = {

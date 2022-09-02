@@ -159,6 +159,59 @@ interface IssuesData {
 	answer: string;
 }
 
+interface Answer {
+	yes: number;
+	no: number;
+	so: number;
+}
+
+interface Gender {
+	count: number;
+	answer: Answer;
+	age: Age;
+}
+interface Age {
+	count: number;
+	[key: string]: number;
+}
+
+interface SubData {
+	name: string;
+	count: number;
+	male: Gender;
+	female: Gender;
+}
+interface SmData {
+	[key: string]: SubData;
+}
+
+interface RegionData {
+	name: string;
+	count: number;
+	rate: number;
+	color: string;
+}
+
+interface MapData {
+	name: string;
+	count: number;
+	min: number;
+	max: number;
+	data: { [regionName: string]: RegionData };
+	odata: SmData;
+}
+
+interface DbData {
+	[key: string]: MapData;
+}
+interface DataForm {
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answer?: string;
+	statsdata: DbData;
+}
 interface DataType {
 	title: string;
 	answerTextO: string;
@@ -178,7 +231,7 @@ function IssueNav({
 	isLogin: boolean;
 	setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
 	setUserInfo: React.Dispatch<React.SetStateAction<{ id: string; userName: string }>>;
-	setIssues: React.Dispatch<React.SetStateAction<IssuesData[]>>;
+	setIssues: React.Dispatch<React.SetStateAction<DataForm[]>>;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	const [fadein, setFadein] = useState<boolean>(false);

@@ -28,17 +28,17 @@ const StatsArea = styled.div`
 `;
 
 // ---- code ----
-interface Gender {
-	count: number;
-	age: Age;
-	yes: number;
-	no: number;
-	so: number;
-}
+// interface Gender {
+// 	count: number;
+// 	age: Age;
+// 	yes: number;
+// 	no: number;
+// 	so: number;
+// }
 
-interface Age {
-	[key: string]: number;
-}
+// interface Age {
+// 	[key: string]: number;
+// }
 
 interface ResponseRegionData {
 	issueId: string;
@@ -49,68 +49,75 @@ interface ResponseRegionData {
 	female: Gender;
 }
 
-function Chart({ region, selectIssue }: { region: string; selectIssue: string }) {
-	const [responseData, setResponseData] = useState<ResponseRegionData>({
-		issueId: '',
-		mapName: '',
-		regionName: '',
-		count: 0,
-		male: {
-			count: 0,
-			yes: 0,
-			no: 0,
-			so: 0,
-			age: {},
-		},
-		female: {
-			count: 0,
-			yes: 0,
-			no: 0,
-			so: 0,
-			age: {},
-		},
-	});
+interface Answer {
+	yes: number;
+	no: number;
+	so: number;
+}
+
+interface Gender {
+	count: number;
+	answer: Answer;
+	age: Age;
+}
+interface Age {
+	count: number;
+	[key: string]: number;
+}
+
+interface SubData {
+	name: string;
+	count: number;
+	male: Gender;
+	female: Gender;
+}
+
+function Chart({ region, selectIssue, chartData }: { region: string; selectIssue: string; chartData: SubData }) {
+	const [responseData, setResponseData] = useState<SubData>(chartData);
 	const [isGetRegion, setIsGetRegion] = useState('');
 
 	if (isGetRegion !== region) {
-		axios
-			.get(`${process.env.REACT_APP_SERVER_URI}stats/region/${selectIssue}/${region}`, {
-				headers: { 'Content-Type': 'application/json' },
-			})
-			.then((res) => {
-				setResponseData({ ...res.data[0] });
-				setIsGetRegion(region);
-			});
+		// axios
+		// 	.get(`${process.env.REACT_APP_SERVER_URI}stats/region/${selectIssue}/${region}`, {
+		// 		headers: { 'Content-Type': 'application/json' },
+		// 	})
+		// 	.then((res) => {
+		// 		setResponseData({ ...res.data[0] });
+		// 		setIsGetRegion(region);
+		// 	});
+		setResponseData(chartData);
+		setIsGetRegion(region);
 	}
 
 	// 전체 응답 데이터
 	const overallResData = {
 		total: responseData.count,
-		yes: responseData.female.yes + responseData.male.yes,
-		no: responseData.female.no + responseData.male.no,
-		so: responseData.female.so + responseData.male.so,
+		yes: responseData.female.answer.yes + responseData.male.answer.yes,
+		no: responseData.female.answer.no + responseData.male.answer.no,
+		so: responseData.female.answer.so + responseData.male.answer.so,
 	};
 	// 남녀 응답 데이터
 	const genderData = {
 		male: {
 			count: responseData.male.count,
-			yes: responseData.male.yes,
-			no: responseData.male.no,
-			so: responseData.male.so,
+			yes: responseData.male.answer.yes,
+			no: responseData.male.answer.no,
+			so: responseData.male.answer.so,
 		},
 		female: {
 			count: responseData.female.count,
-			yes: responseData.female.yes,
-			no: responseData.female.no,
-			so: responseData.female.so,
+			yes: responseData.female.answer.yes,
+			no: responseData.female.answer.no,
+			so: responseData.female.answer.so,
 		},
 	};
 	// 여성 세부 데이터 추출
 	const femaleAge = responseData.female.age;
+	console.log(femaleAge);
 	let femaleMaxAge = 0;
 	let femaleAgeLabel = '없음';
 	for (const i in femaleAge) {
-		if (femaleAge[i] > femaleMaxAge) {
+		if (i !== 'count' && femaleAge[i] > femaleMaxAge) {
 			femaleMaxAge = femaleAge[i];
 			femaleAgeLabel = i;
 		}
@@ -120,7 +127,7 @@ function Chart({ region, selectIssue }: { region: string; selectIssue: string })
 	let maleMaxAge = 0;
 	let maleAgeLabel = '없음';
 	for (const i in maleAge) {
-		if (maleAge[i] > maleMaxAge) {
+		if (i !== 'count' && maleAge[i] > maleMaxAge) {
 			maleMaxAge = maleAge[i];
 			maleAgeLabel = i;
 		}

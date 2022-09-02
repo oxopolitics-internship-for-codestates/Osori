@@ -35,7 +35,7 @@ const Topic = styled.div`
 	margin-top: 10px;
 `;
 
-const Answer = styled.div`
+const Answers = styled.div`
 	display: flex;
 	border-bottom: 1px solid #bfbfbf;
 `;
@@ -141,14 +141,66 @@ const CheckBtn = styled.button`
 		color: #9749b6;
 	}
 `;
+interface Answer {
+	yes: number;
+	no: number;
+	so: number;
+}
 
+interface Gender {
+	count: number;
+	answer: Answer;
+	age: Age;
+}
+interface Age {
+	count: number;
+	[key: string]: number;
+}
+
+interface SubData {
+	name: string;
+	count: number;
+	male: Gender;
+	female: Gender;
+}
+interface SmData {
+	[key: string]: SubData;
+}
+
+interface RegionData {
+	name: string;
+	count: number;
+	rate: number;
+	color: string;
+}
+
+interface MapData {
+	name: string;
+	count: number;
+	min: number;
+	max: number;
+	data: { [regionName: string]: RegionData };
+	odata: SmData;
+}
+
+interface DbData {
+	[key: string]: MapData;
+}
+interface DataForm {
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answer?: string;
+	statsdata: DbData;
+}
 interface IssuesData {
 	_id: string;
 	title: string;
 	answerTextO: string;
 	answerTextX: string;
 	answerTextS: string;
-	answer: string;
+	answer?: string;
 }
 
 function Issues({
@@ -159,14 +211,16 @@ function Issues({
 	setSelectIssue,
 	userInfo,
 	setRequest,
+	setSelectIssueNumber,
 }: {
-	issues: IssuesData[];
+	issues: DataForm[];
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	target: (EventTarget & HTMLDivElement) | null;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
 	setSelectIssue: React.Dispatch<React.SetStateAction<string>>;
 	userInfo: { userName: string; id: string };
 	setRequest: React.Dispatch<React.SetStateAction<boolean>>;
+	setSelectIssueNumber: React.Dispatch<React.SetStateAction<number>>;
 }) {
 	return (
 		<WholeFrame>
@@ -178,7 +232,7 @@ function Issues({
 							<Frame key={key}>
 								<Issue>
 									<Topic>{issue.title}</Topic>
-									<Answer>
+									<Answers>
 										<Ans
 											padValue="8px 25px"
 											backC="#9749B6"
@@ -187,19 +241,23 @@ function Issues({
 											close={issue.answer !== undefined}
 											onClick={() => {
 												if (issue.answer === undefined && userInfo.id.length > 0) {
-													axios
-														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
-															userId: userInfo.id,
-															// eslint-disable-next-line no-underscore-dangle
-															issueId: issue._id,
-															answer: '네',
-														})
-														.then(() => {
-															if (target !== null) {
-																setTop(target.scrollTop);
-															}
-															setRequest(true);
-														});
+													// axios
+													// 	.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
+													// 		userId: userInfo.id,
+													// 		// eslint-disable-next-line no-underscore-dangle
+													// 		issueId: issue._id,
+													// 		answer: '네',
+													// 	})
+													// 	.then(() => {
+													// 		if (target !== null) {
+													// 			setTop(target.scrollTop);
+													// 		}
+													// 		setRequest(true);
+													// 	});
+													if (target !== null) {
+														setTop(target.scrollTop);
+													}
+													setRequest(true);
 												}
 											}}
 										>
@@ -213,19 +271,19 @@ function Issues({
 											close={issue.answer !== undefined}
 											onClick={() => {
 												if (issue.answer === undefined && userInfo.id.length > 0) {
-													axios
-														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
-															userId: userInfo.id,
-															// eslint-disable-next-line no-underscore-dangle
-															issueId: issue._id,
-															answer: '글세요',
-														})
-														.then(() => {
-															if (target !== null) {
-																setTop(target.scrollTop);
-															}
-															setRequest(true);
-														});
+													// axios
+													// 	.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
+													// 		userId: userInfo.id,
+													// 		// eslint-disable-next-line no-underscore-dangle
+													// 		issueId: issue._id,
+													// 		answer: '글세요',
+													// 	})
+													// 	.then(() => {
+													// 		if (target !== null) {
+													// 			setTop(target.scrollTop);
+													// 		}
+													// 		setRequest(true);
+													// 	});
 												}
 											}}
 										>
@@ -239,25 +297,25 @@ function Issues({
 											close={issue.answer !== undefined}
 											onClick={() => {
 												if (issue.answer === undefined && userInfo.id.length > 0) {
-													axios
-														.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
-															userId: userInfo.id,
-															// eslint-disable-next-line no-underscore-dangle
-															issueId: issue._id,
-															answer: '아니요',
-														})
-														.then(() => {
-															if (target !== null) {
-																setTop(target.scrollTop);
-															}
-															setRequest(true);
-														});
+													// axios
+													// 	.post(`${process.env.REACT_APP_SERVER_URI}issue/answer`, {
+													// 		userId: userInfo.id,
+													// 		// eslint-disable-next-line no-underscore-dangle
+													// 		issueId: issue._id,
+													// 		answer: '아니요',
+													// 	})
+													// 	.then(() => {
+													// 		if (target !== null) {
+													// 			setTop(target.scrollTop);
+													// 		}
+													// 		setRequest(true);
+													// 	});
 												}
 											}}
 										>
 											아니요
 										</Ans>
-									</Answer>
+									</Answers>
 									<Examples>
 										<Example>
 											<ExampleList1 examplListLS="28px">네</ExampleList1>
@@ -279,8 +337,9 @@ function Issues({
 											if (target !== null) {
 												setTop(target.scrollTop);
 											}
+											setSelectIssueNumber(idx);
 											// eslint-disable-next-line no-underscore-dangle
-											setSelectIssue(issue._id);
+											// setSelectIssue(issue._id);
 											setPageChange(false);
 										}}
 									>

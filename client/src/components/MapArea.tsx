@@ -134,6 +134,7 @@ function MapArea({
 	regionSel,
 	isClick,
 	isClickF,
+	mdata,
 	setIsLoading,
 	isLoading,
 	selectIssue,
@@ -143,73 +144,74 @@ function MapArea({
 	region: string;
 	regionSel: React.Dispatch<React.SetStateAction<string>>;
 	isClick: number;
+	mdata: MapData;
 	isClickF: React.Dispatch<React.SetStateAction<number>>;
 	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 	isLoading: boolean;
 	selectIssue: string;
 }) {
 	const [check, checkF] = useState(-1);
-	const [data, dataF] = useState<MapData | null>(null);
+	const [data, dataF] = useState<MapData | null>(mdata);
+	console.log(mdata);
+	// function mapUpdate(mapName: string) {
+	// 	return axios
+	// 		.get(`${process.env.REACT_APP_SERVER_URI}stats/map/${selectIssue}/${mapName}`)
+	// 		.then((x) => {
+	// 			const mapdata: RegionData2[] = x.data;
+	// 			const sub: MapData = {
+	// 				name: '',
+	// 				count: 0,
+	// 				data: {},
+	// 				min: 100,
+	// 				max: 0,
+	// 			};
+	// 			sub.name = mapName;
+	// 			sub.count = mapdata.reduce((acc, md) => acc + md.count, 0);
+	// 			for (const { regionName, count } of mapdata) {
+	// 				const [scount, rate] = [count, Number(((100 * count) / sub.count).toFixed(2))];
+	// 				if (rate > sub.max) {
+	// 					sub.max = rate;
+	// 				}
+	// 				if (rate < sub.min) {
+	// 					sub.min = rate;
+	// 				}
+	// 				sub.data[`${regionName}`] = {
+	// 					name: regionName,
+	// 					count: scount,
+	// 					rate,
+	// 					color: '',
+	// 				};
+	// 			}
+	// 			if (sub.max > 1) {
+	// 				if (sub.min === 0) {
+	// 					sub.min = 1;
+	// 				}
+	// 				const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
+	// 				for (const { regionName } of mapdata) {
+	// 					const { rate } = sub.data[`${regionName}`];
+	// 					let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
+	// 					k = k < 0 ? 0 : k;
+	// 					k = k > 5 ? 5 : k;
 
-	function mapUpdate(mapName: string) {
-		return axios
-			.get(`${process.env.REACT_APP_SERVER_URI}stats/map/${selectIssue}/${mapName}`)
-			.then((x) => {
-				const mapdata: RegionData2[] = x.data;
-				const sub: MapData = {
-					name: '',
-					count: 0,
-					data: {},
-					min: 100,
-					max: 0,
-				};
-				sub.name = mapName;
-				sub.count = mapdata.reduce((acc, md) => acc + md.count, 0);
-				for (const { regionName, count } of mapdata) {
-					const [scount, rate] = [count, Number(((100 * count) / sub.count).toFixed(2))];
-					if (rate > sub.max) {
-						sub.max = rate;
-					}
-					if (rate < sub.min) {
-						sub.min = rate;
-					}
-					sub.data[`${regionName}`] = {
-						name: regionName,
-						count: scount,
-						rate,
-						color: '',
-					};
-				}
-				if (sub.max > 1) {
-					if (sub.min === 0) {
-						sub.min = 1;
-					}
-					const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
-					for (const { regionName } of mapdata) {
-						const { rate } = sub.data[`${regionName}`];
-						let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
-						k = k < 0 ? 0 : k;
-						k = k > 5 ? 5 : k;
+	// 					sub.data[`${regionName}`].color = colorSet[k];
+	// 				}
+	// 			} else {
+	// 				for (const { regionName } of mapdata) {
+	// 					sub.data[`${regionName}`].rate = 0;
+	// 					sub.data[`${regionName}`].color = '#EAEAEA';
+	// 				}
+	// 			}
 
-						sub.data[`${regionName}`].color = colorSet[k];
-					}
-				} else {
-					for (const { regionName } of mapdata) {
-						sub.data[`${regionName}`].rate = 0;
-						sub.data[`${regionName}`].color = '#EAEAEA';
-					}
-				}
-
-				dataF(sub);
-				setIsLoading(false);
-			})
-			.catch(() => {
-				setIsLoading(true);
-			});
-	}
-	if (data === null || isLoading) {
-		mapUpdate(map);
-	}
+	// 			dataF(sub);
+	// 			setIsLoading(false);
+	// 		})
+	// 		.catch(() => {
+	// 			setIsLoading(true);
+	// 		});
+	// }
+	// if (data === null || isLoading) {
+	// 	mapUpdate(map);
+	// }
 	return (
 		<Frame>
 			{data !== null ? (
@@ -221,15 +223,19 @@ function MapArea({
 								check={map === '전국'}
 								onClick={() => {
 									if (isClick >= 0 && map !== '전국') {
-										mapUpdate('전국').then(() => {
-											mapSel('전국');
-											regionSel('');
-											isClickF(-1);
-										});
+										// mapUpdate('전국').then(() => {
+										// 	mapSel('전국');
+										// 	regionSel('');
+										// 	isClickF(-1);
+										// });
+										mapSel('전국');
+										regionSel('');
+										isClickF(-1);
 									} else if (isClick < 0) {
-										mapUpdate('전국').then(() => {
-											mapSel('전국');
-										});
+										// mapUpdate('전국').then(() => {
+										// 	mapSel('전국');
+										// });
+										mapSel('전국');
 									}
 								}}
 							>
@@ -241,15 +247,19 @@ function MapArea({
 								check={map === '서울특별시'}
 								onClick={() => {
 									if (isClick >= 0 && map !== '서울특별시') {
-										mapUpdate('서울특별시').then(() => {
-											mapSel('서울특별시');
-											regionSel('');
-											isClickF(-1);
-										});
+										// mapUpdate('서울특별시').then(() => {
+										// 	mapSel('서울특별시');
+										// 	regionSel('');
+										// 	isClickF(-1);
+										// });
+										mapSel('서울특별시');
+										regionSel('');
+										isClickF(-1);
 									} else if (isClick < 0) {
-										mapUpdate('서울특별시').then(() => {
-											mapSel('서울특별시');
-										});
+										// mapUpdate('서울특별시').then(() => {
+										// 	mapSel('서울특별시');
+										// });
+										mapSel('서울특별시');
 									}
 								}}
 							>
@@ -261,6 +271,11 @@ function MapArea({
 						<MapBox>
 							{data !== null && region.length > 0 ? (
 								<SelRegionBox>
+									{/* {region}
+									<br />
+									{`${data.data[region] ? data.data[region].count : 0} 명`}
+									<br />
+									{`${data.data[region] ? data.data[region].rate : 0}%`} */}
 									{region}
 									<br />
 									{`${data.data[region] ? data.data[region].count : 0} 명`}
@@ -268,11 +283,11 @@ function MapArea({
 									{`${data.data[region] ? data.data[region].rate : 0}%`}
 								</SelRegionBox>
 							) : null}
-							{data !== null && region.length === 0 ? (
+							{mdata !== null && region.length === 0 ? (
 								<SelRegionBox>
-									{data.name}
+									{mdata.name}
 									<br />
-									{`${data.count} 명`}
+									{`${mdata.count} 명`}
 									<br />
 									100%
 								</SelRegionBox>
@@ -282,7 +297,7 @@ function MapArea({
 								<Korea
 									width="100%"
 									height="100%"
-									newData={data}
+									newData={mdata}
 									selrf={regionSel}
 									isClick={isClick}
 									isClickF={isClickF}
@@ -293,7 +308,7 @@ function MapArea({
 								<Seoul
 									width="100%"
 									height="100%"
-									newData={data}
+									newData={mdata}
 									selrf={regionSel}
 									isClick={isClick}
 									isClickF={isClickF}
