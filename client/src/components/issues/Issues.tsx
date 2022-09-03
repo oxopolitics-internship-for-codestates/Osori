@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
+import CountNewUser from '../../etc/CountNewUser';
 
 const WholeFrame = styled.div`
 	display: flex;
@@ -163,36 +164,28 @@ interface SubData {
 	male: Gender;
 	female: Gender;
 }
-interface SmData {
+interface Data {
 	[key: string]: SubData;
 }
-
-interface RegionData {
-	name: string;
-	count: number;
-	rate: number;
-	color: string;
-}
-
 interface MapData {
 	name: string;
 	count: number;
-	min: number;
-	max: number;
-	data: { [regionName: string]: RegionData };
-	odata: SmData;
+	data: Data;
 }
 
 interface DbData {
 	[key: string]: MapData;
 }
+interface Tdata {
+	[key: string]: DbData;
+}
 interface DataForm {
+	id: string;
 	title: string;
 	answerTextO: string;
 	answerTextX: string;
 	answerTextS: string;
 	answer?: string;
-	statsdata: DbData;
 }
 interface IssuesData {
 	_id: string;
@@ -205,20 +198,24 @@ interface IssuesData {
 
 function Issues({
 	issues,
+	setIssues,
 	setPageChange,
 	target,
 	setTop,
+	statsData,
 	setSelectIssue,
 	userInfo,
 	setRequest,
 	setSelectIssueNumber,
 }: {
 	issues: DataForm[];
+	setIssues: React.Dispatch<React.SetStateAction<DataForm[]>>;
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	target: (EventTarget & HTMLDivElement) | null;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
+	statsData: Tdata;
 	setSelectIssue: React.Dispatch<React.SetStateAction<string>>;
-	userInfo: { userName: string; id: string };
+	userInfo: { userName: string; id: string; gender?: string; age?: string; address?: string };
 	setRequest: React.Dispatch<React.SetStateAction<boolean>>;
 	setSelectIssueNumber: React.Dispatch<React.SetStateAction<number>>;
 }) {
@@ -254,6 +251,24 @@ function Issues({
 													// 		}
 													// 		setRequest(true);
 													// 	});
+													// setIssues([...issues.slice(0, idx), { ...issue, answer: '네' }, ...issues.slice(idx + 1)]);
+													setIssues([]);
+													// let address =userInfo.address
+													// let sadr=address?.split(' ')
+													// let map='전국'
+													// if (sadr!==undefined &&sadr?.length > 1){
+													// }
+													// statsData[idx][map]
+													CountNewUser(
+														{
+															userName: userInfo.userName,
+															gender: userInfo.gender || '',
+															address: userInfo.address || '',
+															age: userInfo.age || '',
+															answer: '네',
+														},
+														statsData[issue.id]
+													);
 													if (target !== null) {
 														setTop(target.scrollTop);
 													}
@@ -284,6 +299,25 @@ function Issues({
 													// 		}
 													// 		setRequest(true);
 													// 	});
+													setIssues([
+														...issues.slice(0, idx),
+														{ ...issue, answer: '글세요' },
+														...issues.slice(idx + 1),
+													]);
+													CountNewUser(
+														{
+															userName: userInfo.userName,
+															gender: userInfo.gender || '',
+															address: userInfo.address || '',
+															age: userInfo.age || '',
+															answer: '글세요',
+														},
+														statsData[issue.id]
+													);
+													if (target !== null) {
+														setTop(target.scrollTop);
+													}
+													setRequest(true);
 												}
 											}}
 										>
@@ -310,6 +344,25 @@ function Issues({
 													// 		}
 													// 		setRequest(true);
 													// 	});
+													setIssues([
+														...issues.slice(0, idx),
+														{ ...issue, answer: '아니요' },
+														...issues.slice(idx + 1),
+													]);
+													CountNewUser(
+														{
+															userName: userInfo.userName,
+															gender: userInfo.gender || '',
+															address: userInfo.address || '',
+															age: userInfo.age || '',
+															answer: '아니요',
+														},
+														statsData[issue.id]
+													);
+													if (target !== null) {
+														setTop(target.scrollTop);
+													}
+													setRequest(true);
 												}
 											}}
 										>
@@ -337,9 +390,9 @@ function Issues({
 											if (target !== null) {
 												setTop(target.scrollTop);
 											}
-											setSelectIssueNumber(idx);
+											// setSelectIssueNumber(idx);
 											// eslint-disable-next-line no-underscore-dangle
-											// setSelectIssue(issue._id);
+											setSelectIssue(issue.id);
 											setPageChange(false);
 										}}
 									>

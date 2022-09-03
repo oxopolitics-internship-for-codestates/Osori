@@ -77,14 +77,6 @@ function Chart({ region, selectIssue, chartData }: { region: string; selectIssue
 	const [isGetRegion, setIsGetRegion] = useState('');
 
 	if (isGetRegion !== region) {
-		// axios
-		// 	.get(`${process.env.REACT_APP_SERVER_URI}stats/region/${selectIssue}/${region}`, {
-		// 		headers: { 'Content-Type': 'application/json' },
-		// 	})
-		// 	.then((res) => {
-		// 		setResponseData({ ...res.data[0] });
-		// 		setIsGetRegion(region);
-		// 	});
 		setResponseData(chartData);
 		setIsGetRegion(region);
 	}
@@ -113,7 +105,6 @@ function Chart({ region, selectIssue, chartData }: { region: string; selectIssue
 	};
 	// 여성 세부 데이터 추출
 	const femaleAge = responseData.female.age;
-	console.log(femaleAge);
 	let femaleMaxAge = 0;
 	let femaleAgeLabel = '없음';
 	for (const i in femaleAge) {

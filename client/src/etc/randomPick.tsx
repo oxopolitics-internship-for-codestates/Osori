@@ -142,7 +142,7 @@ interface MapData {
 interface Sdata {
 	[key: string]: MapData;
 }
-
+export { genderF, ageF, addressF };
 export default function randomPick(n: number) {
 	const data: DataForm[] = [];
 	const l = `${n}`.length;

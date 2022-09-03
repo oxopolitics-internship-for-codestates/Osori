@@ -44,15 +44,6 @@ const TopImage = styled.img`
 	width: 50px;
 	height: 50px;
 `;
-
-interface IssuesData {
-	_id: string;
-	title: string;
-	answerTextO: string;
-	answerTextX: string;
-	answerTextS: string;
-	answer: string;
-}
 interface Answer {
 	yes: number;
 	no: number;
@@ -75,70 +66,75 @@ interface SubData {
 	male: Gender;
 	female: Gender;
 }
-interface SmData {
+interface Data {
 	[key: string]: SubData;
 }
-
-interface RegionData {
-	name: string;
-	count: number;
-	rate: number;
-	color: string;
-}
-
 interface MapData {
 	name: string;
 	count: number;
-	min: number;
-	max: number;
-	data: { [regionName: string]: RegionData };
-	odata: SmData;
+	data: Data;
 }
-
 interface DbData {
 	[key: string]: MapData;
 }
+interface Tdata {
+	[key: string]: DbData;
+}
+interface IssuesData {
+	_id: string;
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answer: string;
+}
+
 interface DataForm {
+	id: string;
 	title: string;
 	answerTextO: string;
 	answerTextX: string;
 	answerTextS: string;
 	answer?: string;
-	statsdata: DbData;
 }
 function IssuePage({
 	setPageChange,
 	setTop,
 	top,
+	isLogin,
+	setIsLogin,
 	setSelectIssue,
 	setSelectIssueNumber,
-	issuesData,
+	userInfo,
+	setUserInfo,
+	statsData,
+	issues,
+	setIssues,
+	NewStatsForm,
 }: {
+	issues: DataForm[];
+	setIssues: React.Dispatch<React.SetStateAction<DataForm[]>>;
 	top: number;
+	userInfo: { id: string; userName: string; gender?: string; age?: string; address?: string };
+	isLogin: boolean;
+	setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
+	setUserInfo: React.Dispatch<
+		React.SetStateAction<{ id: string; userName: string; gender?: string; age?: string; address?: string }>
+	>;
 	setPageChange: React.Dispatch<React.SetStateAction<boolean>>;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
 	setSelectIssue: React.Dispatch<React.SetStateAction<string>>;
 	setSelectIssueNumber: React.Dispatch<React.SetStateAction<number>>;
-	issuesData: DataForm[];
+	statsData: Tdata;
+	NewStatsForm: (id: string) => void;
 }) {
-	const [issues, setIssues] = useState<DataForm[]>([]);
 	const [target, setTarget] = useState<(EventTarget & HTMLDivElement) | null>(null);
-	const [isLogin, setIsLogin] = useState(false);
-	const [userInfo, setUserInfo] = useState({ userName: '', id: '' });
 	const [request, setRequest] = useState(false);
 	useEffect(() => {
 		if (target !== null) {
 			target.scrollTo({ top });
 		}
-		if (issues.length === 0 || request) {
-			setIssues(issuesData);
-			setRequest(false);
-			// axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((x) => {
-			// 	setIssues(x.data);
-			// 	setRequest(false);
-			// });
-		}
-	}, [top, target, issues, setIssues, userInfo, request, issuesData]);
+	}, [top, target, userInfo, request]);
 	return (
 		<Frame
 			onMouseOver={(e) => {
@@ -162,16 +158,21 @@ function IssuePage({
 				isLogin={isLogin}
 				setIsLogin={setIsLogin}
 				setUserInfo={setUserInfo}
+				issues={issues}
 				setIssues={setIssues}
 				setTop={setTop}
+				statsData={statsData}
+				NewStatsForm={NewStatsForm}
 			/>
 			<Context>
 				<Issues
 					issues={issues}
+					setIssues={setIssues}
 					setPageChange={setPageChange}
 					setTop={setTop}
 					target={target}
 					userInfo={userInfo}
+					statsData={statsData}
 					setRequest={setRequest}
 					setSelectIssue={setSelectIssue}
 					setSelectIssueNumber={setSelectIssueNumber}

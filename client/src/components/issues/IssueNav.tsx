@@ -4,6 +4,10 @@ import axios from 'axios';
 import IssueImage from '../../assets/images/IssueImage.png';
 import osoriLogo from '../../assets/images/osori-logo.png';
 import EditorModal from '../editor/EditorModal';
+import { ageF, addressF, genderF } from '../../etc/randomPick';
+import CountNewUser from '../../etc/CountNewUser';
+import Issues from './Issues';
+import MakeNewMockForm from '../../etc/MakeNewMockForm';
 
 const Frame = styled.div`
 	width: 100%;
@@ -150,15 +154,6 @@ const WriteBtn = styled.button<{ ani?: string | undefined }>`
 `;
 
 // ---- code ----
-interface IssuesData {
-	_id: string;
-	title: string;
-	answerTextO: string;
-	answerTextX: string;
-	answerTextS: string;
-	answer: string;
-}
-
 interface Answer {
 	yes: number;
 	no: number;
@@ -181,36 +176,37 @@ interface SubData {
 	male: Gender;
 	female: Gender;
 }
-interface SmData {
+interface Data {
 	[key: string]: SubData;
 }
-
-interface RegionData {
-	name: string;
-	count: number;
-	rate: number;
-	color: string;
-}
-
 interface MapData {
 	name: string;
 	count: number;
-	min: number;
-	max: number;
-	data: { [regionName: string]: RegionData };
-	odata: SmData;
+	data: Data;
 }
 
 interface DbData {
 	[key: string]: MapData;
 }
+interface Tdata {
+	[key: string]: DbData;
+}
+interface IssuesData {
+	_id: string;
+	title: string;
+	answerTextO: string;
+	answerTextX: string;
+	answerTextS: string;
+	answer: string;
+}
+
 interface DataForm {
+	id: string;
 	title: string;
 	answerTextO: string;
 	answerTextX: string;
 	answerTextS: string;
 	answer?: string;
-	statsdata: DbData;
 }
 interface DataType {
 	title: string;
@@ -218,21 +214,30 @@ interface DataType {
 	answerTextX: string;
 	answerTextS: string;
 }
+let userCount = 30000;
 
 function IssueNav({
 	userInfo,
 	isLogin,
 	setIsLogin,
 	setUserInfo,
+	issues,
+	statsData,
 	setIssues,
 	setTop,
+	NewStatsForm,
 }: {
-	userInfo: { id: string; userName: string };
+	issues: DataForm[];
+	userInfo: { id: string; userName: string; gender?: string; age?: string; address?: string };
 	isLogin: boolean;
+	statsData: Tdata;
 	setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
-	setUserInfo: React.Dispatch<React.SetStateAction<{ id: string; userName: string }>>;
+	setUserInfo: React.Dispatch<
+		React.SetStateAction<{ id: string; userName: string; gender?: string; age?: string; address?: string }>
+	>;
 	setIssues: React.Dispatch<React.SetStateAction<DataForm[]>>;
 	setTop: React.Dispatch<React.SetStateAction<number>>;
+	NewStatsForm: (id: string) => void;
 }) {
 	const [fadein, setFadein] = useState<boolean>(false);
 	const [editor, setEditor] = useState(false);
@@ -247,13 +252,21 @@ function IssueNav({
 	};
 
 	const onConfirm = (data: DataType) => {
-		axios.post(`${process.env.REACT_APP_SERVER_URI}issue/`, { ...data, userId: userInfo.id }).then(() => {
-			return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((issues) => {
-				setIssues(issues.data);
-				setEditor(false);
-				setTop(0);
-			});
-		});
+		const k = Number(issues[0].id.split('issue')[1]) + 1;
+		const id = `issue${String(k).padStart(8, '0')}`;
+
+		NewStatsForm(id);
+		setIssues([{ id, ...data }, ...issues]);
+		setEditor(false);
+
+		setTop(0);
+		// axios.post(`${process.env.REACT_APP_SERVER_URI}issue/`, { ...data, userId: userInfo.id }).then(() => {
+		// 	return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfo.id}`).then((issues) => {
+		// 		setIssues(issues.data);
+		// 		setEditor(false);
+		// 		setTop(0);
+		// 	});
+		// });
 	};
 
 	const onCancel = () => {
@@ -270,12 +283,16 @@ function IssueNav({
 					{isLogin ? (
 						<Button
 							onClick={() => {
-								return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/`).then((issues) => {
-									setIssues(issues.data);
-									setUserInfo({ id: '', userName: '' });
-									setIsLogin(false);
-									setTop(0);
-								});
+								// return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/`).then((issues) => {
+								// 	setIssues(issues.data);
+								// 	setUserInfo({ id: '', userName: '' });
+								// 	setIsLogin(false);
+								// 	setTop(0);
+								// });
+								// setIssues(issues.data);
+								setUserInfo({ id: '', userName: '' });
+								setIsLogin(false);
+								setTop(0);
 							}}
 						>
 							로그아웃
@@ -283,17 +300,29 @@ function IssueNav({
 					) : (
 						<Button
 							onClick={() => {
-								axios.get(`${process.env.REACT_APP_SERVER_URI}user/`).then((user) => {
-									//  eslint-disable-next-line no-underscore-dangle
-									const userInfos = { id: user.data._id, userName: user.data.userName };
-									return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfos.id}`).then((issues) => {
-										setIssues(issues.data);
-										setUserInfo(userInfos);
-										setIsLogin(true);
-										fadeinAnimate();
-										setTop(0);
-									});
+								// axios.get(`${process.env.REACT_APP_SERVER_URI}user/`).then((user) => {
+								// 	//  eslint-disable-next-line no-underscore-dangle
+								// 	const userInfos = { id: user.data._id, userName: user.data.userName };
+								// 	return axios.get(`${process.env.REACT_APP_SERVER_URI}issue/${userInfos.id}`).then((issues) => {
+								// 		setIssues(issues.data);
+								// 		setUserInfo(userInfos);
+								// 		setIsLogin(true);
+								// 		fadeinAnimate();
+								// 		setTop(0);
+								// 	});
+								// });
+								// setIssues(issues.data);
+								setUserInfo({
+									userName: `guest${`${userCount}`.padStart(8, '0')}`,
+									id: '000000',
+									age: ageF(),
+									gender: genderF(),
+									address: addressF(),
 								});
+								setIsLogin(true);
+								fadeinAnimate();
+								setTop(0);
+								userCount += 1;
 							}}
 							className={fadein ? 'fadein' : ''}
 						>

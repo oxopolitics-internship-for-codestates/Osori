@@ -127,81 +127,16 @@ interface SubData {
 	male: Gender;
 	female: Gender;
 }
-interface SmData {
+interface Data {
 	[key: string]: SubData;
 }
-
-interface RegionData {
-	name: string;
-	count: number;
-	rate: number;
-	color: string;
-}
-
 interface MapData {
 	name: string;
 	count: number;
-	min: number;
-	max: number;
-	data: { [regionName: string]: RegionData };
-	odata: SmData;
+	data: Data;
 }
-
 interface DbData {
 	[key: string]: MapData;
-}
-
-const { sdata } = randomPick(10000);
-const dbinit: DbData = {
-	전국: {
-		name: '',
-		count: 0,
-		data: {},
-		min: 100,
-		max: 0,
-		odata: { ...sdata['전국'].data },
-	},
-	서울특별시: {
-		name: '',
-		count: 0,
-		data: {},
-		min: 100,
-		max: 0,
-		odata: { ...sdata['서울특별시'].data },
-	},
-};
-for (const name of ['전국', '서울특별시']) {
-	const sub = dbinit[name];
-
-	sub.name = name;
-	sub.count = sdata[name].count;
-	for (const i of names[name]) {
-		const [count, rate] = [
-			sdata[name].data[i].count,
-			Number(((100 * sdata[name].data[i].count) / sub.count).toFixed(2)),
-		];
-		if (rate > sub.max) {
-			sub.max = rate;
-		}
-		if (rate < sub.min) {
-			sub.min = rate;
-		}
-
-		sub.data[`${i}`] = {
-			name: i,
-			count,
-			rate,
-			color: '',
-		};
-	}
-	const dx = (Math.log(sub.max) - Math.log(sub.min)) / 5;
-	for (const i of names[name]) {
-		const { rate } = sub.data[`${i}`];
-		let k = 5 - Math.floor((Math.log(rate) - Math.log(sub.min)) / dx);
-
-		k = k < 0 ? 0 : k;
-		sub.data[`${i}`].color = colorSet[k];
-	}
 }
 
 function StaticPage({
@@ -236,7 +171,7 @@ function StaticPage({
 				{region.length === 0 || isClick < 0 ? (
 					<Waiting />
 				) : (
-					<Chart region={region} selectIssue={selectIssue} chartData={statsData[map].odata[region]} />
+					<Chart region={region} selectIssue={selectIssue} chartData={statsData[map].data[region]} />
 				)}
 			</Box>
 			<Box>
@@ -247,7 +182,7 @@ function StaticPage({
 					regionSel={regionSel}
 					isClick={isClick}
 					isClickF={isClickF}
-					mdata={statsData[map]}
+					mdata={statsData}
 					isLoading={isLoading}
 					selectIssue={selectIssue}
 					setIsLoading={setIsLoading}
